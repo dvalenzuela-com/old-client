@@ -16,7 +16,7 @@ const StripeButton = (props: StripeButtonProps) => {
     if (stripe) {
       const pr = stripe.paymentRequest({
         country: 'DE',
-        currency: 'eur',
+        currency: 'clp',
         total: {
           label: 'Alabarra Order',
           amount: props.amount,
