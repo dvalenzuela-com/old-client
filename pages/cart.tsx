@@ -39,19 +39,27 @@ const Cart: NextPage = () => {
 	}, [])
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		console.log("handleChange: " + event.target.value);
         setPaymentType(event.target.value);
 
 		if(event.target.value == 'digital') {
+			console.log("calling promise");
 			cart.createOrderWithDigitalPayment()
 				.then((result: any) => {
+					console.log("first then")
 					const orderId = result.result.order_id;
 					console.log("received orderId");
 					return cart.createStripePaymentIntent(orderId);
 				})
 				.then((result: any) => {
+					console.log("second then");
 					const receivedClientSecret = result.result.payment_intent_client_secret;
 					console.log(receivedClientSecret);
 					setClientSecret(receivedClientSecret);
+				})
+				.catch(error => {
+					console.log("Catch block")
+					console.log(error);
 				})
 		}
     }
@@ -111,7 +119,7 @@ const Cart: NextPage = () => {
 							<>
 								<h2>Order</h2>
 								{ paymentType == "presential" &&
-									<Button>Order now</Button>
+									<Button onClick={() => {cart.createOrderWithManualPayment()}}>Order now</Button>
 								}
 								{ paymentType == "digital" &&
 									<StripeButton amount={cart.getCartTotal()} clientSecret={clientSecret} onPaymentError={handlePaymentError} onPaymentSuccess={hanldePaymentSuccess} />
