@@ -1,8 +1,8 @@
 import { AlabarraProduct } from "alabarra-types";
-import { FirebaseApp, getApps, initializeApp } from "firebase/app";
+import { FirebaseOptions, getApp, getApps, initializeApp } from "firebase/app";
 import { collection, DocumentData, FirestoreDataConverter, getDocs, getFirestore, orderBy, query, QueryDocumentSnapshot, SnapshotOptions, WithFieldValue } from "firebase/firestore";
 
-const firebaseConfig = {
+const firebaseConfig: FirebaseOptions = {
     apiKey: "AIzaSyByFFP4aIvH3eHSuOFp-skrn2rLnSYsRcI",
     authDomain: "alabarra-5d7c3.firebaseapp.com",
     projectId: "alabarra-5d7c3",
@@ -11,7 +11,17 @@ const firebaseConfig = {
     appId: "1:961611564816:web:da92f3e1e984b3aa6b8795"
 };
 
-const firebaseApp: FirebaseApp = (getApps().length > 0) ? getApps()[0] : initializeApp(firebaseConfig); 
+
+function createFirebaseApp(firebaseConfig: FirebaseOptions) {
+	try {
+		return getApp();
+	} catch {
+		return initializeApp(firebaseConfig);
+	}
+}
+
+const firebaseApp = createFirebaseApp(firebaseConfig);
+
 const firestore =  getFirestore(firebaseApp);
 export default firestore;
 
