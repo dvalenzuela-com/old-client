@@ -131,27 +131,29 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         selectedOptions.forEach((selectedOption, index) => {
 
             // Original product option
-            const productOption = product.options[index];
+            if (product.options) {
+                const productOption = product.options[index];
 
-            if (productOption.type == AlabarraProductOptionsType.SINGLE_SELECTION) {
-                //Get selected option
-                const singleSelectedOption = selectedOptions[index] as AlabarraProductOptionSingleSelectionSelectedValue;
+                if (productOption.type == AlabarraProductOptionsType.SINGLE_SELECTION) {
+                    //Get selected option
+                    const singleSelectedOption = selectedOptions[index] as AlabarraProductOptionSingleSelectionSelectedValue;
 
-                if (singleSelectedOption) {
-                    // Find product option that is selected to find price adjustment value
-                    const originOption = productOption.possible_values.find(possible_value => possible_value.title == singleSelectedOption);
-                    unitPrice += originOption?.price_adjustment ?? 0;
-                }
-            } else if (productOption.type == AlabarraProductOptionsType.MULTIPLE_SELECTION) {
-                
-                //Get selected option
-                const selectedValues = selectedOptions[index] as AlabarraProductOptionMultipleSelectionSelectedValues;
-                if (selectedValues) {
-                    selectedValues.forEach((selectedValue, index) => {
-                        if (selectedValue) {
-                            unitPrice += productOption.possible_values[index].price_adjustment;
-                        }
-                    });
+                    if (singleSelectedOption) {
+                        // Find product option that is selected to find price adjustment value
+                        const originOption = productOption.possible_values.find(possible_value => possible_value.title == singleSelectedOption);
+                        unitPrice += originOption?.price_adjustment ?? 0;
+                    }
+                } else if (productOption.type == AlabarraProductOptionsType.MULTIPLE_SELECTION) {
+                    
+                    //Get selected option
+                    const selectedValues = selectedOptions[index] as AlabarraProductOptionMultipleSelectionSelectedValues;
+                    if (selectedValues) {
+                        selectedValues.forEach((selectedValue, index) => {
+                            if (selectedValue) {
+                                unitPrice += productOption.possible_values[index].price_adjustment;
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -183,7 +185,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
                 general_note: "note created from Callable function",
                 cart: api_cart_lines,
                 table_number: 15})
-                .then((result: HttpsCallableResult<AlabarraCreateOrderResponse> | undefined) => {
+                .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
                     if (result != undefined) {
                         resolve(result.data.order_id)
                     }})
