@@ -46,13 +46,15 @@ const Cart: NextPage = () => {
 			console.log("calling promise");
 			cart.createOrderWithDigitalPayment()
 				.then((result: any) => {
-					console.log("first then")
+					console.log("first then");
+					console.log(result);
 					const orderId = result.result.order_id;
 					console.log("received orderId");
 					return cart.createStripePaymentIntent(orderId);
 				})
 				.then((result: any) => {
 					console.log("second then");
+					console.log(result);
 					const receivedClientSecret = result.result.payment_intent_client_secret;
 					console.log(receivedClientSecret);
 					setClientSecret(receivedClientSecret);
