@@ -7,18 +7,24 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import { AlabarraProduct } from 'alabarra-types';
 import { Autocomplete, Button, Container, FormLabel, Grid, List, ListItem, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import CartContent from '../components/CartContent';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
 import { allProductsQuery, getAllTableIds } from '../lib/firestore';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import StripeButton from '../components/StripeButton';
+import { CartContext } from '../context/CartContext';
 
-const stripePromise = loadStripe('pk_test_51Jsny8HtcjByDkQ7PN...ojYr8MrCb00EC83upJt')
+const stripePromise = loadStripe('pk_test_51Jsny8HtcjByDkQ7PNk4TmPT4jfWZExCs4pAOuUrdqkaMIr3DP0NAOMtk8ku4K08ODJyXN7qP4fMl2nojYr8MrCb00EC83upJt')
 
 const Cart: NextPage = () => {
 
-	const [tables, setTables] = useState<String[]>([])
+	const cart = useContext(CartContext);
+
+	
+	const [tables, setTables] = useState<String[]>([]);
+	const [paymentType, setPaymentType] = useState<string>('');
+	const [clientSecret, setClientSecret] = useState<string>('');
   	// Fetch all orders
 	const [products, productsLoading, productsError, productsSnapshot] = useCollectionData<AlabarraProduct>(allProductsQuery, {
 		snapshotListenOptions: { includeMetadataChanges: true }
@@ -31,6 +37,35 @@ const Cart: NextPage = () => {
 			setTables(await getAllTableIds());
 		})()
 	}, [])
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPaymentType(event.target.value);
+
+		if(event.target.value == 'digital') {
+			cart.createOrderWithDigitalPayment()
+				.then((result: any) => {
+					const orderId = result.result.order_id;
+					return orderId;
+				})
+				.then(orderId => {
+					return cart.createStripePaymentIntent(orderId);
+				})
+				.then((result: any) => {
+					const receivedClientSecret = result.result.payment_intent_client_secret;
+					console.log(receivedClientSecret);
+					setClientSecret(receivedClientSecret);
+				})
+		}
+    }
+
+	const handlePaymentError = (error: any) => {
+		console.log("payment error");
+		console.log(error);
+	}
+
+	const hanldePaymentSuccess = () => {
+		console.log("payment success");
+	}
 
   return (
     <>
@@ -50,18 +85,15 @@ const Cart: NextPage = () => {
 					<Grid item xs={12} sm={6} md={6} lg={6}>
 						
 						<h2>Select payment method</h2>
-						<RadioGroup>
+						<RadioGroup value={paymentType}>
 							<List>
 								<ListItem>
-									<Radio value='presential' />
+									<Radio value='presential' onChange={handleChange}/>
 										<Typography><Box display='inline' fontWeight='bold' component='span'>Presential payment</Box>: A waiter will come to your table to collect payment</Typography>
 								</ListItem>
 								<ListItem>
-									<Radio value='online' disabled />
-									<FormLabel disabled><Box display='inline' fontWeight='bold' component='span'>Online payment</Box>: Pay from the comfort of your phone and get your order sooner</FormLabel>
-								</ListItem>
-								<ListItem>
-									<StripeButton></StripeButton>
+									<Radio value='digital' onChange={handleChange} />
+									<FormLabel><Box display='inline' fontWeight='bold' component='span'>Digital payment</Box>: Pay from the comfort of your phone and get your order sooner</FormLabel>
 								</ListItem>
 							</List>
 						</RadioGroup>
@@ -76,6 +108,18 @@ const Cart: NextPage = () => {
 						/>
 						<h2>Your name</h2>
 						<TextField></TextField>
+
+						{paymentType != '' &&
+							<>
+								<h2>Order</h2>
+								{ paymentType == "presential" &&
+									<Button>Order now</Button>
+								}
+								{ paymentType == "digital" &&
+									<StripeButton amount={cart.getCartTotal()} clientSecret={clientSecret} onPaymentError={handlePaymentError} onPaymentSuccess={hanldePaymentSuccess} />
+								}
+							</>
+						}
 					</Grid>
 				</Grid>
 			</Container>

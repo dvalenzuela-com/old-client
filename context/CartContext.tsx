@@ -15,6 +15,8 @@ export type Cart = {
     calculateTotalPrice: (product: AlabarraProduct, selectedOptions: ProductOptionSelection[], quantity: number) => number;
     clearCart: () => void;
     createOrderWithManualPayment: () => Promise<string>;
+    createOrderWithDigitalPayment: () => Promise<string>;
+    createStripePaymentIntent: (orderId: string) => Promise<string>;
 }
 
 const defaultCart: Cart = {
@@ -25,7 +27,9 @@ const defaultCart: Cart = {
     getCartTotal: () => 0,
     clearCart: () => {},
     calculateTotalPrice: () => 0,
-    createOrderWithManualPayment: () => Promise.reject("override this promise")
+    createOrderWithManualPayment: () => Promise.reject("override this promise"),
+    createOrderWithDigitalPayment: () => Promise.reject("override this promise"),
+    createStripePaymentIntent: () => Promise.reject("override this promise")
 }
 
 export const CartContext = createContext<Cart>(defaultCart)
@@ -72,7 +76,9 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
     // TODO: Move away from here!
 
-    const [createOrder, executingCreateOrder, errorCreateOrder] = useHttpsCallable(getFunctions(), 'createManualPaymentOrder')
+    const [createManualPaymentOrder, executingCreateManualPaymentOrder, errorCreateManualPaymentOrder] = useHttpsCallable(getFunctions(), 'createManualPaymentOrder')
+    const [createManualDigitalOrder] = useHttpsCallable(getFunctions(), 'createDigitalPaymentOrder')
+    const [createStripePaymentIntent] = useHttpsCallable(getFunctions(), 'createStripePaymentIntent')
 
     const addItem = (product: AlabarraProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => {
         const newCartLine: CartLine = {
@@ -177,14 +183,52 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             var api_cart_lines: any[] = []
 
             cartLines.forEach( line => {
-
-                api_cart_lines.push({product_id: `/products/${line.product.id}`, quantity: 1, note: null})
+                api_cart_lines.push({product_id: `/products/${line.product.id}`, quantity: line.quantity, note: line.note});
             })
-            createOrder({
+            createManualPaymentOrder({
                 customer: "dummyCustomerId",
                 general_note: "note created from Callable function",
                 cart: api_cart_lines,
                 table_number: 15})
+                .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
+                    if (result != undefined) {
+                        resolve(result.data.order_id)
+                    }})
+                .catch((error) => {
+                    console.log(error)
+                    reject(error)})
+        });
+    }
+
+    const handleCreateOrderWithDigitalPayment = (): Promise<string> => {
+
+        return new Promise<string>((resolve, reject) => {
+            var api_cart_lines: any[] = []
+
+            cartLines.forEach( line => {
+                api_cart_lines.push({product_id: `/products/${line.product.id}`, quantity: line.quantity, note: line.note});
+            })
+            createManualDigitalOrder({
+                customer: "dummyCustomerId",
+                general_note: "note created from Callable function",
+                cart: api_cart_lines,
+                table_number: 15})
+                .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
+                    if (result != undefined) {
+                        resolve(result.data.order_id)
+                    }})
+                .catch((error) => {
+                    console.log(error)
+                    reject(error)})
+        });
+    }
+
+    const handleCreateStripePaymentIntent = (orderId: string): Promise<string> => {
+
+        return new Promise<string>((resolve, reject) => {
+            var api_cart_lines: any[] = []
+
+            createStripePaymentIntent({order_id: orderId})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
                     if (result != undefined) {
                         resolve(result.data.order_id)
@@ -204,7 +248,9 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             getCartTotal: getCartTotal,
             clearCart: handleClearCart,
             calculateTotalPrice: calculateTotalPrice,
-            createOrderWithManualPayment: handleCreateOrderWithManualPayment}
+            createOrderWithManualPayment: handleCreateOrderWithManualPayment,
+            createOrderWithDigitalPayment: handleCreateOrderWithDigitalPayment,
+            createStripePaymentIntent: handleCreateStripePaymentIntent}
         }>
             {children}
         </CartContext.Provider>
