@@ -2,6 +2,7 @@ import { Checkbox, Grid, Typography } from "@mui/material";
 import { AlabarraProductOption, AlabarraProductOptionMultipleSelection, AlabarraProductOptionMultipleSelectionSelectedValues, AlabarraProductOptionSingleSelection } from "alabarra-types";
 import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
+import { CurrencyNumberFormat } from "../../lib/helper";
 
 type ProductOptionMultipleSelectionProps = {
     index: number;
@@ -27,7 +28,8 @@ const ProductOptionMultipleSelection = (props: ProductOptionMultipleSelectionPro
         const checkedOptionCount = checkedOptions.reduce(((sum, option) => sum + (option ? 1 : 0)), 0);
         
         // If we already reached the number of options, disable non-checked checkboxes
-        if (checkedOptionCount >= props.productOption.max_selection) {
+        if (props.productOption.max_selection && 
+            checkedOptionCount >= props.productOption.max_selection) {
             const newDisabledOptions = checkedOptions.map((option, index) => {
                 return !option;
             })
@@ -70,7 +72,7 @@ const ProductOptionMultipleSelection = (props: ProductOptionMultipleSelectionPro
                         <Grid item flexDirection='column' justifyContent='center' display='flex'>
                             {possible_value.price_adjustment != 0 &&
                                 (<Typography variant='body2' >
-                                    + <NumberFormat value={possible_value.price_adjustment} displayType='text' {...process.env.CurrencyNumberFormat} />
+                                    + <NumberFormat value={possible_value.price_adjustment} displayType='text' {...CurrencyNumberFormat} />
                                 </Typography>)}
                         </Grid>
                     </React.Fragment>

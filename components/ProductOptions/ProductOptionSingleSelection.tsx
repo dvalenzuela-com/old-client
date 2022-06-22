@@ -2,6 +2,7 @@ import { Grid, Radio, RadioGroup, Typography } from "@mui/material";
 import { AlabarraProductOptionSingleSelection, AlabarraProductOptionSingleSelectionSelectedValue } from "alabarra-types";
 import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
+import { CurrencyNumberFormat } from "../../lib/helper";
 
 type ProductOptionSingleSelectionProps = {
     index: number;
@@ -40,7 +41,7 @@ const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) 
                             <Grid item flexDirection='column' justifyContent='center' display='flex'>
                                 {possible_value.price_adjustment != 0 &&
                                     (<Typography variant='body2' >
-                                        + <NumberFormat value={possible_value.price_adjustment} displayType='text' {...process.env.CurrencyNumberFormat} />
+                                        + <NumberFormat value={possible_value.price_adjustment} displayType='text' {...CurrencyNumberFormat} />
                                     </Typography>)}
                             </Grid>
                         </React.Fragment>

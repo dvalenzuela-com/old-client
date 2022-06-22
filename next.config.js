@@ -3,11 +3,7 @@ const nextConfig = {
 	reactStrictMode: true,
 
 	env: {
-		CurrencyNumberFormat: {
-			thousandSeparator: '.',
-			decimalSeparator: ",",
-			prefix: "$"
-		}
+		
 	}
 }
 
