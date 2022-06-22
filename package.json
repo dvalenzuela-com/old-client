@@ -13,6 +13,8 @@
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.8.0",
     "@mui/material": "^5.8.1",
+    "@stripe/react-stripe-js": "^1.9.0",
+    "@stripe/stripe-js": "^1.32.0",
     "alabarra-types": "git+https://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:x-oauth-basic@github.com/dvalenzuela-com/alabarra-types.git/",
     "firebase": "^9.8.1",
     "firebase-react-hooks": "^0.8.0",

@@ -4,6 +4,7 @@ import { CartContext, CartLine, ProductOptionSelection } from "../context/CartCo
 import NumberFormat from 'react-number-format';
 import ProductDialog, { ProductDialogMode } from "./ProductDialog";
 import { AlabarraProduct } from "alabarra-types";
+import { CurrencyNumberFormat } from "../lib/helper";
 
 
 const CartContent = () => {
@@ -49,7 +50,7 @@ const CartContent = () => {
                                         {line.note != null && <Typography variant="subtitle2" style={{fontStyle: "italic"}}>{line.note}</Typography>}
                                     </TableCell>
                                     <TableCell onClick={() => {handleRowClick(line)}}>
-                                        <NumberFormat value={cart.calculateTotalPrice(line.product, line.options, line.quantity)} displayType='text' {...process.env.CurrencyNumberFormat} />
+                                        <NumberFormat value={cart.calculateTotalPrice(line.product, line.options, line.quantity)} displayType='text' {...CurrencyNumberFormat} />
                                     </TableCell>
                                 </TableRow>
                             )
@@ -58,7 +59,7 @@ const CartContent = () => {
                         <TableRow>
                             <TableCell></TableCell>
                             <TableCell>TOTAL</TableCell>
-                            <TableCell><NumberFormat value={cart.getCartTotal()} displayType='text' {...process.env.CurrencyNumberFormat} /></TableCell>
+                            <TableCell><NumberFormat value={cart.getCartTotal()} displayType='text' {...CurrencyNumberFormat} /></TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>

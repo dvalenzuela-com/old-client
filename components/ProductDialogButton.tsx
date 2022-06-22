@@ -2,6 +2,7 @@ import { AlabarraProduct } from "alabarra-types";
 import { useContext } from "react";
 import NumberFormat from "react-number-format";
 import { CartContext, ProductOptionSelection } from "../context/CartContext";
+import { CurrencyNumberFormat } from "../lib/helper";
 import { ProductDialogMode } from "./ProductDialog";
 
 
@@ -21,7 +22,7 @@ const ProductDialogButton = (props: ProductDialogButtonProps) => {
                 Add (<NumberFormat 
                     value={cart.calculateTotalPrice(props.product, props.selectedOptions, props.selectedQuantity)}
                     displayType='text'
-                    {...process.env.CurrencyNumberFormat}/>)
+                    {...CurrencyNumberFormat}/>)
             </>
         );
     } else if (props.mode == ProductDialogMode.EditLine && props.selectedQuantity == 0) {
@@ -32,7 +33,7 @@ const ProductDialogButton = (props: ProductDialogButtonProps) => {
                 Update (<NumberFormat 
                 value={cart.calculateTotalPrice(props.product, props.selectedOptions, props.selectedQuantity)}
                 displayType='text'
-                {...process.env.CurrencyNumberFormat}/>)
+                {...CurrencyNumberFormat}/>)
             </>
         );
     } else {
