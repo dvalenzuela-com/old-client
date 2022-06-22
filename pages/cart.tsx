@@ -45,9 +45,7 @@ const Cart: NextPage = () => {
 			cart.createOrderWithDigitalPayment()
 				.then((result: any) => {
 					const orderId = result.result.order_id;
-					return orderId;
-				})
-				.then(orderId => {
+					console.log("received orderId");
 					return cart.createStripePaymentIntent(orderId);
 				})
 				.then((result: any) => {
