@@ -239,6 +239,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             createStripePaymentIntent({order_ref: `/orders/${orderId}`})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
                     if (result != undefined) {
+                        console.log(result);
                         resolve(result.data.result.payment_intent_client_secret)
                     } else {
                         reject("result undefined");

@@ -130,7 +130,7 @@ const Cart: NextPage = () => {
 								{ paymentType == "presential" &&
 									<Button onClick={handleManualOrder}>Order now</Button>
 								}
-								{ paymentType == "digital" &&
+								{ paymentType == "digital" && clientSecret != '' && 
 									<StripeButton amount={cart.getCartTotal()} clientSecret={clientSecret} onPaymentError={handlePaymentError} onPaymentSuccess={hanldePaymentSuccess} />
 								}
 							</>
