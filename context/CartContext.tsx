@@ -236,7 +236,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
 
-            createStripePaymentIntent({order_id: orderId})
+            createStripePaymentIntent({order_ref: `/orders/${orderId}`})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
                     if (result != undefined) {
                         resolve(result.data.result.payment_intent_client_secret)
