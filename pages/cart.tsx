@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar'
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
 import { AlabarraProduct } from 'alabarra-types';
-import { Autocomplete, Button, Container, FormLabel, Grid, List, ListItem, Radio, RadioGroup, TextField, Typography } from '@mui/material';
+import { Autocomplete, Button, Container, FormLabel, Grid, LinearProgress, List, ListItem, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import CartContent from '../components/CartContent';
 import { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
@@ -129,6 +129,9 @@ const Cart: NextPage = () => {
 								<h2>Order</h2>
 								{ paymentType == "presential" &&
 									<Button onClick={handleManualOrder}>Order now</Button>
+								}
+								{ paymentType == "digital" && clientSecret == '' &&
+									<LinearProgress />
 								}
 								{ paymentType == "digital" && clientSecret != '' && 
 									<StripeButton amount={cart.getCartTotal()} clientSecret={clientSecret} onPaymentError={handlePaymentError} onPaymentSuccess={hanldePaymentSuccess} />
