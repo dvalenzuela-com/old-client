@@ -191,9 +191,14 @@ export const CartProvider = ({ children }: CartProviderProps) => {
                 cart: api_cart_lines,
                 table_number: 15})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
+                    console.log("inside then");
+                    console.log(result);
                     if (result != undefined) {
-                        resolve(result.data.order_id)
-                    }})
+                        resolve(result.data.result.order_id)
+                    } else {
+                        reject("result undefined");
+                    }
+                })
                 .catch((error) => {
                     console.log(error)
                     reject(error)})
@@ -215,8 +220,11 @@ export const CartProvider = ({ children }: CartProviderProps) => {
                 table_number: 15})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
                     if (result != undefined) {
-                        resolve(result.data.order_id)
-                    }})
+                        resolve(result.data.result.order_id)
+                    } else {
+                        reject("result undefined");
+                    }
+                })
                 .catch((error) => {
                     console.log(error)
                     reject(error)})
@@ -231,8 +239,11 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             createStripePaymentIntent({order_id: orderId})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
                     if (result != undefined) {
-                        resolve(result.data.order_id)
-                    }})
+                        resolve(result.data.result.payment_intent_client_secret)
+                    } else {
+                        reject("result undefined");
+                    }
+                })
                 .catch((error) => {
                     console.log(error)
                     reject(error)})

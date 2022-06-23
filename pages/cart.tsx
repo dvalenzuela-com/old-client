@@ -45,19 +45,13 @@ const Cart: NextPage = () => {
 		if(event.target.value == 'digital') {
 			console.log("calling promise");
 			cart.createOrderWithDigitalPayment()
-				.then((result: any) => {
-					console.log("first then");
-					console.log(result);
-					const orderId = result.result.order_id;
-					console.log("received orderId");
+				.then((orderId: any) => {
+					console.log("first then: " + orderId);
 					return cart.createStripePaymentIntent(orderId);
 				})
-				.then((result: any) => {
-					console.log("second then");
-					console.log(result);
-					const receivedClientSecret = result.result.payment_intent_client_secret;
-					console.log(receivedClientSecret);
-					setClientSecret(receivedClientSecret);
+				.then((clientSecret: any) => {
+					console.log(clientSecret);
+					setClientSecret(clientSecret);
 				})
 				.catch(error => {
 					console.log("Catch block")
@@ -65,6 +59,19 @@ const Cart: NextPage = () => {
 				})
 		}
     }
+
+	const handleManualOrder = () => {
+		console.log("handlemanualOrder");
+		cart.createOrderWithManualPayment()
+			.then(data => {
+				console.log("cart inside then");
+				console.log(data);
+			})
+			.catch(error => {
+				console.log("inside catch");
+				console.log(error);
+			})
+	}
 
 	const handlePaymentError = (error: any) => {
 		console.log("payment error");
@@ -121,7 +128,7 @@ const Cart: NextPage = () => {
 							<>
 								<h2>Order</h2>
 								{ paymentType == "presential" &&
-									<Button onClick={() => {cart.createOrderWithManualPayment()}}>Order now</Button>
+									<Button onClick={handleManualOrder}>Order now</Button>
 								}
 								{ paymentType == "digital" &&
 									<StripeButton amount={cart.getCartTotal()} clientSecret={clientSecret} onPaymentError={handlePaymentError} onPaymentSuccess={hanldePaymentSuccess} />
