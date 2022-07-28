@@ -1,8 +1,7 @@
-import { AppBar, Badge, IconButton, Link, Toolbar, Tooltip, Typography } from "@mui/material";
-import { useContext, useState } from "react";
+import { AppBar, Badge, IconButton, Link, Toolbar, Tooltip } from "@mui/material";
+import { useContext } from "react";
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import { CartContext } from "../context/CartContext";
-import CheckoutDialog from "./CheckoutDialog";
 import NextLink from 'next/link'
 
 const Navbar = (props: any) => {

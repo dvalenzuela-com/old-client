@@ -6,6 +6,7 @@ interface StripeButtonProps {
     clientSecret: string;
     onPaymentError: (error: any) => void;
     onPaymentSuccess: () => void;
+    disabled?: boolean;
 }
 const StripeButton = (props: StripeButtonProps) => {
   const stripe = useStripe();
@@ -14,16 +15,16 @@ const StripeButton = (props: StripeButtonProps) => {
 
   useEffect(() => {
     if (stripe) {
-      const pr = stripe.paymentRequest({
-        country: 'DE',
-        currency: 'clp',
-        total: {
-          label: 'Alabarra Order',
-          amount: props.amount,
-        },
-        requestPayerName: true,
-        requestPayerEmail: true,
-      });
+        const pr = stripe.paymentRequest({
+            country: 'DE',
+            currency: 'clp',
+            total: {
+                label: 'Alabarra Order',
+                amount: props.amount,
+            },
+            requestPayerName: true,
+            requestPayerEmail: true,
+        });
 
       
       // Check the availability of the Payment Request API.

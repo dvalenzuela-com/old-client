@@ -1,10 +1,11 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
-import { AlabarraProduct, AlabarraProductOption, AlabarraProductOptionMultipleSelection, AlabarraProductOptionMultipleSelectionSelectedValues, AlabarraProductOptionSingleSelection, AlabarraProductOptionSingleSelectionSelectedValue, AlabarraProductOptionsType } from "alabarra-types";
+import { AlabarraProduct, AlabarraProductOption, AlabarraProductOptionMultipleSelection, AlabarraProductOptionMultipleSelectionSelectedValues, AlabarraProductOptionSingleSelection, AlabarraProductOptionSingleSelectionSelectedValue, AlabarraProductOptionsType } from "@dvalenzuela-com/alabarra-types";
 import React, { useContext, useEffect, useState } from "react";
 import { CartContext, ProductOptionSelection } from "../context/CartContext";
 import ProductDialogButton from "./ProductDialogButton";
 import ProductOptionMultipleSelection from "./ProductOptions/ProductOptionMultipleSelection";
 import ProductOptionSingleSelection from "./ProductOptions/ProductOptionSingleSelection";
+import { useSnackbar } from "notistack";
 
 export enum ProductDialogMode {
     NewLine,
@@ -21,6 +22,8 @@ export type ProductDialogProps = {
     onClose: () => void;
 }
 const ProductDialog = (props: ProductDialogProps) => {
+
+    const {enqueueSnackbar} = useSnackbar();
 
     const cart = useContext(CartContext);
 
@@ -137,9 +140,16 @@ const ProductDialog = (props: ProductDialogProps) => {
         if (props.mode == ProductDialogMode.NewLine) {
             const trimmedComment = comment.trim();
             cart.addProduct(props.product, selectedQuantity, selectedOptions, trimmedComment == '' ? null : trimmedComment)
+            enqueueSnackbar(`${selectedQuantity} x ${props.product.title} added to the cart`, {variant: 'success'});
 
         } else if (props.mode == ProductDialogMode.EditLine && props.lineId != undefined) {
-            cart.editLineWithId(props.lineId, props.product, selectedQuantity, selectedOptions, comment)
+            cart.editLineWithId(props.lineId, props.product, selectedQuantity, selectedOptions, comment);
+            
+            if (selectedQuantity == 0) {
+                enqueueSnackbar(`Product removed from the cart`, {variant: 'success'});
+            } else {
+                enqueueSnackbar(`Order line updated`, {variant: 'success'});
+            }
         }
 
         handleClose();

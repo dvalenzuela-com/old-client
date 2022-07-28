@@ -1,5 +1,5 @@
 import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
-import { AlabarraProduct } from "alabarra-types";
+import { AlabarraProduct } from "@dvalenzuela-com/alabarra-types";
 import { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
 
@@ -63,8 +63,6 @@ const ProductCard = (props: ProductCardProps) => {
                     <div style={divStyles} />
                 </Card>
             </Grid>
-
-            {/** <Snackbar open={open} autoHideDuration={1000} onClose={handleClose} message={props.title + " added to cart"} action={null} /> */}
         </>
     )
 }

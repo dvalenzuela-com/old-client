@@ -4,145 +4,185 @@ import Navbar from '../components/Navbar'
 
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
-import { AlabarraProduct } from 'alabarra-types';
+import { AlabarraProduct } from '@dvalenzuela-com/alabarra-types';
 import { Autocomplete, Button, Container, FormLabel, Grid, LinearProgress, List, ListItem, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import CartContent from '../components/CartContent';
 import { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
-import { allProductsQuery, getAllTableIds } from '../lib/firestore';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+import { getAllTableIds, useProducts } from '../lib/firestore';
 import StripeButton from '../components/StripeButton';
 import { CartContext } from '../context/CartContext';
+import { useStripe } from '@stripe/react-stripe-js';
+import { useSnackbar } from "notistack";
+import { useRouter } from 'next/router';
 
-const stripePromise = loadStripe('pk_test_51Jsny8HtcjByDkQ7PNk4TmPT4jfWZExCs4pAOuUrdqkaMIr3DP0NAOMtk8ku4K08ODJyXN7qP4fMl2nojYr8MrCb00EC83upJt')
 
 const Cart: NextPage = () => {
 
+	const {enqueueSnackbar} = useSnackbar();
+	const router = useRouter();
 	const cart = useContext(CartContext);
+	const stripe = useStripe();
 
-	
-	const [tables, setTables] = useState<String[]>([]);
+	const [tables, setTables] = useState<string[]>([]);
+	const [selectedTable, setSelectedTable] = useState<string | null>(null);
 	const [paymentType, setPaymentType] = useState<string>('');
 	const [clientSecret, setClientSecret] = useState<string>('');
-  	// Fetch all orders
-	const [products, productsLoading, productsError, productsSnapshot] = useCollectionData<AlabarraProduct>(allProductsQuery, {
-		snapshotListenOptions: { includeMetadataChanges: true }
-	});
-
+	const [canMakeDigitalPayments, setCanMakeDigitalPayments] = useState<boolean>(false);
 
 	useEffect( () => {
 	// Fetch all available tables
 		(async () => {
 			setTables(await getAllTableIds());
 		})()
-	}, [])
+	}, []);
 
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		console.log("handleChange: " + event.target.value);
+	// use a dummy payment intent to see if a payment can be made
+	useEffect(() => {
+		if (stripe) {
+			const pr = stripe.paymentRequest({
+				country: 'DE',
+				currency: 'clp',
+				total: {
+					label: 'Alabarra Order',
+					amount: cart.getCartTotal(),
+				},
+				requestPayerName: true,
+				requestPayerEmail: true,
+			});
+
+			pr.canMakePayment().then((result: any) => {
+				if (result) {
+					setCanMakeDigitalPayments(true);
+				}
+			});
+		}
+	}, [stripe]);
+
+
+
+	const handleTableSelection = (event: any, newValue: string | null) => {
+		setSelectedTable(newValue);
+	}
+
+	const handleSelectPaymentType = (event: React.ChangeEvent<HTMLInputElement>) => {
+		console.log("handleSelectPaymentType: " + event.target.value);
         setPaymentType(event.target.value);
 
 		if(event.target.value == 'digital') {
 			console.log("calling promise");
-			cart.createOrderWithDigitalPayment()
-				.then((orderId: any) => {
-					console.log("first then: " + orderId);
-					return cart.createStripePaymentIntent(orderId);
-				})
-				.then((clientSecret: any) => {
-					console.log(clientSecret);
-					setClientSecret(clientSecret);
-				})
-				.catch(error => {
-					console.log("Catch block")
-					console.log(error);
-				})
+			if (selectedTable) {
+				cart.createOrderWithDigitalPayment(selectedTable)
+					.then((orderId: any) => {
+						console.log("first then: " + orderId);
+						return cart.createStripePaymentIntent(orderId);
+					})
+					.then((clientSecret: any) => {
+						console.log(clientSecret);
+						setClientSecret(clientSecret);
+					})
+					.catch(error => {
+						console.log("Catch block")
+						console.log(error);
+					})
+			}
 		}
     }
 
 	const handleManualOrder = () => {
-		console.log("handlemanualOrder");
-		cart.createOrderWithManualPayment()
-			.then(data => {
-				console.log("cart inside then");
-				console.log(data);
-			})
-			.catch(error => {
-				console.log("inside catch");
-				console.log(error);
-			})
+		if (selectedTable) {
+			console.log("handlemanualOrder");
+			cart.createOrderWithManualPayment(selectedTable)
+				.then(data => {
+					// Clear cart, send the user to the index page and show a success message
+					cart.clearCart();
+					router.push("/");
+					enqueueSnackbar(`Your order has been placed. A waiter will collect payment from you shortly.`, {variant: 'success'});
+				})
+				.catch(error => {
+					enqueueSnackbar(`Error with your order. Please try again.`, {variant: 'error'});
+					console.log(error);
+				})
+		}
 	}
 
-	const handlePaymentError = (error: any) => {
-		console.log("payment error");
+	const handleDigitalPaymentError = (error: any) => {
+		enqueueSnackbar(`Error with your order. Please try again.`, {variant: 'error'});
 		console.log(error);
 	}
 
-	const hanldePaymentSuccess = () => {
+	const hanldeDigitalPaymentSuccess = () => {
 		console.log("payment success");
+		cart.clearCart();
+		router.push("/");
+		enqueueSnackbar(`Your order has been placed and paid. We'll bring it as soon as possible!`, {variant: 'success'});
+	
 	}
 
+
   return (
-    <>
+	<Container>
+		<h1>Checkout</h1>
 
-        <Navbar />
-		<Elements stripe={stripePromise}>
-			<Container>
-				<h1>Checkout</h1>
+		{cart.getNumberOfItems() == 0 && <h2>No products on the cart</h2>}
 
-				<Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
+		{cart.getNumberOfItems() != 0 &&
 
-					<Grid item xs={12} sm={6} md={6} lg={6}>
-						<h2>Order summary</h2>
-						<CartContent />
-					</Grid>
+			<Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
 
-					<Grid item xs={12} sm={6} md={6} lg={6}>
-						
-						<h2>Select payment method</h2>
-						<RadioGroup value={paymentType}>
-							<List>
-								<ListItem>
-									<Radio value='presential' onChange={handleChange}/>
-										<Typography><Box display='inline' fontWeight='bold' component='span'>Presential payment</Box>: A waiter will come to your table to collect payment</Typography>
-								</ListItem>
-								<ListItem>
-									<Radio value='digital' onChange={handleChange} />
-									<FormLabel><Box display='inline' fontWeight='bold' component='span'>Digital payment</Box>: Pay from the comfort of your phone and get your order sooner</FormLabel>
-								</ListItem>
-							</List>
-						</RadioGroup>
-
-						<h2>Select your table</h2>
-						<Autocomplete
-							disablePortal
-							id="select-table"
-							options={tables}
-							
-							renderInput={(params) => <TextField {...params} label="Select your table" variant="standard"/>}
-						/>
-						<h2>Your name</h2>
-						<TextField></TextField>
-
-						{paymentType != '' &&
-							<>
-								<h2>Order</h2>
-								{ paymentType == "presential" &&
-									<Button onClick={handleManualOrder}>Order now</Button>
-								}
-								{ paymentType == "digital" && clientSecret == '' &&
-									<LinearProgress />
-								}
-								{ paymentType == "digital" && clientSecret != '' && 
-									<StripeButton amount={cart.getCartTotal()} clientSecret={clientSecret} onPaymentError={handlePaymentError} onPaymentSuccess={hanldePaymentSuccess} />
-								}
-							</>
-						}
-					</Grid>
+				<Grid item xs={12} sm={6} md={6} lg={6}>
+					<h2>Order summary</h2>
+					<CartContent />
 				</Grid>
-			</Container>
-		</Elements>
-    </>
+
+				<Grid item xs={12} sm={6} md={6} lg={6}>
+
+					<h2>Select your table</h2>
+					<Autocomplete
+						disablePortal
+						id="select-table"
+						options={tables}
+						value={selectedTable}
+						onChange={handleTableSelection}
+						renderInput={(params) => <TextField {...params} label="Select your table" variant="standard"/>}
+					/>
+					<h2>Your name</h2>
+					<TextField fullWidth></TextField>
+					<h2>Select payment method</h2>
+					<RadioGroup value={paymentType}>
+						<List>
+							<ListItem>
+								<Radio value='presential' onChange={handleSelectPaymentType}/>
+									<Typography><Box display='inline' fontWeight='bold' component='span'>Presential payment</Box>: A waiter will come to your table to collect payment</Typography>
+							</ListItem>
+							{canMakeDigitalPayments &&
+								<ListItem>
+									<Radio value='digital' onChange={handleSelectPaymentType} disabled={!canMakeDigitalPayments} />
+									<Typography><Box display='inline' fontWeight='bold' component='span'>Digital payment</Box>: Pay from the comfort of your phone and get your order sooner</Typography>
+								</ListItem>
+							}
+
+						</List>
+					</RadioGroup>
+					{paymentType != '' &&
+						<>
+							<h2>Order</h2>
+							{ paymentType == "presential" &&
+								<Button onClick={handleManualOrder} disabled={!selectedTable}>Order now</Button>
+							}
+							{ paymentType == "digital" && clientSecret == '' &&
+								<LinearProgress />
+							}
+							{ paymentType == "digital" && clientSecret != '' && 
+							// TODO: disable when no table is selected
+								<StripeButton amount={cart.getCartTotal()} clientSecret={clientSecret} onPaymentError={handleDigitalPaymentError} onPaymentSuccess={hanldeDigitalPaymentSuccess} />
+							}
+						</>
+					}
+				</Grid>
+			</Grid>
+		}
+	</Container>
   )
 }
 

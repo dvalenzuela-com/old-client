@@ -1,8 +1,8 @@
-import { AlabarraProduct, AlabarraCreateOrderResponse, AlabarraProductOption, AlabarraProductOptionsType, AlabarraProductOptionSingleSelectionSelectedValue, AlabarraProductOptionMultipleSelectionSelectedValues } from "alabarra-types";
-import { getFunctions, HttpsCallableResult } from "firebase/functions";
-import React, { createContext, ReactNode, ReactPropTypes, useEffect, useState } from "react"
-import { useHttpsCallable } from "react-firebase-hooks/functions";
+import { AlabarraProduct, AlabarraProductOptionsType, AlabarraProductOptionSingleSelectionSelectedValue, AlabarraProductOptionMultipleSelectionSelectedValues, AlabarraCreateOrderData, AlabarraCreateOrderResponse } from "@dvalenzuela-com/alabarra-types";
+import { HttpsCallableResult } from "firebase/functions";
+import React, { createContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
+import { useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "../lib/functions";
 
 export type ProductOptionSelection = (AlabarraProductOptionSingleSelectionSelectedValue | AlabarraProductOptionMultipleSelectionSelectedValues);
 
@@ -14,8 +14,8 @@ export type Cart = {
     editLineWithId: (id: string, product: AlabarraProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => void;
     calculateTotalPrice: (product: AlabarraProduct, selectedOptions: ProductOptionSelection[], quantity: number) => number;
     clearCart: () => void;
-    createOrderWithManualPayment: () => Promise<string>;
-    createOrderWithDigitalPayment: () => Promise<string>;
+    createOrderWithManualPayment: (tableName: string) => Promise<string>;
+    createOrderWithDigitalPayment: (tableName: string) => Promise<string>;
     createStripePaymentIntent: (orderId: string) => Promise<string>;
 }
 
@@ -35,7 +35,7 @@ const defaultCart: Cart = {
 export const CartContext = createContext<Cart>(defaultCart)
 
 type CartProviderProps = {
-    children: JSX.Element
+    children: React.ReactNode
 }
 
 export type CartLine = {
@@ -76,9 +76,9 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
     // TODO: Move away from here!
 
-    const [createManualPaymentOrder, executingCreateManualPaymentOrder, errorCreateManualPaymentOrder] = useHttpsCallable(getFunctions(), 'createManualPaymentOrder')
-    const [createManualDigitalOrder] = useHttpsCallable(getFunctions(), 'createDigitalPaymentOrder')
-    const [createStripePaymentIntent] = useHttpsCallable(getFunctions(), 'createStripePaymentIntent')
+    const [createManualPaymentOrder, executingCreateManualPaymentOrder, errorCreateManualPaymentOrder] = useCreateManualPaymentOrder();
+    const [createManualDigitalOrder] = useCreateManualPaymentOrder();
+    const [createStripePaymentIntent] = useCreateStripePaymentIntent();
 
     const addItem = (product: AlabarraProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => {
         const newCartLine: CartLine = {
@@ -177,7 +177,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         updateCartLines([]);
     }
 
-    const handleCreateOrderWithManualPayment = (): Promise<string> => {
+    const handleCreateOrderWithManualPayment = (tableName: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
@@ -189,7 +189,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
                 customer: "dummyCustomerId",
                 general_note: "note created from Callable function",
                 cart: api_cart_lines,
-                table_number: 15})
+                table_name: tableName})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
                     console.log("inside then");
                     console.log(result);
@@ -205,7 +205,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         });
     }
 
-    const handleCreateOrderWithDigitalPayment = (): Promise<string> => {
+    const handleCreateOrderWithDigitalPayment = (tableName: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
@@ -217,7 +217,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
                 customer: "dummyCustomerId",
                 general_note: "note created from Callable function",
                 cart: api_cart_lines,
-                table_number: 15})
+                table_name: tableName})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
                     if (result != undefined) {
                         resolve(result.data.result.order_id)

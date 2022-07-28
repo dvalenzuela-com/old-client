@@ -1,4 +1,4 @@
-import { AlabarraProduct } from "alabarra-types";
+import { AlabarraProduct } from "@dvalenzuela-com/alabarra-types";
 import { useContext } from "react";
 import NumberFormat from "react-number-format";
 import { CartContext, ProductOptionSelection } from "../context/CartContext";

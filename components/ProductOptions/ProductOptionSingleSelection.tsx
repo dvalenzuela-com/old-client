@@ -1,5 +1,5 @@
 import { Grid, Radio, RadioGroup, Typography } from "@mui/material";
-import { AlabarraProductOptionSingleSelection, AlabarraProductOptionSingleSelectionSelectedValue } from "alabarra-types";
+import { AlabarraProductOptionSingleSelection, AlabarraProductOptionSingleSelectionSelectedValue } from "@dvalenzuela-com/alabarra-types";
 import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
 import { CurrencyNumberFormat } from "../../lib/helper";

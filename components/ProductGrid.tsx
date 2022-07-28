@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { AlabarraProduct } from "alabarra-types";
+import { AlabarraProduct } from "@dvalenzuela-com/alabarra-types";
 import { CSSProperties, useState } from "react";
 import ProductCard from "./ProductCard";
 import ProductDialog, { ProductDialogMode } from "./ProductDialog";
@@ -27,8 +27,7 @@ const ProductGrid = (props: ProductGridProps) => {
             <Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
                 {products && products.map((product) => {
                     return (
-                        // TODO: Key is not unique. Fund a solution for that
-                        <ProductCard product={product} onClick={() => {handleProductClick(product)}} key={product.title}></ProductCard>
+                        <ProductCard key={product.id} product={product} onClick={() => {handleProductClick(product)}} />
                     )
                 })}
             </Grid>

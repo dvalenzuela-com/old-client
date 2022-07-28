@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import { CartContext, CartLine, ProductOptionSelection } from "../context/CartContext";
 import NumberFormat from 'react-number-format';
 import ProductDialog, { ProductDialogMode } from "./ProductDialog";
-import { AlabarraProduct } from "alabarra-types";
+import { AlabarraProduct } from "@dvalenzuela-com/alabarra-types";
 import { CurrencyNumberFormat } from "../lib/helper";
 
 
