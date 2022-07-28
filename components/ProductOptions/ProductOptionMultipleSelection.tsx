@@ -1,5 +1,5 @@
 import { Checkbox, Grid, Typography } from "@mui/material";
-import { AlabarraProductOption, AlabarraProductOptionMultipleSelection, AlabarraProductOptionMultipleSelectionSelectedValues, AlabarraProductOptionSingleSelection } from "alabarra-types";
+import { AlabarraProductOptionMultipleSelection, AlabarraProductOptionMultipleSelectionSelectedValues } from "@dvalenzuela-com/alabarra-types";
 import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
 import { CurrencyNumberFormat } from "../../lib/helper";
