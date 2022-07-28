@@ -1,22 +1,15 @@
 import type { NextPage } from 'next'
-
-import Navbar from '../components/Navbar'
-
-import { useCollectionData } from "react-firebase-hooks/firestore";
-
-import { AlabarraProduct } from '@dvalenzuela-com/alabarra-types';
-import { Autocomplete, Button, Container, FormLabel, Grid, LinearProgress, List, ListItem, Radio, RadioGroup, TextField, Typography } from '@mui/material';
+import { Autocomplete, Container, Grid, LinearProgress, List, ListItem, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import CartContent from '../components/CartContent';
 import { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
-import { getAllTableIds, useProducts } from '../lib/firestore';
+import { getAllTableIds } from '../lib/firestore';
 import StripeButton from '../components/StripeButton';
 import { CartContext } from '../context/CartContext';
 import { useStripe } from '@stripe/react-stripe-js';
 import { useSnackbar } from "notistack";
 import { useRouter } from 'next/router';
-import LoadingButton from '../components/LoadingButton';
-
+import LoadingButton from './../components/LoadingButton';
 
 const Cart: NextPage = () => {
 
