@@ -15,6 +15,7 @@ import { CartContext } from '../context/CartContext';
 import { useStripe } from '@stripe/react-stripe-js';
 import { useSnackbar } from "notistack";
 import { useRouter } from 'next/router';
+import LoadingButton from '../components/LoadingButton';
 
 
 const Cart: NextPage = () => {
@@ -29,6 +30,7 @@ const Cart: NextPage = () => {
 	const [paymentType, setPaymentType] = useState<string>('');
 	const [clientSecret, setClientSecret] = useState<string>('');
 	const [canMakeDigitalPayments, setCanMakeDigitalPayments] = useState<boolean>(false);
+	const [waitingForManualOrder, setWaitingForManualOrder] = useState<boolean>(false);
 
 	useEffect( () => {
 	// Fetch all available tables
@@ -92,14 +94,17 @@ const Cart: NextPage = () => {
 	const handleManualOrder = () => {
 		if (selectedTable) {
 			console.log("handlemanualOrder");
+			setWaitingForManualOrder(true);
 			cart.createOrderWithManualPayment(selectedTable)
 				.then(data => {
+					setWaitingForManualOrder(false);
 					// Clear cart, send the user to the index page and show a success message
 					cart.clearCart();
 					router.push("/");
 					enqueueSnackbar(`Your order has been placed. A waiter will collect payment from you shortly.`, {variant: 'success'});
 				})
 				.catch(error => {
+					setWaitingForManualOrder(false);
 					enqueueSnackbar(`Error with your order. Please try again.`, {variant: 'error'});
 					console.log(error);
 				})
@@ -168,7 +173,7 @@ const Cart: NextPage = () => {
 						<>
 							<h2>Order</h2>
 							{ paymentType == "presential" &&
-								<Button onClick={handleManualOrder} disabled={!selectedTable}>Order now</Button>
+								<LoadingButton onClick={handleManualOrder} disabled={!selectedTable} title={'Order now'} loading={waitingForManualOrder} fullWidth/>
 							}
 							{ paymentType == "digital" && clientSecret == '' &&
 								<LinearProgress />
