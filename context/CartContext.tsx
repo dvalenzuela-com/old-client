@@ -2,7 +2,7 @@ import { AlabarraProduct, AlabarraProductOptionsType, AlabarraProductOptionSingl
 import { HttpsCallableResult } from "firebase/functions";
 import React, { createContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
-import { useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "../lib/functions";
+import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "../lib/functions";
 
 export type ProductOptionSelection = (AlabarraProductOptionSingleSelectionSelectedValue | AlabarraProductOptionMultipleSelectionSelectedValues);
 
@@ -77,7 +77,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     // TODO: Move away from here!
 
     const [createManualPaymentOrder, executingCreateManualPaymentOrder, errorCreateManualPaymentOrder] = useCreateManualPaymentOrder();
-    const [createManualDigitalOrder] = useCreateManualPaymentOrder();
+    const [createDigitalPaymentOrder] = useCreateDigitalPaymentOrder();
     const [createStripePaymentIntent] = useCreateStripePaymentIntent();
 
     const addItem = (product: AlabarraProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => {
@@ -187,7 +187,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             })
             createManualPaymentOrder({
                 customer: "dummyCustomerId",
-                general_note: "note created from Callable function",
+                general_note: null,
                 cart: api_cart_lines,
                 table_name: tableName})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
@@ -213,9 +213,9 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             cartLines.forEach( line => {
                 api_cart_lines.push({product_id: `/products/${line.product.id}`, quantity: line.quantity, note: line.note});
             })
-            createManualDigitalOrder({
+            createDigitalPaymentOrder({
                 customer: "dummyCustomerId",
-                general_note: "note created from Callable function",
+                general_note: null,
                 cart: api_cart_lines,
                 table_name: tableName})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
@@ -236,7 +236,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
 
-            createStripePaymentIntent({order_ref: `/orders/${orderId}`})
+            createStripePaymentIntent({order_id: orderId})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
                     if (result != undefined) {
                         console.log(result);

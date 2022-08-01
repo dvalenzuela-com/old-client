@@ -1,4 +1,4 @@
-import { AlabarraCreateOrderData, AlabarraCreateOrderResponse } from "@dvalenzuela-com/alabarra-types";
+import { AlabarraCreateOrderData, AlabarraCreateOrderResponse, AlabarraCreateStripePaymentIntentData, AlabarraCreateStripePaymentIntentResponse } from "@dvalenzuela-com/alabarra-types";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { useHttpsCallable } from "react-firebase-hooks/functions";
 import firebaseApp from "./firebaseApp";
@@ -7,8 +7,8 @@ const functions =  getFunctions(firebaseApp);
 //connectFunctionsEmulator(functions, "localhost", 5001);
 
 export const useCreateManualPaymentOrder = () => { return useHttpsCallable<AlabarraCreateOrderData, AlabarraCreateOrderResponse>(functions, 'createManualPaymentOrder') };
-export const useCreateDigitalPaymentOrder = () => { return useHttpsCallable<AlabarraCreateOrderData, AlabarraCreateOrderResponse>(functions, 'createManualPaymentOrder') };
-export const useCreateStripePaymentIntent = () => { return useHttpsCallable(functions, 'createStripePaymentIntent') };
+export const useCreateDigitalPaymentOrder = () => { return useHttpsCallable<AlabarraCreateOrderData, AlabarraCreateOrderResponse>(functions, 'createDigitalPaymentOrder') };
+export const useCreateStripePaymentIntent = () => { return useHttpsCallable<AlabarraCreateStripePaymentIntentData, AlabarraCreateStripePaymentIntentResponse>(functions, 'createStripePaymentIntent') };
 
 
 // export const useDeleteTable = () => { return useHttpsCallable<AlabarraCreateTableData, AlabarraCreateTableResponse>(functions, 'deleteTable') };
