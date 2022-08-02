@@ -139,11 +139,13 @@ const ProductDialog = (props: ProductDialogProps) => {
 
         if (props.mode == ProductDialogMode.NewLine) {
             const trimmedComment = comment.trim();
-            cart.addProduct(props.product, selectedQuantity, selectedOptions, trimmedComment == '' ? null : trimmedComment)
+            cart.addProduct(props.product, selectedQuantity, selectedOptions, trimmedComment == '' ? null : trimmedComment);
             enqueueSnackbar(`${selectedQuantity} x ${props.product.title} added to the cart`, {variant: 'success'});
 
         } else if (props.mode == ProductDialogMode.EditLine && props.lineId != undefined) {
-            cart.editLineWithId(props.lineId, props.product, selectedQuantity, selectedOptions, comment);
+            const trimmedComment = comment.trim();
+
+            cart.editLineWithId(props.lineId, props.product, selectedQuantity, selectedOptions, trimmedComment == '' ? null : trimmedComment);
             
             if (selectedQuantity == 0) {
                 enqueueSnackbar(`Product removed from the cart`, {variant: 'success'});
