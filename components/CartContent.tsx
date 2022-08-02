@@ -81,7 +81,7 @@ const CartContent = () => {
                                                 })
                                             }
                                             {/** Print comments */}
-                                            {line.note != null && <Typography variant="subtitle2" style={{fontStyle: "italic"}}>Comment: "{line.note}"</Typography>}
+                                            {line.note != null && <Typography variant="subtitle2" style={{fontStyle: "italic"}}>Comment: &quot;{line.note}&quot;</Typography>}
                                         
                                             <Typography variant='subtitle2'>Edit</Typography>
                                         </>
