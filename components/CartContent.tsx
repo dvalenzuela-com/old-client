@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import { CartContext, CartLine, ProductOptionSelection } from "../context/CartContext";
 import NumberFormat from 'react-number-format';
 import ProductDialog, { ProductDialogMode } from "./ProductDialog";
-import { AlabarraProduct } from "@dvalenzuela-com/alabarra-types";
+import { AlabarraProduct, AlabarraProductOptionMultipleSelection, AlabarraProductOptionMultipleSelectionSelectedValues, AlabarraProductOptionSingleSelection, AlabarraProductOptionSingleSelectionSelectedValue, AlabarraProductOptionsType } from "@dvalenzuela-com/alabarra-types";
 import { CurrencyNumberFormat } from "../lib/helper";
 
 
@@ -46,8 +46,45 @@ const CartContent = () => {
                                         <Typography variant='body2' display='inline'>{line.quantity} x </Typography>
                                     </TableCell>
                                     <TableCell onClick={() => {handleRowClick(line)}}>
-                                        <Typography variant="body1" display='inline'>{line.product.title}</Typography>
-                                        {line.note != null && <Typography variant="subtitle2" style={{fontStyle: "italic"}}>{line.note}</Typography>}
+                                        <>
+                                            <Typography variant="body1" display='inline'>{line.product.title}</Typography>
+
+                                            {/** Print line options */}                                            
+                                            {line.options.map((selectedOption, index) => {
+                                                // Original product option
+                                                if (line.product.options) {
+                                                    const productOption = line.product.options[index];
+
+                                                    if (productOption.type == AlabarraProductOptionsType.SINGLE_SELECTION) {
+                                                        //Get selected option
+                                                        const singleSelectedOption = line.options[index] as AlabarraProductOptionSingleSelectionSelectedValue;
+
+                                                        if (singleSelectedOption) {
+                                                            // Find product option that is selected to find price adjustment value
+                                                            const originOption = productOption.possible_values.find(possible_value => possible_value.title == singleSelectedOption);
+                                                            return (<Typography variant="subtitle2">{originOption?.title}</Typography>);
+                                                        }
+                                                    } else if (productOption.type == AlabarraProductOptionsType.MULTIPLE_SELECTION) {
+                                                        
+                                                        //Get selected option
+                                                        const selectedValues = line.options[index] as AlabarraProductOptionMultipleSelectionSelectedValues;
+                                                        if (selectedValues) {
+                                                            return selectedValues.map((selectedValue, index) => {
+                                                                if (selectedValue) {
+                                                                    console.log(productOption.possible_values[index].title)
+                                                                    return (<Typography variant="subtitle2">{productOption.possible_values[index].title}</Typography>);
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                                })
+                                            }
+                                            {/** Print comments */}
+                                            {line.note != null && <Typography variant="subtitle2" style={{fontStyle: "italic"}}>Comment: "{line.note}"</Typography>}
+                                        
+                                            <Typography variant='subtitle2'>Edit</Typography>
+                                        </>
                                     </TableCell>
                                     <TableCell onClick={() => {handleRowClick(line)}}>
                                         <NumberFormat value={cart.calculateTotalPrice(line.product, line.options, line.quantity)} displayType='text' {...CurrencyNumberFormat} />
