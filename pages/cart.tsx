@@ -20,6 +20,7 @@ const Cart: NextPage = () => {
 
 	const [tables, setTables] = useState<string[]>([]);
 	const [selectedTable, setSelectedTable] = useState<string | null>(null);
+	const [customerNickname, setCustomerNickname] = useState<string | undefined>(undefined);
 	const [paymentType, setPaymentType] = useState<string>('');
 	const [clientSecret, setClientSecret] = useState<string>('');
 	const [canMakeDigitalPayments, setCanMakeDigitalPayments] = useState<boolean>(false);
@@ -65,7 +66,7 @@ const Cart: NextPage = () => {
 
 		if(event.target.value == 'digital') {
 			if (selectedTable) {
-				cart.createOrderWithDigitalPayment(selectedTable)
+				cart.createOrderWithDigitalPayment(selectedTable, customerNickname?.trim())
 					.then((orderId: any) => {
 						return cart.createStripePaymentIntent(orderId);
 					})
@@ -83,7 +84,7 @@ const Cart: NextPage = () => {
 	const handleManualOrder = () => {
 		if (selectedTable) {
 			setWaitingForManualOrder(true);
-			cart.createOrderWithManualPayment(selectedTable)
+			cart.createOrderWithManualPayment(selectedTable, customerNickname?.trim())
 				.then(data => {
 					setWaitingForManualOrder(false);
 					// Clear cart, send the user to the index page and show a success message
@@ -139,7 +140,7 @@ const Cart: NextPage = () => {
 						renderInput={(params) => <TextField {...params} label="Select your table" variant="standard"/>}
 					/>
 					<h2>Your name</h2>
-					<TextField fullWidth></TextField>
+					<TextField value={customerNickname} onChange={(e) => {setCustomerNickname(e.target.value)}} fullWidth></TextField>
 					<h2>Select payment method</h2>
 					<RadioGroup value={paymentType}>
 						<List>
@@ -160,7 +161,7 @@ const Cart: NextPage = () => {
 						<>
 							<h2>Order</h2>
 							{ paymentType == "presential" &&
-								<LoadingButton onClick={handleManualOrder} disabled={!selectedTable} title={'Order now'} loading={waitingForManualOrder} fullWidth/>
+								<LoadingButton onClick={handleManualOrder} disabled={!(selectedTable && customerNickname && customerNickname.trim().length > 0)} title={'Order now'} loading={waitingForManualOrder} fullWidth/>
 							}
 							{ paymentType == "digital" && clientSecret == '' &&
 								<LinearProgress />

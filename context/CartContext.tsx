@@ -15,8 +15,8 @@ export type Cart = {
     editLineWithId: (id: string, product: AlabarraProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => void;
     calculateTotalPrice: (product: AlabarraProduct, selectedOptions: ProductOptionSelection[], quantity: number) => number;
     clearCart: () => void;
-    createOrderWithManualPayment: (tableName: string) => Promise<string>;
-    createOrderWithDigitalPayment: (tableName: string) => Promise<string>;
+    createOrderWithManualPayment: (tableName: string, customer_nickname?: string) => Promise<string>;
+    createOrderWithDigitalPayment: (tableName: string, customer_nickname?: string) => Promise<string>;
     createStripePaymentIntent: (orderId: string) => Promise<string>;
 }
 
@@ -179,7 +179,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         updateCartLines([]);
     }
 
-    const handleCreateOrderWithManualPayment = (tableName: string): Promise<string> => {
+    const handleCreateOrderWithManualPayment = (tableName: string, customer_nickname?: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
@@ -188,7 +188,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
                 api_cart_lines.push({product_id: `/products/${line.product.id}`, quantity: line.quantity, note: line.note});
             })
             createManualPaymentOrder({
-                customer: user?.uid ?? "not_found",
+                customer_id: user?.uid ?? "not_found",
+                customer_nickname: customer_nickname,
                 general_note: null,
                 cart: api_cart_lines,
                 table_name: tableName})
@@ -205,7 +206,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         });
     }
 
-    const handleCreateOrderWithDigitalPayment = (tableName: string): Promise<string> => {
+    const handleCreateOrderWithDigitalPayment = (tableName: string, customer_nickname?: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
@@ -214,7 +215,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
                 api_cart_lines.push({product_id: `/products/${line.product.id}`, quantity: line.quantity, note: line.note});
             })
             createDigitalPaymentOrder({
-                customer: user?.uid ?? "not_found",
+                customer_id: user?.uid ?? "not_found",
+                customer_nickname: customer_nickname,
                 general_note: null,
                 cart: api_cart_lines,
                 table_name: tableName})
