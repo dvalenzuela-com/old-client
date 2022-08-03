@@ -1,8 +1,9 @@
 import { AlabarraProduct, AlabarraProductOptionsType, AlabarraProductOptionSingleSelectionSelectedValue, AlabarraProductOptionMultipleSelectionSelectedValues, AlabarraCreateOrderData, AlabarraCreateOrderResponse } from "@dvalenzuela-com/alabarra-types";
 import { HttpsCallableResult } from "firebase/functions";
-import React, { createContext, useEffect, useState } from "react"
+import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
 import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "../lib/functions";
+import { UserContext } from "./UserContext";
 
 export type ProductOptionSelection = (AlabarraProductOptionSingleSelectionSelectedValue | AlabarraProductOptionMultipleSelectionSelectedValues);
 
@@ -52,6 +53,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     const [numberOfItems, setNumberOfItems] = useState(0);
     const [cartLines, setCartLines] = useState<CartLine[]>([]);
 
+    const user = useContext(UserContext).getUser();
     
     useEffect(() => {
         const savedCartString = localStorage.getItem(CART_STORAGE_KEY);
@@ -186,13 +188,11 @@ export const CartProvider = ({ children }: CartProviderProps) => {
                 api_cart_lines.push({product_id: `/products/${line.product.id}`, quantity: line.quantity, note: line.note});
             })
             createManualPaymentOrder({
-                customer: "dummyCustomerId",
+                customer: user?.uid ?? "not_found",
                 general_note: null,
                 cart: api_cart_lines,
                 table_name: tableName})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
-                    console.log("inside then");
-                    console.log(result);
                     if (result != undefined) {
                         resolve(result.data.result.order_id)
                     } else {
@@ -214,7 +214,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
                 api_cart_lines.push({product_id: `/products/${line.product.id}`, quantity: line.quantity, note: line.note});
             })
             createDigitalPaymentOrder({
-                customer: "dummyCustomerId",
+                customer: user?.uid ?? "not_found",
                 general_note: null,
                 cart: api_cart_lines,
                 table_name: tableName})
@@ -239,7 +239,6 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             createStripePaymentIntent({order_id: orderId})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
                     if (result != undefined) {
-                        console.log(result);
                         resolve(result.data.result.payment_intent_client_secret)
                     } else {
                         reject("result undefined");

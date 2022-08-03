@@ -61,19 +61,15 @@ const Cart: NextPage = () => {
 	}
 
 	const handleSelectPaymentType = (event: React.ChangeEvent<HTMLInputElement>) => {
-		console.log("handleSelectPaymentType: " + event.target.value);
         setPaymentType(event.target.value);
 
 		if(event.target.value == 'digital') {
-			console.log("calling promise");
 			if (selectedTable) {
 				cart.createOrderWithDigitalPayment(selectedTable)
 					.then((orderId: any) => {
-						console.log("first then: " + orderId);
 						return cart.createStripePaymentIntent(orderId);
 					})
 					.then((clientSecret: any) => {
-						console.log(clientSecret);
 						setClientSecret(clientSecret);
 					})
 					.catch(error => {
@@ -86,7 +82,6 @@ const Cart: NextPage = () => {
 
 	const handleManualOrder = () => {
 		if (selectedTable) {
-			console.log("handlemanualOrder");
 			setWaitingForManualOrder(true);
 			cart.createOrderWithManualPayment(selectedTable)
 				.then(data => {
@@ -110,7 +105,6 @@ const Cart: NextPage = () => {
 	}
 
 	const hanldeDigitalPaymentSuccess = () => {
-		console.log("payment success");
 		cart.clearCart();
 		router.push("/");
 		enqueueSnackbar(`Your order has been placed and paid. We'll bring it as soon as possible!`, {variant: 'success'});

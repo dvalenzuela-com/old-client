@@ -71,7 +71,6 @@ const CartContent = () => {
                                                         if (selectedValues) {
                                                             return selectedValues.map((selectedValue, index) => {
                                                                 if (selectedValue) {
-                                                                    console.log(productOption.possible_values[index].title)
                                                                     return (<Typography variant="subtitle2">{productOption.possible_values[index].title}</Typography>);
                                                                 }
                                                             });

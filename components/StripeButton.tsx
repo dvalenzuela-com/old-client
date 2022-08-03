@@ -35,8 +35,6 @@ const StripeButton = (props: StripeButtonProps) => {
         });
 
         pr.on('paymentmethod', async (ev) => {
-            console.log("on paymentmethod");
-            console.log(ev);
             // Confirm the PaymentIntent without handling potential next actions (yet).
             const {paymentIntent, error: confirmError} = await stripe.confirmCardPayment(
                 props.clientSecret,

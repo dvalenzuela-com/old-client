@@ -1,12 +1,10 @@
 import type { NextPage } from 'next'
 
-import Navbar from '../components/Navbar'
 import ProductGrid from '../components/ProductGrid'
 import { Container } from '@mui/material';
 import { useProducts } from '../lib/firestore';
 
-
-const Home: NextPage = () => {
+const Index: NextPage = () => {
 
   	// Fetch all orders
 	  const [products, productsLoading, productsError, productsSnapshot] = useProducts();
@@ -18,4 +16,4 @@ const Home: NextPage = () => {
   )
 }
 
-export default Home
+export default Index
