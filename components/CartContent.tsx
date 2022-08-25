@@ -62,7 +62,8 @@ const CartContent = () => {
                                                         if (singleSelectedOption) {
                                                             // Find product option that is selected to find price adjustment value
                                                             const originOption = productOption.possible_values.find(possible_value => possible_value.title == singleSelectedOption);
-                                                            return (<Typography variant="subtitle2">{originOption?.title}</Typography>);
+                                                            // TODO: Improve key
+                                                            return (<Typography variant="subtitle2" key={index}>{originOption?.title}</Typography>);
                                                         }
                                                     } else if (productOption.type == ABProductOptionsType.MULTIPLE_SELECTION) {
                                                         
@@ -71,7 +72,8 @@ const CartContent = () => {
                                                         if (selectedValues) {
                                                             return selectedValues.map((selectedValue, index) => {
                                                                 if (selectedValue) {
-                                                                    return (<Typography variant="subtitle2">{productOption.possible_values[index].title}</Typography>);
+                                                                    // TODO: Improve key
+                                                                    return (<Typography variant="subtitle2" key={index}>{productOption.possible_values[index].title}</Typography>);
                                                                 }
                                                             });
                                                         }
