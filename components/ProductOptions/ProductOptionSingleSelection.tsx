@@ -1,13 +1,13 @@
 import { Grid, Radio, RadioGroup, Typography } from "@mui/material";
-import { AlabarraProductOptionSingleSelection, AlabarraProductOptionSingleSelectionSelectedValue } from "@dvalenzuela-com/alabarra-types";
+import { ABProductOptionSingleSelection, ABProductOptionSingleSelectionSelectedValue } from "@dvalenzuela-com/alabarra-types";
 import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
 import { CurrencyNumberFormat } from "../../lib/helper";
 
 type ProductOptionSingleSelectionProps = {
     index: number;
-    productOption: AlabarraProductOptionSingleSelection;
-    selectedOption: AlabarraProductOptionSingleSelectionSelectedValue;
+    productOption: ABProductOptionSingleSelection;
+    selectedOption: ABProductOptionSingleSelectionSelectedValue;
     onOptionChange: (selectedOption: string) => void;
 }
 

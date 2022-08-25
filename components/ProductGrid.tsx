@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { AlabarraProduct } from "@dvalenzuela-com/alabarra-types";
+import { ABProduct } from "@dvalenzuela-com/alabarra-types";
 import { CSSProperties, useState } from "react";
 import ProductCard from "./ProductCard";
 import ProductDialog, { ProductDialogMode } from "./ProductDialog";
@@ -11,15 +11,15 @@ const tempDivStyle: CSSProperties = {
 }
 
 type ProductGridProps = {
-    products: AlabarraProduct[] | undefined
+    products: ABProduct[] | undefined
 }
 
 const ProductGrid = (props: ProductGridProps) => {
     const products = props.products
 
-    const [activeProduct, setActiveProduct] = useState<AlabarraProduct | undefined> (undefined);
+    const [activeProduct, setActiveProduct] = useState<ABProduct | undefined> (undefined);
 
-    const handleProductClick = (product: AlabarraProduct) => {
+    const handleProductClick = (product: ABProduct) => {
         setActiveProduct(product)
     }
     return (

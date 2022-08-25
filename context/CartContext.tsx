@@ -1,19 +1,25 @@
-import { AlabarraProduct, AlabarraProductOptionsType, AlabarraProductOptionSingleSelectionSelectedValue, AlabarraProductOptionMultipleSelectionSelectedValues, AlabarraCreateOrderData, AlabarraCreateOrderResponse } from "@dvalenzuela-com/alabarra-types";
+import {
+    ABProduct,
+    ABProductOptionsType,
+    ABProductOptionSingleSelectionSelectedValue,
+    ABProductOptionMultipleSelectionSelectedValues,
+    AlabarraCreateOrderData,
+    AlabarraCreateOrderResponse } from "@dvalenzuela-com/alabarra-types";
 import { HttpsCallableResult } from "firebase/functions";
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
 import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "../lib/functions";
 import { UserContext } from "./UserContext";
 
-export type ProductOptionSelection = (AlabarraProductOptionSingleSelectionSelectedValue | AlabarraProductOptionMultipleSelectionSelectedValues);
+export type ProductOptionSelection = (ABProductOptionSingleSelectionSelectedValue | ABProductOptionMultipleSelectionSelectedValues);
 
 export type Cart = {
     getNumberOfItems: () => number;
     getCartTotal: () => number;
-    addProduct: (product: AlabarraProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => void;
+    addProduct: (product: ABProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => void;
     getLines: () => CartLine[];
-    editLineWithId: (id: string, product: AlabarraProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => void;
-    calculateTotalPrice: (product: AlabarraProduct, selectedOptions: ProductOptionSelection[], quantity: number) => number;
+    editLineWithId: (id: string, product: ABProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => void;
+    calculateTotalPrice: (product: ABProduct, selectedOptions: ProductOptionSelection[], quantity: number) => number;
     clearCart: () => void;
     createOrderWithManualPayment: (tableName: string, customer_nickname?: string) => Promise<string>;
     createOrderWithDigitalPayment: (tableName: string, customer_nickname?: string) => Promise<string>;
@@ -41,7 +47,7 @@ type CartProviderProps = {
 
 export type CartLine = {
     lineId: string;
-    product: AlabarraProduct;
+    product: ABProduct;
     quantity: number;
     options: ProductOptionSelection[];
     note: string | null;
@@ -82,7 +88,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     const [createDigitalPaymentOrder] = useCreateDigitalPaymentOrder();
     const [createStripePaymentIntent] = useCreateStripePaymentIntent();
 
-    const addItem = (product: AlabarraProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => {
+    const addItem = (product: ABProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => {
         const newCartLine: CartLine = {
             lineId: v4(),
             note: comment,
@@ -97,7 +103,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         return cartLines
     }
 
-    const editLineWithId = (id: string, product: AlabarraProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => {
+    const editLineWithId = (id: string, product: ABProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => {
 
         if (quantity == 0 || product == null || product == undefined) {
             // Remove from cart
@@ -128,7 +134,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         return cartLines.length
     }
 
-    const calculateTotalPrice = (product: AlabarraProduct, selectedOptions: ProductOptionSelection[], quantity: number): number => {
+    const calculateTotalPrice = (product: ABProduct, selectedOptions: ProductOptionSelection[], quantity: number): number => {
         //console.log(`calculateTotalPrice(${product}, ${selectedOptions}, ${quantity})`)
         //console.log(selectedOptions);
         // base price
@@ -142,19 +148,19 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             if (product.options) {
                 const productOption = product.options[index];
 
-                if (productOption.type == AlabarraProductOptionsType.SINGLE_SELECTION) {
+                if (productOption.type == ABProductOptionsType.SINGLE_SELECTION) {
                     //Get selected option
-                    const singleSelectedOption = selectedOptions[index] as AlabarraProductOptionSingleSelectionSelectedValue;
+                    const singleSelectedOption = selectedOptions[index] as ABProductOptionSingleSelectionSelectedValue;
 
                     if (singleSelectedOption) {
                         // Find product option that is selected to find price adjustment value
                         const originOption = productOption.possible_values.find(possible_value => possible_value.title == singleSelectedOption);
                         unitPrice += originOption?.price_adjustment ?? 0;
                     }
-                } else if (productOption.type == AlabarraProductOptionsType.MULTIPLE_SELECTION) {
+                } else if (productOption.type == ABProductOptionsType.MULTIPLE_SELECTION) {
                     
                     //Get selected option
-                    const selectedValues = selectedOptions[index] as AlabarraProductOptionMultipleSelectionSelectedValues;
+                    const selectedValues = selectedOptions[index] as ABProductOptionMultipleSelectionSelectedValues;
                     if (selectedValues) {
                         selectedValues.forEach((selectedValue, index) => {
                             if (selectedValue) {
@@ -187,14 +193,19 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             cartLines.forEach( line => {
                 api_cart_lines.push({product_id: `/products/${line.product.id}`, quantity: line.quantity, note: line.note});
             })
-            createManualPaymentOrder({
+
+            const newOrder: AlabarraCreateOrderData = {
                 customer_id: user?.uid ?? "not_found",
                 customer_nickname: customer_nickname,
                 general_note: null,
                 cart: api_cart_lines,
-                table_name: tableName})
+                table_name: tableName
+            };
+
+            createManualPaymentOrder(newOrder)
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
                     if (result != undefined) {
+                        console.log(result);
                         resolve(result.data.result.order_id)
                     } else {
                         reject("result undefined");

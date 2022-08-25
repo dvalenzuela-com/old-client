@@ -1,19 +1,19 @@
 import { Checkbox, Grid, Typography } from "@mui/material";
-import { AlabarraProductOptionMultipleSelection, AlabarraProductOptionMultipleSelectionSelectedValues } from "@dvalenzuela-com/alabarra-types";
+import { ABProductOptionMultipleSelection, ABProductOptionMultipleSelectionSelectedValues } from "@dvalenzuela-com/alabarra-types";
 import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
 import { CurrencyNumberFormat } from "../../lib/helper";
 
 type ProductOptionMultipleSelectionProps = {
     index: number;
-    productOption: AlabarraProductOptionMultipleSelection;
-    selectedValues: AlabarraProductOptionMultipleSelectionSelectedValues;
-    onOptionChange: (selectedValues: AlabarraProductOptionMultipleSelectionSelectedValues) => void;
+    productOption: ABProductOptionMultipleSelection;
+    selectedValues: ABProductOptionMultipleSelectionSelectedValues;
+    onOptionChange: (selectedValues: ABProductOptionMultipleSelectionSelectedValues) => void;
 }
 
 const ProductOptionMultipleSelection = (props: ProductOptionMultipleSelectionProps) => {
 
-    const [checkedOptions, setCheckedOptions] = useState<AlabarraProductOptionMultipleSelectionSelectedValues>([]);
+    const [checkedOptions, setCheckedOptions] = useState<ABProductOptionMultipleSelectionSelectedValues>([]);
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
 
     useEffect(() => {

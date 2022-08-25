@@ -1,5 +1,5 @@
-import { AlabarraCategory, AlabarraProduct, AlabarraTable, CategoryConverter, ProductConverter, TableConverter } from "@dvalenzuela-com/alabarra-types";
-import { addDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, setDoc } from "firebase/firestore";
+import { AlabarraCategory, ABProduct, ABTable, CategoryConverter, ProductConverter, TableConverter } from "@dvalenzuela-com/alabarra-types";
+import { collection, doc, getDocs, getFirestore, orderBy, query, setDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import firebaseApp from "./firebaseApp";
 
@@ -11,9 +11,9 @@ export default firestore;
  const tablesCollection = collection(firestore, 'tables').withConverter(TableConverter);
  const usersCollection = collection(firestore, 'users');
 
- export const allProductsQuery = query<AlabarraProduct>(productsCollection, orderBy('created_at', 'desc'));
+ export const allProductsQuery = query<ABProduct>(productsCollection, orderBy('created_at', 'desc'));
  export const allCategoriesQuery = query<AlabarraCategory>(categoriesCollection, orderBy('created_at', 'desc'));
- export const allTablesQuery = query<AlabarraTable>(tablesCollection, orderBy('created_at', 'desc'));
+ export const allTablesQuery = query<ABTable>(tablesCollection, orderBy('created_at', 'desc'));
 
  export const useCategories = () => {
 	 return useCollectionData<AlabarraCategory>(allCategoriesQuery, {
@@ -22,7 +22,7 @@ export default firestore;
  }
  
  export const useProducts = () => {
-	 return useCollectionData<AlabarraProduct>(allProductsQuery, {
+	 return useCollectionData<ABProduct>(allProductsQuery, {
 		 snapshotListenOptions: { includeMetadataChanges: true }
 	 });
  }
@@ -32,7 +32,7 @@ export default firestore;
  */
 
 export const getAllTableIds = async () => {
-    const results = await getDocs(collection(firestore, 'tables'));
+    const results = await getDocs(tablesCollection);
     return results.docs.map(doc => doc.id)
 }
 

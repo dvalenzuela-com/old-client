@@ -1,10 +1,10 @@
 import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
-import { AlabarraProduct } from "@dvalenzuela-com/alabarra-types";
+import { ABProduct } from "@dvalenzuela-com/alabarra-types";
 import { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
 
 type ProductCardProps = {
-    product: AlabarraProduct;
+    product: ABProduct;
     onClick: () => void
 }
 

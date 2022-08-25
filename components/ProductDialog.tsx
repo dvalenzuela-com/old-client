@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
-import { AlabarraProduct, AlabarraProductOption, AlabarraProductOptionMultipleSelection, AlabarraProductOptionMultipleSelectionSelectedValues, AlabarraProductOptionSingleSelection, AlabarraProductOptionSingleSelectionSelectedValue, AlabarraProductOptionsType } from "@dvalenzuela-com/alabarra-types";
+import { ABProduct, ABProductOption, ABProductOptionMultipleSelection, ABProductOptionMultipleSelectionSelectedValues, ABProductOptionSingleSelection, ABProductOptionSingleSelectionSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
 import React, { useContext, useEffect, useState } from "react";
 import { CartContext, ProductOptionSelection } from "../context/CartContext";
 import ProductDialogButton from "./ProductDialogButton";
@@ -15,7 +15,7 @@ export enum ProductDialogMode {
 export type ProductDialogProps = {
     mode: ProductDialogMode;
     lineId?: string;
-    product: AlabarraProduct | undefined;
+    product: ABProduct | undefined;
     quantity: number;
     options?: ProductOptionSelection[];
     comment: string | null;
@@ -44,15 +44,15 @@ const ProductDialog = (props: ProductDialogProps) => {
         if (productOptions) {            
             const updatedOptions = productOptions.map( (option, index) => { 
 
-                if (option.type == AlabarraProductOptionsType.SINGLE_SELECTION) {
-                    const singleOption = option as AlabarraProductOptionSingleSelection;
+                if (option.type == ABProductOptionsType.SINGLE_SELECTION) {
+                    const singleOption = option as ABProductOptionSingleSelection;
                     if (props.options && props.options[index]) {
                         return props.options[index];
                     } else {
                         return singleOption.default_value;
                     }
-                } else if (option.type == AlabarraProductOptionsType.MULTIPLE_SELECTION) {
-                    const multipleOption = option as AlabarraProductOptionMultipleSelection;
+                } else if (option.type == ABProductOptionsType.MULTIPLE_SELECTION) {
+                    const multipleOption = option as ABProductOptionMultipleSelection;
                     if (props.options && props.options[index]) {
                         return props.options[index];
                     } else {
@@ -73,22 +73,22 @@ const ProductDialog = (props: ProductDialogProps) => {
     }, [props.product, props.options, props.quantity, props.comment]);
 
 
-    const handleAddToCartDisabled = (productOptions: AlabarraProductOption[]) => {
+    const handleAddToCartDisabled = (productOptions: ABProductOption[]) => {
         let addToCartButtonStartsDisabled = false;
         productOptions.forEach( (option, index) => {
-            if (option.type == AlabarraProductOptionsType.SINGLE_SELECTION) {
+            if (option.type == ABProductOptionsType.SINGLE_SELECTION) {
                 // Single options always contain a default value, therefore do not need a mandatory check
-                const singleOption = option as AlabarraProductOptionSingleSelection;
-                const currentSelectedOption = selectedOptions[index] as AlabarraProductOptionSingleSelectionSelectedValue;
+                const singleOption = option as ABProductOptionSingleSelection;
+                const currentSelectedOption = selectedOptions[index] as ABProductOptionSingleSelectionSelectedValue;
                 // TODO: Bug here. The currentSelectedOption is not being updated "fast enough" and the old/wrong value is compared               
                 // if (singleOption.mandatory &&
                 //     !singleOption.possible_values.some(possible_value => possible_value.title == currentSelectedOption) &&
                 //     !singleOption.default_value) {
                 //     addToCartButtonStartsDisabled = true;
                 // }
-            } else if (option.type == AlabarraProductOptionsType.MULTIPLE_SELECTION) {
-                const multipleOption = option as AlabarraProductOptionMultipleSelection;
-                const currentSelectedOption = selectedOptions[index] as AlabarraProductOptionMultipleSelectionSelectedValues;
+            } else if (option.type == ABProductOptionsType.MULTIPLE_SELECTION) {
+                const multipleOption = option as ABProductOptionMultipleSelection;
+                const currentSelectedOption = selectedOptions[index] as ABProductOptionMultipleSelectionSelectedValues;
 
                 // If we have a minimum selection, which in turn is higher as the default values, deactivate the button
                 if (multipleOption.min_selection > 0 &&
@@ -187,23 +187,23 @@ const ProductDialog = (props: ProductDialogProps) => {
 
                             {props.product.options && props.product.options.map((option, index) => {
                                 
-                                if (option.type == AlabarraProductOptionsType.SINGLE_SELECTION) {
+                                if (option.type == ABProductOptionsType.SINGLE_SELECTION) {
                                     return (
                                         <ProductOptionSingleSelection
                                             key={index}
                                             index={index}
-                                            productOption={option as AlabarraProductOptionSingleSelection}
-                                            selectedOption={selectedOptions[index] as AlabarraProductOptionSingleSelectionSelectedValue}
+                                            productOption={option as ABProductOptionSingleSelection}
+                                            selectedOption={selectedOptions[index] as ABProductOptionSingleSelectionSelectedValue}
                                             onOptionChange={(selectedOption) => {handleOptionChange(index, selectedOption)}}
                                         />
                                     );
-                                } else if (option.type == AlabarraProductOptionsType.MULTIPLE_SELECTION) {
+                                } else if (option.type == ABProductOptionsType.MULTIPLE_SELECTION) {
                                     return (
                                         <ProductOptionMultipleSelection
                                             key={index}
                                             index={index}
-                                            productOption={option as AlabarraProductOptionMultipleSelection}
-                                            selectedValues={selectedOptions[index] as AlabarraProductOptionMultipleSelectionSelectedValues}
+                                            productOption={option as ABProductOptionMultipleSelection}
+                                            selectedValues={selectedOptions[index] as ABProductOptionMultipleSelectionSelectedValues}
                                             onOptionChange={(selectedOption) => {handleOptionChange(index, selectedOption)}}
                                         />
                                     );
