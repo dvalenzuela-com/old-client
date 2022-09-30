@@ -1,15 +1,15 @@
 import type { NextPage } from 'next'
 import { Autocomplete, Container, Grid, LinearProgress, List, ListItem, Radio, RadioGroup, TextField, Typography } from '@mui/material';
-import CartContent from '../components/CartContent';
+import CartContent from '@Components/CartContent';
 import { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
-import { getAllTableIds } from '../lib/firestore';
-import StripeButton from '../components/StripeButton';
-import { CartContext } from '../context/CartContext';
+import { getAllTableIds } from '@Lib/firestore';
+import StripeButton from '@Components/StripeButton';
+import { CartContext } from '@Context/CartContext';
 import { useStripe } from '@stripe/react-stripe-js';
 import { useSnackbar } from "notistack";
 import { useRouter } from 'next/router';
-import LoadingButton from './../components/LoadingButton';
+import LoadingButton from '@Components/LoadingButton';
 
 const Cart: NextPage = () => {
 
@@ -20,7 +20,8 @@ const Cart: NextPage = () => {
 
 	const [tables, setTables] = useState<string[]>([]);
 	const [selectedTable, setSelectedTable] = useState<string | null>(null);
-	const [customerNickname, setCustomerNickname] = useState<string | undefined>(undefined);
+	const [customerName, setCustomerName] = useState<string | undefined>(undefined);
+	const [generalNote, setGeneralNote] = useState<string | undefined>(undefined);
 	const [paymentType, setPaymentType] = useState<string>('');
 	const [clientSecret, setClientSecret] = useState<string>('');
 	const [canMakeDigitalPayments, setCanMakeDigitalPayments] = useState<boolean>(false);
@@ -66,7 +67,7 @@ const Cart: NextPage = () => {
 
 		if(event.target.value == 'digital') {
 			if (selectedTable) {
-				cart.createOrderWithDigitalPayment(selectedTable, customerNickname?.trim())
+				cart.createOrderWithDigitalPayment(selectedTable, customerName?.trim(), generalNote)
 					.then((orderId: any) => {
 						return cart.createStripePaymentIntent(orderId);
 					})
@@ -84,7 +85,7 @@ const Cart: NextPage = () => {
 	const handleManualOrder = () => {
 		if (selectedTable) {
 			setWaitingForManualOrder(true);
-			cart.createOrderWithManualPayment(selectedTable, customerNickname?.trim())
+			cart.createOrderWithManualPayment(selectedTable, customerName?.trim(), generalNote)
 				.then(data => {
 					setWaitingForManualOrder(false);
 					// Clear cart, send the user to the index page and show a success message
@@ -140,7 +141,9 @@ const Cart: NextPage = () => {
 						renderInput={(params) => <TextField {...params} label="Select your table" variant="standard"/>}
 					/>
 					<h2>Your name</h2>
-					<TextField value={customerNickname} onChange={(e) => {setCustomerNickname(e.target.value)}} fullWidth></TextField>
+					<TextField value={customerName} placeholder='How should we call you at the table?' onChange={(e) => {setCustomerName(e.target.value)}} fullWidth></TextField>
+					<h2>General note</h2>
+					<TextField value={generalNote} placeholder='Any comments for your order?' onChange={(e) => {setGeneralNote(e.target.value)}} fullWidth multiline></TextField>
 					<h2>Select payment method</h2>
 					<RadioGroup value={paymentType}>
 						<List>
@@ -161,7 +164,7 @@ const Cart: NextPage = () => {
 						<>
 							<h2>Order</h2>
 							{ paymentType == "presential" &&
-								<LoadingButton onClick={handleManualOrder} disabled={!(selectedTable && customerNickname && customerNickname.trim().length > 0)} title={'Order now'} loading={waitingForManualOrder} fullWidth/>
+								<LoadingButton onClick={handleManualOrder} disabled={!(selectedTable && customerName && customerName.trim().length > 0)} title={'Order now'} loading={waitingForManualOrder} fullWidth/>
 							}
 							{ paymentType == "digital" && clientSecret == '' &&
 								<LinearProgress />

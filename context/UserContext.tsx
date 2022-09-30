@@ -1,7 +1,7 @@
 import { onAuthStateChanged, signInAnonymously, User } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
-import { auth } from "../lib/auth";
-import { createUserIfNotFound } from "../lib/firestore";
+import { auth } from "@Lib/auth";
+import { createUserIfNotFound } from "@Lib/firestore";
 
 type UserProviderProps = {
     children: React.ReactNode

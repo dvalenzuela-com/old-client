@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
 import { ABProduct, ABProductOption, ABProductOptionMultipleSelection, ABProductOptionMultipleSelectionSelectedValues, ABProductOptionSingleSelection, ABProductOptionSingleSelectionSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
 import React, { useContext, useEffect, useState } from "react";
-import { CartContext, ProductOptionSelection } from "../context/CartContext";
+import { CartContext, ProductOptionSelection } from "@Context/CartContext";
 import ProductDialogButton from "./ProductDialogButton";
 import ProductOptionMultipleSelection from "./ProductOptions/ProductOptionMultipleSelection";
 import ProductOptionSingleSelection from "./ProductOptions/ProductOptionSingleSelection";

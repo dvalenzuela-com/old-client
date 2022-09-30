@@ -1,8 +1,8 @@
 import { ABProduct } from "@dvalenzuela-com/alabarra-types";
 import { useContext } from "react";
 import NumberFormat from "react-number-format";
-import { CartContext, ProductOptionSelection } from "../context/CartContext";
-import { CurrencyNumberFormat } from "../lib/helper";
+import { CartContext, ProductOptionSelection } from "@Context/CartContext";
+import { CurrencyNumberFormat } from "@Lib/helper";
 import { ProductDialogMode } from "./ProductDialog";
 
 

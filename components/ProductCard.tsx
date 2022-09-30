@@ -1,7 +1,7 @@
 import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 import { ABProduct } from "@dvalenzuela-com/alabarra-types";
 import { useContext, useState } from "react";
-import { CartContext } from "../context/CartContext";
+import { CartContext } from "@Context/CartContext";
 
 type ProductCardProps = {
     product: ABProduct;

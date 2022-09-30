@@ -1,6 +1,6 @@
 import { SnackbarProvider } from "notistack";
 import { useState } from "react";
-import Navbar from "../components/Navbar";
+import Navbar from "@Components/Navbar";
 
 type LayoutProps = {
     children: React.ReactNode

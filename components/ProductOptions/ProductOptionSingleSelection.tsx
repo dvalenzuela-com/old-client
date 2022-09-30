@@ -2,7 +2,7 @@ import { Grid, Radio, RadioGroup, Typography } from "@mui/material";
 import { ABProductOptionSingleSelection, ABProductOptionSingleSelectionSelectedValue } from "@dvalenzuela-com/alabarra-types";
 import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
-import { CurrencyNumberFormat } from "../../lib/helper";
+import { CurrencyNumberFormat } from "@Lib/helper";
 
 type ProductOptionSingleSelectionProps = {
     index: number;

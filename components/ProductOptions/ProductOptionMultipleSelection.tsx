@@ -2,7 +2,7 @@ import { Checkbox, Grid, Typography } from "@mui/material";
 import { ABProductOptionMultipleSelection, ABProductOptionMultipleSelectionSelectedValues } from "@dvalenzuela-com/alabarra-types";
 import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
-import { CurrencyNumberFormat } from "../../lib/helper";
+import { CurrencyNumberFormat } from "@Lib/helper";
 
 type ProductOptionMultipleSelectionProps = {
     index: number;

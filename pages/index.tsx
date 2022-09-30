@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
 
-import ProductGrid from '../components/ProductGrid'
+import ProductGrid from '@Components/ProductGrid'
 import { Container } from '@mui/material';
-import { useProducts } from '../lib/firestore';
+import { useProducts } from '@Lib/firestore';
 
 const Index: NextPage = () => {
 

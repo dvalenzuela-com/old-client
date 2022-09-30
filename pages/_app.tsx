@@ -1,12 +1,12 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { CssBaseline } from '@mui/material'
-import { CartProvider } from '../context/CartContext'
+import { CartProvider } from '@Context/CartContext'
 import firestore from '../lib/firestore'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import Layout from '../layout/Layout'
-import { UserContext, UserProvider } from '../context/UserContext'
+import { UserContext, UserProvider } from '@Context/UserContext'
 import { useContext } from 'react'
 
 

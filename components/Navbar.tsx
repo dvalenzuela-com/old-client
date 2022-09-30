@@ -1,7 +1,7 @@
 import { AppBar, Badge, IconButton, Link, Toolbar, Tooltip } from "@mui/material";
 import { useContext } from "react";
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
-import { CartContext } from "../context/CartContext";
+import { CartContext } from "@Context/CartContext";
 import NextLink from 'next/link'
 
 const Navbar = (props: any) => {

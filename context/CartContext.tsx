@@ -8,7 +8,7 @@ import {
 import { HttpsCallableResult } from "firebase/functions";
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
-import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "../lib/functions";
+import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "@Lib/functions";
 import { UserContext } from "./UserContext";
 
 export type ProductOptionSelection = (ABProductOptionSingleSelectionSelectedValue | ABProductOptionMultipleSelectionSelectedValues);
@@ -21,8 +21,8 @@ export type Cart = {
     editLineWithId: (id: string, product: ABProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => void;
     calculateTotalPrice: (product: ABProduct, selectedOptions: ProductOptionSelection[], quantity: number) => number;
     clearCart: () => void;
-    createOrderWithManualPayment: (tableName: string, customer_nickname?: string) => Promise<string>;
-    createOrderWithDigitalPayment: (tableName: string, customer_nickname?: string) => Promise<string>;
+    createOrderWithManualPayment: (tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
+    createOrderWithDigitalPayment: (tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
     createStripePaymentIntent: (orderId: string) => Promise<string>;
 }
 
@@ -185,7 +185,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         updateCartLines([]);
     }
 
-    const handleCreateOrderWithManualPayment = (tableName: string, customer_nickname?: string): Promise<string> => {
+    const handleCreateOrderWithManualPayment = (tableName: string, customerName?: string, generalNote?: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
@@ -196,8 +196,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
             const newOrder: AlabarraCreateOrderData = {
                 customer_id: user?.uid ?? "not_found",
-                customer_nickname: customer_nickname,
-                general_note: null,
+                customer_nickname: customerName,
+                general_note: generalNote ?? null,
                 cart: api_cart_lines,
                 table_name: tableName
             };
@@ -217,7 +217,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         });
     }
 
-    const handleCreateOrderWithDigitalPayment = (tableName: string, customer_nickname?: string): Promise<string> => {
+    const handleCreateOrderWithDigitalPayment = (tableName: string, customerName?: string, generalNote?: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
@@ -227,8 +227,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             })
             createDigitalPaymentOrder({
                 customer_id: user?.uid ?? "not_found",
-                customer_nickname: customer_nickname,
-                general_note: null,
+                customer_nickname: customerName,
+                general_note: generalNote ?? null,
                 cart: api_cart_lines,
                 table_name: tableName})
                 .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
