@@ -1,4 +1,4 @@
-import { AlabarraCategory, ABProduct, ABTable, CategoryConverter, ProductConverter, TableConverter } from "@dvalenzuela-com/alabarra-types";
+import { ABCategory, ABProduct, ABTable, CategoryConverter, ProductConverter, TableConverter } from "@dvalenzuela-com/alabarra-types";
 import { collection, doc, getDocs, getFirestore, orderBy, query, setDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import firebaseApp from "./firebaseApp";
@@ -12,11 +12,11 @@ export default firestore;
  const usersCollection = collection(firestore, 'users');
 
  export const allProductsQuery = query<ABProduct>(productsCollection, orderBy('created_at', 'desc'));
- export const allCategoriesQuery = query<AlabarraCategory>(categoriesCollection, orderBy('created_at', 'desc'));
+ export const allCategoriesQuery = query<ABCategory>(categoriesCollection, orderBy('created_at', 'desc'));
  export const allTablesQuery = query<ABTable>(tablesCollection, orderBy('created_at', 'desc'));
 
  export const useCategories = () => {
-	 return useCollectionData<AlabarraCategory>(allCategoriesQuery, {
+	 return useCollectionData<ABCategory>(allCategoriesQuery, {
 		 snapshotListenOptions: { includeMetadataChanges: true }
 	 });
  }
