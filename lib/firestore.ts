@@ -4,12 +4,15 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import firebaseApp from "./firebaseApp";
 
 const firestore =  getFirestore(firebaseApp);
+
 export default firestore;
 
- const categoriesCollection = collection(firestore, 'categories').withConverter(CategoryConverter);
- const productsCollection = collection(firestore, 'products').withConverter(ProductConverter);
- const tablesCollection = collection(firestore, 'tables').withConverter(TableConverter);
- const usersCollection = collection(firestore, 'users');
+const BUSINESS_ID = "g056ukCpnMDv2hej3tlP";
+
+const categoriesCollection = collection(firestore, `businesses/${BUSINESS_ID}/categories`).withConverter(CategoryConverter);
+const productsCollection = collection(firestore, `businesses/${BUSINESS_ID}/products`).withConverter(ProductConverter);
+const tablesCollection = collection(firestore, `businesses/${BUSINESS_ID}/tables`).withConverter(TableConverter);
+const usersCollection = collection(firestore, `users`);
 
  export const allProductsQuery = query<ABProduct>(productsCollection, orderBy('created_at', 'desc'));
  export const allCategoriesQuery = query<ABCategory>(categoriesCollection, orderBy('created_at', 'desc'));
