@@ -191,7 +191,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             var api_cart_lines: any[] = []
 
             cartLines.forEach( line => {
-                api_cart_lines.push({product_id: `/products/${line.product.id}`, quantity: line.quantity, note: line.note});
+                api_cart_lines.push({product_id: line.product.id, quantity: line.quantity, note: line.note});
             })
 
             const newOrder: AlabarraCreateOrderData = {
@@ -223,7 +223,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             var api_cart_lines: any[] = []
 
             cartLines.forEach( line => {
-                api_cart_lines.push({product_id: `/products/${line.product.id}`, quantity: line.quantity, note: line.note});
+                api_cart_lines.push({product_id: line.product.id, quantity: line.quantity, note: line.note});
             })
             createDigitalPaymentOrder({
                 customer_id: user?.uid ?? "not_found",
