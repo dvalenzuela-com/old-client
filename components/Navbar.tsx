@@ -4,13 +4,17 @@ import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import { CartContext } from "@Context/CartContext";
 import NextLink from 'next/link'
 
-const Navbar = (props: any) => {
+type NavbarProps = {
+    title: string;
+}
+
+const Navbar = (props: NavbarProps) => {
     const cart = useContext(CartContext)
     return (
         <AppBar position="sticky">
             <Toolbar>
                 <NextLink href="/" passHref>
-                    <Link variant='h6' sx={{ flexGrow: 1 }} color="inherit">Alabarra.com</Link>
+                    <Link variant='h6' sx={{ flexGrow: 1 }} color="inherit">{props.title}</Link>
                 </NextLink>
                 <Tooltip title='Checkout'>
                     <NextLink href="/cart" passHref>
