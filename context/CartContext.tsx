@@ -3,13 +3,15 @@ import {
     ABProductOptionsType,
     ABProductOptionSingleSelectionSelectedValue,
     ABProductOptionMultipleSelectionSelectedValues,
-    AlabarraCreateOrderData,
-    AlabarraCreateOrderResponse } from "@dvalenzuela-com/alabarra-types";
+    ABCreateOrderData,
+    ABCreateOrderResponse, 
+    ABResponseStatus} from "@dvalenzuela-com/alabarra-types";
 import { HttpsCallableResult } from "firebase/functions";
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
 import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "@Lib/functions";
 import { UserContext } from "./UserContext";
+import { BUSINESS_ID } from "@Lib/firestore";
 
 export type ProductOptionSelection = (ABProductOptionSingleSelectionSelectedValue | ABProductOptionMultipleSelectionSelectedValues);
 
@@ -83,7 +85,6 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     }
 
     // TODO: Move away from here!
-
     const [createManualPaymentOrder, executingCreateManualPaymentOrder, errorCreateManualPaymentOrder] = useCreateManualPaymentOrder();
     const [createDigitalPaymentOrder] = useCreateDigitalPaymentOrder();
     const [createStripePaymentIntent] = useCreateStripePaymentIntent();
@@ -140,7 +141,6 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         // base price
         let unitPrice = product.price;
 
-
         // Go trough every selected option
         selectedOptions.forEach((selectedOption, index) => {
 
@@ -194,8 +194,9 @@ export const CartProvider = ({ children }: CartProviderProps) => {
                 api_cart_lines.push({product_id: line.product.id, quantity: line.quantity, note: line.note});
             })
 
-            const newOrder: AlabarraCreateOrderData = {
-                customer_id: user?.uid ?? "not_found",
+            const newOrder: ABCreateOrderData = {
+                business_id: BUSINESS_ID,
+                customer_id: user?.uid ?? "userid_not_found",
                 customer_nickname: customerName,
                 general_note: generalNote ?? null,
                 cart: api_cart_lines,
@@ -203,17 +204,19 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             };
 
             createManualPaymentOrder(newOrder)
-                .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
-                    if (result != undefined) {
-                        console.log(result);
-                        resolve(result.data.result.order_id)
-                    } else {
-                        reject("result undefined");
+                .then(result => { 
+                    if (!result) {
+                        reject("undefined result");
+                    } else if (result.data.status == ABResponseStatus.ERROR) {
+                        reject(result.data.error_message);
+                    } else if (result.data.status == ABResponseStatus.SUCCESS) {
+                        resolve(result.data.result.order_id);
                     }
                 })
-                .catch((error) => {
-                    console.log(error)
-                    reject(error)})
+                .catch((error: any) => {
+                    console.log(error.message)
+                    reject(error);
+                });
         });
     }
 
@@ -224,23 +227,31 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
             cartLines.forEach( line => {
                 api_cart_lines.push({product_id: line.product.id, quantity: line.quantity, note: line.note});
-            })
-            createDigitalPaymentOrder({
-                customer_id: user?.uid ?? "not_found",
+            });
+
+            const newOrder: ABCreateOrderData = {
+                business_id: BUSINESS_ID,
+                customer_id: user?.uid ?? "userid_not_found",
                 customer_nickname: customerName,
                 general_note: generalNote ?? null,
                 cart: api_cart_lines,
-                table_name: tableName})
-                .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
-                    if (result != undefined) {
-                        resolve(result.data.result.order_id)
-                    } else {
-                        reject("result undefined");
+                table_name: tableName
+            }
+
+            createDigitalPaymentOrder(newOrder)
+                .then(result => { 
+                    if (!result) {
+                        reject("undefined result");
+                    } else if (result.data.status == ABResponseStatus.ERROR) {
+                        reject(result.data.error_message);
+                    } else if (result.data.status == ABResponseStatus.SUCCESS) {
+                        resolve(result.data.result.order_id);
                     }
                 })
-                .catch((error) => {
-                    console.log(error)
-                    reject(error)})
+                .catch((error: any) => {
+                    console.log(error.message)
+                    reject(error);
+                });
         });
     }
 
@@ -249,17 +260,20 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
 
-            createStripePaymentIntent({order_id: orderId})
-                .then((result: HttpsCallableResult<any> | undefined) => { // TODO: Cast type
-                    if (result != undefined) {
-                        resolve(result.data.result.payment_intent_client_secret)
-                    } else {
-                        reject("result undefined");
+            createStripePaymentIntent({business_id: BUSINESS_ID, order_id: orderId})
+                .then(result => {
+                    if (!result) {
+                        reject("undefined result");
+                    } else if (result.data.status == ABResponseStatus.ERROR) {
+                        reject(result.data.error_message);
+                    } else if (result.data.status == ABResponseStatus.SUCCESS) {
+                        resolve(result.data.result.payment_intent_client_secret);
                     }
                 })
-                .catch((error) => {
-                    console.log(error)
-                    reject(error)})
+                .catch((error: any) => {
+                    console.log(error.message)
+                    reject(error);
+                });
         });
     }
 

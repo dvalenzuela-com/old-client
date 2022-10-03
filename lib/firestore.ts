@@ -7,7 +7,7 @@ const firestore =  getFirestore(firebaseApp);
 
 export default firestore;
 
-const BUSINESS_ID = "g056ukCpnMDv2hej3tlP";
+export const BUSINESS_ID = "g056ukCpnMDv2hej3tlP";
 
 const categoriesCollection = collection(firestore, `businesses/${BUSINESS_ID}/categories`).withConverter(CategoryConverter);
 const productsCollection = collection(firestore, `businesses/${BUSINESS_ID}/products`).withConverter(ProductConverter);
