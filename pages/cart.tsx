@@ -28,7 +28,8 @@ const Cart: NextPage = () => {
 	const [waitingForManualOrder, setWaitingForManualOrder] = useState<boolean>(false);
 
 	useEffect( () => {
-	// Fetch all available tables
+		setSelectedTable(cart.getSelectedTableId());
+		// Fetch all available tables
 		(async () => {
 			setTables(await getAllTableIds());
 		})()

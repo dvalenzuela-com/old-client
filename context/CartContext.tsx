@@ -26,6 +26,8 @@ export type Cart = {
     createOrderWithManualPayment: (tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
     createOrderWithDigitalPayment: (tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
     createStripePaymentIntent: (orderId: string) => Promise<string>;
+    setSelectedTableId: (tableId: string | null) => void;
+    getSelectedTableId: () => string | null;
 }
 
 const defaultCart: Cart = {
@@ -38,7 +40,9 @@ const defaultCart: Cart = {
     calculateTotalPrice: () => 0,
     createOrderWithManualPayment: () => Promise.reject("override this promise"),
     createOrderWithDigitalPayment: () => Promise.reject("override this promise"),
-    createStripePaymentIntent: () => Promise.reject("override this promise")
+    createStripePaymentIntent: () => Promise.reject("override this promise"),
+    setSelectedTableId: () => {},
+    getSelectedTableId: () => null
 }
 
 export const CartContext = createContext<Cart>(defaultCart)
@@ -277,6 +281,19 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         });
     }
 
+    const handleSetSelectedTableId = (tableId: string | null) => {
+
+        if (tableId != null && tableId.trim().length > 0) {
+            sessionStorage.setItem("persistedTable", tableId);
+        } else {
+            sessionStorage.removeItem("persistedTable");
+        }
+    }
+
+    const handleGetSelectedTableId = (): string | null => {
+        return sessionStorage.getItem("persistedTable");
+    }
+
     return (
         <CartContext.Provider value={{
             getNumberOfItems: getNumberOfItems,
@@ -288,8 +305,10 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             calculateTotalPrice: calculateTotalPrice,
             createOrderWithManualPayment: handleCreateOrderWithManualPayment,
             createOrderWithDigitalPayment: handleCreateOrderWithDigitalPayment,
-            createStripePaymentIntent: handleCreateStripePaymentIntent}
-        }>
+            createStripePaymentIntent: handleCreateStripePaymentIntent,
+            setSelectedTableId: handleSetSelectedTableId,
+            getSelectedTableId: handleGetSelectedTableId
+        }}>
             {children}
         </CartContext.Provider>
     )
