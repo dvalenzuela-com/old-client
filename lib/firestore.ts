@@ -7,25 +7,23 @@ const firestore =  getFirestore(firebaseApp);
 
 export default firestore;
 
-export const BUSINESS_ID = "g056ukCpnMDv2hej3tlP";
-
-const categoriesCollection = collection(firestore, `businesses/${BUSINESS_ID}/categories`).withConverter(CategoryConverter);
-const productsCollection = collection(firestore, `businesses/${BUSINESS_ID}/products`).withConverter(ProductConverter);
-const tablesCollection = collection(firestore, `businesses/${BUSINESS_ID}/tables`).withConverter(TableConverter);
+const categoriesCollection = (businessId: string) => collection(firestore, `businesses/${businessId}/categories`).withConverter(CategoryConverter);
+const productsCollection = (businessId: string) => collection(firestore, `businesses/${businessId}/products`).withConverter(ProductConverter);
+const tablesCollection = (businessId: string) => collection(firestore, `businesses/${businessId}/tables`).withConverter(TableConverter);
 const usersCollection = collection(firestore, `users`);
 
- export const allProductsQuery = query<ABProduct>(productsCollection, orderBy('created_at', 'desc'));
- export const allCategoriesQuery = query<ABCategory>(categoriesCollection, orderBy('created_at', 'desc'));
- export const allTablesQuery = query<ABTable>(tablesCollection, orderBy('created_at', 'desc'));
+ export const allProductsQuery = (businessId: string) => query<ABProduct>(productsCollection(businessId), orderBy('created_at', 'desc'));
+ export const allCategoriesQuery = (businessId: string) => query<ABCategory>(categoriesCollection(businessId), orderBy('created_at', 'desc'));
+ export const allTablesQuery = (businessId: string) => query<ABTable>(tablesCollection(businessId), orderBy('created_at', 'desc'));
 
- export const useCategories = () => {
-	 return useCollectionData<ABCategory>(allCategoriesQuery, {
+ export const useCategories = (businessId: string) => {
+	 return useCollectionData<ABCategory>(allCategoriesQuery(businessId), {
 		 snapshotListenOptions: { includeMetadataChanges: true }
 	 });
  }
  
- export const useProducts = () => {
-	 return useCollectionData<ABProduct>(allProductsQuery, {
+ export const useProducts = (businessId: string) => {
+	 return useCollectionData<ABProduct>(allProductsQuery(businessId), {
 		 snapshotListenOptions: { includeMetadataChanges: true }
 	 });
  }
@@ -34,13 +32,13 @@ const usersCollection = collection(firestore, `users`);
  * Tables
  */
 
-export const getAllTableIds = async () => {
-    const results = await getDocs(tablesCollection);
+export const getAllTableIds = async (businessId: string) => {
+    const results = await getDocs(tablesCollection(businessId));
     return results.docs.map(doc => doc.id)
 }
 
 export const createUserIfNotFound = async (uid: string) => {
-	console.log('calling createUserIfNotFound()', uid);
+	// TODO: See if it's possible to use the usersCollection
 	const docRef = doc(firestore, `users/${uid}`);
 	return setDoc(docRef, {
 		orders: []

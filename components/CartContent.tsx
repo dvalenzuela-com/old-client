@@ -5,11 +5,13 @@ import NumberFormat from 'react-number-format';
 import ProductDialog, { ProductDialogMode } from "./ProductDialog";
 import { ABProduct, ABProductOptionMultipleSelectionSelectedValues, ABProductOptionSingleSelectionSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
 import { CurrencyNumberFormat } from "@Lib/helper";
+import { useTranslation } from "react-i18next";
 
 
 const CartContent = () => {
 
-    const cart = useContext(CartContext)
+    const cart = useContext(CartContext);
+    const { t } = useTranslation();
 
     const [activeProduct, setActiveProduct] = useState<ABProduct | undefined>(undefined);
     const [activeLineId, setActiveLineId] = useState<string>('');
@@ -32,9 +34,9 @@ const CartContent = () => {
                 <Table >
                     <TableHead>
                         <TableRow>
-                            <TableCell>Count</TableCell>
-                            <TableCell>Product</TableCell>
-                            <TableCell>Price</TableCell>
+                            <TableCell>{t('CartContent.TableHeader.Count')}</TableCell>
+                            <TableCell>{t('CartContent.TableHeader.Product')}</TableCell>
+                            <TableCell>{t('CartContent.TableHeader.Price')}</TableCell>
                         </TableRow>
                     </TableHead>
 
@@ -82,9 +84,9 @@ const CartContent = () => {
                                                 })
                                             }
                                             {/** Print comments */}
-                                            {line.note != null && <Typography variant="subtitle2" style={{fontStyle: "italic"}}>Comment: &quot;{line.note}&quot;</Typography>}
+                                            {line.note != null && <Typography variant="subtitle2" style={{fontStyle: "italic"}}>{t('CartContent.TableRow.Comment')} &quot;{line.note}&quot;</Typography>}
                                         
-                                            <Typography variant='subtitle2'>Edit</Typography>
+                                            <Typography variant='subtitle2'>{t('CartContent.TableRow.Edit')}</Typography>
                                         </>
                                     </TableCell>
                                     <TableCell onClick={() => {handleRowClick(line)}}>
@@ -96,8 +98,8 @@ const CartContent = () => {
 
                         <TableRow>
                             <TableCell></TableCell>
-                            <TableCell>TOTAL</TableCell>
-                            <TableCell><NumberFormat value={cart.getCartTotal()} displayType='text' {...CurrencyNumberFormat} /></TableCell>
+                            <TableCell>{t('CartContent.TableFooter.Total')}</TableCell>
+                            <TableCell><NumberFormat value={cart.getCartTotal()} displayType='text' {...CurrencyNumberFormat}/></TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>

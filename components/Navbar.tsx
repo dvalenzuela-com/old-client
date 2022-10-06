@@ -3,21 +3,29 @@ import { useContext } from "react";
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import { CartContext } from "@Context/CartContext";
 import NextLink from 'next/link'
+import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
 
 type NavbarProps = {
     title: string;
 }
 
 const Navbar = (props: NavbarProps) => {
-    const cart = useContext(CartContext)
+
+    const { t } = useTranslation();
+
+    const router = useRouter();
+	const businessId = router.query['business-id'] as string;
+    const cart = useContext(CartContext);
+
     return (
         <AppBar position="sticky">
             <Toolbar>
-                <NextLink href="/" passHref>
+                <NextLink href={{ pathname: '/[bid]', query: { "bid": businessId } }} passHref>
                     <Link variant='h6' sx={{ flexGrow: 1 }} color="inherit">{props.title}</Link>
                 </NextLink>
-                <Tooltip title='Checkout'>
-                    <NextLink href="/cart" passHref>
+                <Tooltip title={t('Navbar.Tooltip.Title')}>
+                    <NextLink href={{ pathname: '/[bid]/cart', query: { "bid": businessId } }} passHref>
                         <IconButton>
                             <Badge badgeContent={cart.getNumberOfItems()} color='secondary'>
                                 <ShoppingCartRoundedIcon />

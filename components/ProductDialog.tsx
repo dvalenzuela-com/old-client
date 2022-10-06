@@ -6,6 +6,7 @@ import ProductDialogButton from "./ProductDialogButton";
 import ProductOptionMultipleSelection from "./ProductOptions/ProductOptionMultipleSelection";
 import ProductOptionSingleSelection from "./ProductOptions/ProductOptionSingleSelection";
 import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 export enum ProductDialogMode {
     NewLine,
@@ -24,6 +25,7 @@ export type ProductDialogProps = {
 const ProductDialog = (props: ProductDialogProps) => {
 
     const {enqueueSnackbar} = useSnackbar();
+    const { t } = useTranslation();
 
     const cart = useContext(CartContext);
 
@@ -148,9 +150,9 @@ const ProductDialog = (props: ProductDialogProps) => {
             cart.editLineWithId(props.lineId, props.product, selectedQuantity, selectedOptions, trimmedComment == '' ? null : trimmedComment);
             
             if (selectedQuantity == 0) {
-                enqueueSnackbar(`Product removed from the cart`, {variant: 'success'});
+                enqueueSnackbar(t('ProductDialog.Snackbar.ProductRemoved'), {variant: 'success'});
             } else {
-                enqueueSnackbar(`Order line updated`, {variant: 'success'});
+                enqueueSnackbar(t('ProductDialog.Snackbar.OrderLineUpdated'), {variant: 'success'});
             }
         }
 
@@ -210,7 +212,7 @@ const ProductDialog = (props: ProductDialogProps) => {
                                 }       
                             })}
 
-                            <TextField label='Any comments for this?' multiline maxRows={4} value={comment} onChange={handleCommentChange} fullWidth />
+                            <TextField label={t('ProductCard.CommentPlaceholder')} multiline maxRows={4} value={comment} onChange={handleCommentChange} fullWidth />
     
                         </DialogContent>
                         <DialogActions>

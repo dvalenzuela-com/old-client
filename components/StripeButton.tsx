@@ -1,5 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {PaymentRequestButtonElement, useStripe, } from '@stripe/react-stripe-js';
+import { useTranslation } from 'react-i18next';
+import { GET_SITE_CONFIG } from '@Lib/siteConfig';
+import { useRouter } from 'next/router';
 
 interface StripeButtonProps {
     amount: number;
@@ -10,16 +13,22 @@ interface StripeButtonProps {
 }
 const StripeButton = (props: StripeButtonProps) => {
   const stripe = useStripe();
+  const { t } = useTranslation();
+
+  const router = useRouter();
+  const businessId = router.query['business-id'] as string;
+
+  const SITE_CONFIG = GET_SITE_CONFIG(businessId);
 
   const [paymentRequest, setPaymentRequest] = useState<any>(null);
 
   useEffect(() => {
     if (stripe) {
         const pr = stripe.paymentRequest({
-            country: 'DE',
-            currency: 'clp',
+            country: SITE_CONFIG.BASE_COUNTRY,
+            currency: SITE_CONFIG.CURRENCY,
             total: {
-                label: 'Alabarra Order',
+                label: t('StripeButton.Order.Label'),
                 amount: props.amount,
             },
             requestPayerName: true,
@@ -81,7 +90,7 @@ const StripeButton = (props: StripeButtonProps) => {
     }
 
     // Use a traditional checkout form.
-    return (<>No digital payment available</>);
+    return (<>{t('StripeButton.NotAvailable')}</>);
 }
 
 export default StripeButton;

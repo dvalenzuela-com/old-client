@@ -8,6 +8,7 @@ import { loadStripe } from '@stripe/stripe-js'
 import Layout from '../layout/Layout'
 import { UserContext, UserProvider } from '@Context/UserContext'
 import { useContext } from 'react'
+import './../i18n';
 
 
 // Call firestore to init it;
@@ -20,6 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 	// Initialize user
 	const user = useContext(UserContext).getUser();
 
+	// import i18n (needs to be bundled ;))
   return (
     <>
 		<CssBaseline />

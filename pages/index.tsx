@@ -1,32 +1,31 @@
 import type { NextPage } from 'next'
 
 import ProductGrid from '@Components/ProductGrid'
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { useProducts } from '@Lib/firestore';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 import { CartContext } from '@Context/CartContext';
+import { GET_SITE_CONFIG, VALID_BUSINESS_IDS } from '@Lib/siteConfig';
+import Link from 'next/link';
 
-const Index: NextPage = () => {
+const RootIndex: NextPage = () => {
 
-  	// Fetch all orders
-	const [products, productsLoading, productsError, productsSnapshot] = useProducts();
-
-	const cart = useContext(CartContext);
 	const router = useRouter();
-	const selectedTable = router.query['t'] as string;
+	const businessId = router.query['business-id'] as string;
 
-	useEffect(() => {
-		if (selectedTable && selectedTable.trim().length > 0) {
-			cart.setSelectedTableId(selectedTable);
-		}
-	}, [selectedTable]);
+    return (
+        <Container>
+            <Typography variant='h1'>Alabarra 😍</Typography>
 
-  return (
-	<Container>
-		<ProductGrid products={products}></ProductGrid>
-	</Container>
-  )
+            <Typography variant='h4'>We are serving the following stores:</Typography>
+            <ul>
+                {VALID_BUSINESS_IDS.map(businessId => {
+                    return <li><Link href={`/${businessId}`}>{GET_SITE_CONFIG(businessId).TITLE}</Link></li>
+                })}
+            </ul>
+        </Container>
+    )
 }
 
-export default Index
+export default RootIndex

@@ -29,7 +29,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
                     return createUserIfNotFound(userCredential.user.uid);
                 })
                 .then(() => {
-                    console.log("final then");
+                    //console.log("final then");
                 })
             
         }
@@ -46,7 +46,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     });
 
     const handleGetUser = () => {
-        console.log("getUser(): ", user?.uid);
         return user;
     }
 

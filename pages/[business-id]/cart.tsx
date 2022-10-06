@@ -10,11 +10,19 @@ import { useStripe } from '@stripe/react-stripe-js';
 import { useSnackbar } from "notistack";
 import { useRouter } from 'next/router';
 import LoadingButton from '@Components/LoadingButton';
+import { useTranslation } from 'react-i18next';
+import { GET_SITE_CONFIG } from '@Lib/siteConfig';
 
 const Cart: NextPage = () => {
 
-	const {enqueueSnackbar} = useSnackbar();
+	const { t } = useTranslation();
+
 	const router = useRouter();
+	const businessId = router.query['business-id'] as string;
+
+	const SITE_CONFIG = GET_SITE_CONFIG(businessId);
+
+	const {enqueueSnackbar} = useSnackbar();
 	const cart = useContext(CartContext);
 	const stripe = useStripe();
 
@@ -28,10 +36,11 @@ const Cart: NextPage = () => {
 	const [waitingForManualOrder, setWaitingForManualOrder] = useState<boolean>(false);
 
 	useEffect( () => {
+		console.log(businessId);
 		setSelectedTable(cart.getSelectedTableId());
 		// Fetch all available tables
 		(async () => {
-			setTables(await getAllTableIds());
+			setTables(await getAllTableIds(businessId));
 		})()
 	}, []);
 
@@ -39,10 +48,10 @@ const Cart: NextPage = () => {
 	useEffect(() => {
 		if (stripe) {
 			const pr = stripe.paymentRequest({
-				country: 'DE',
-				currency: 'clp',
+				country: SITE_CONFIG.BASE_COUNTRY,
+				currency: SITE_CONFIG.CURRENCY,
 				total: {
-					label: 'Alabarra Order',
+					label: t('StripeButton.Order.Label'),
 					amount: cart.getCartTotal(),
 				},
 				requestPayerName: true,
@@ -68,9 +77,9 @@ const Cart: NextPage = () => {
 
 		if(event.target.value == 'digital') {
 			if (selectedTable) {
-				cart.createOrderWithDigitalPayment(selectedTable, customerName?.trim(), generalNote)
+				cart.createOrderWithDigitalPayment(businessId, selectedTable, customerName?.trim(), generalNote)
 					.then((orderId: any) => {
-						return cart.createStripePaymentIntent(orderId);
+						return cart.createStripePaymentIntent(businessId, orderId);
 					})
 					.then((clientSecret: any) => {
 						setClientSecret(clientSecret);
@@ -86,76 +95,76 @@ const Cart: NextPage = () => {
 	const handleManualOrder = () => {
 		if (selectedTable) {
 			setWaitingForManualOrder(true);
-			cart.createOrderWithManualPayment(selectedTable, customerName?.trim(), generalNote)
+			cart.createOrderWithManualPayment(businessId, selectedTable, customerName?.trim(), generalNote)
 				.then(data => {
 					setWaitingForManualOrder(false);
 					// Clear cart, send the user to the index page and show a success message
 					cart.clearCart();
-					router.push("/");
-					enqueueSnackbar(`Your order has been placed. A waiter will collect payment from you shortly.`, {variant: 'success'});
+					router.push(`/${businessId}`);
+					enqueueSnackbar(t('Cart.Snackbar.ManualOrderPlaced'), {variant: 'success'});
 				})
 				.catch(error => {
 					setWaitingForManualOrder(false);
-					enqueueSnackbar(`Error with your order. Please try again.`, {variant: 'error'});
+					enqueueSnackbar(t('Cart.Snackbar.OrderError'), {variant: 'error'});
 					console.log(error);
 				})
 		}
 	}
 
 	const handleDigitalPaymentError = (error: any) => {
-		enqueueSnackbar(`Error with your order. Please try again.`, {variant: 'error'});
+		enqueueSnackbar(t('Cart.Snackbar.OrderError'), {variant: 'error'});
 		console.log(error);
 	}
 
 	const hanldeDigitalPaymentSuccess = () => {
 		cart.clearCart();
-		router.push("/");
-		enqueueSnackbar(`Your order has been placed and paid. We'll bring it as soon as possible!`, {variant: 'success'});
+		router.push(`/${businessId}`);
+		enqueueSnackbar(t('Cart.Snackbar.DigitalOrderPlaced'), {variant: 'success'});
 	
 	}
 
 
   return (
 	<Container>
-		<h1>Checkout</h1>
+		<h1>{t('Cart.Title')}</h1>
 
-		{cart.getNumberOfItems() == 0 && <h2>No products on the cart</h2>}
+		{cart.getNumberOfItems() == 0 && <h2>{t('Cart.CartEmpty.Title')}</h2>}
 
 		{cart.getNumberOfItems() != 0 &&
 
 			<Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
 
 				<Grid item xs={12} sm={6} md={6} lg={6}>
-					<h2>Order summary</h2>
+					<h2>{t('Cart.OrderSummary.Title')}</h2>
 					<CartContent />
 				</Grid>
 
 				<Grid item xs={12} sm={6} md={6} lg={6}>
 
-					<h2>Select your table</h2>
+					<h2>{t('Cart.SelectTable.Title')}</h2>
 					<Autocomplete
 						disablePortal
 						id="select-table"
 						options={tables}
 						value={selectedTable}
 						onChange={handleTableSelection}
-						renderInput={(params) => <TextField {...params} label="Select your table" variant="standard"/>}
+						renderInput={(params) => <TextField {...params} label={t('Cart.SelectTable.Placeholder')} variant="standard"/>}
 					/>
-					<h2>Your name</h2>
-					<TextField value={customerName} placeholder='How should we call you at the table?' onChange={(e) => {setCustomerName(e.target.value)}} fullWidth></TextField>
-					<h2>General note</h2>
-					<TextField value={generalNote} placeholder='Any comments for your order?' onChange={(e) => {setGeneralNote(e.target.value)}} fullWidth multiline></TextField>
-					<h2>Select payment method</h2>
+					<h2>{t('Cart.Username.Title')}</h2>
+					<TextField value={customerName} placeholder={t('Cart.Username.Placeholder')} onChange={(e) => {setCustomerName(e.target.value)}} fullWidth></TextField>
+					<h2>{t('Cart.GeneralNote.Title')}</h2>
+					<TextField value={generalNote} placeholder={t('Cart.GeneralNote.Placeholder')} onChange={(e) => {setGeneralNote(e.target.value)}} fullWidth multiline></TextField>
+					<h2>{t('Cart.PaymentMethod.Title')}</h2>
 					<RadioGroup value={paymentType}>
 						<List>
 							<ListItem>
 								<Radio value='presential' onChange={handleSelectPaymentType}/>
-									<Typography><Box display='inline' fontWeight='bold' component='span'>Presential payment</Box>: A waiter will come to your table to collect payment</Typography>
+									<Typography><Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Presential.Title')}</Box>{t('Cart.PaymentMethod.Presential.Subtitle')}</Typography>
 							</ListItem>
 							{canMakeDigitalPayments &&
 								<ListItem>
 									<Radio value='digital' onChange={handleSelectPaymentType} disabled={!canMakeDigitalPayments} />
-									<Typography><Box display='inline' fontWeight='bold' component='span'>Digital payment</Box>: Pay from the comfort of your phone and get your order sooner</Typography>
+									<Typography><Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Digital.Title')}</Box>{t('Cart.PaymentMethod.Digital.Subtitle')}</Typography>
 								</ListItem>
 							}
 
@@ -163,9 +172,9 @@ const Cart: NextPage = () => {
 					</RadioGroup>
 					{paymentType != '' &&
 						<>
-							<h2>Order</h2>
+							<h2>{t('Cart.Order.Title')}</h2>
 							{ paymentType == "presential" &&
-								<LoadingButton onClick={handleManualOrder} disabled={!(selectedTable && customerName && customerName.trim().length > 0)} title={'Order now'} loading={waitingForManualOrder} fullWidth/>
+								<LoadingButton onClick={handleManualOrder} disabled={!(selectedTable && customerName && customerName.trim().length > 0)} title={t('Cart.Order.PresentialPaymentButton')} loading={waitingForManualOrder} fullWidth/>
 							}
 							{ paymentType == "digital" && clientSecret == '' &&
 								<LinearProgress />

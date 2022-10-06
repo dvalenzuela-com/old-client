@@ -6,12 +6,10 @@ import {
     ABCreateOrderData,
     ABCreateOrderResponse, 
     ABResponseStatus} from "@dvalenzuela-com/alabarra-types";
-import { HttpsCallableResult } from "firebase/functions";
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
 import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "@Lib/functions";
 import { UserContext } from "./UserContext";
-import { BUSINESS_ID } from "@Lib/firestore";
 
 export type ProductOptionSelection = (ABProductOptionSingleSelectionSelectedValue | ABProductOptionMultipleSelectionSelectedValues);
 
@@ -23,9 +21,9 @@ export type Cart = {
     editLineWithId: (id: string, product: ABProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => void;
     calculateTotalPrice: (product: ABProduct, selectedOptions: ProductOptionSelection[], quantity: number) => number;
     clearCart: () => void;
-    createOrderWithManualPayment: (tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
-    createOrderWithDigitalPayment: (tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
-    createStripePaymentIntent: (orderId: string) => Promise<string>;
+    createOrderWithManualPayment: (businessId: string, tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
+    createOrderWithDigitalPayment: (businessId: string, tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
+    createStripePaymentIntent: (businessId: string, orderId: string) => Promise<string>;
     setSelectedTableId: (tableId: string | null) => void;
     getSelectedTableId: () => string | null;
 }
@@ -61,6 +59,7 @@ export type CartLine = {
 export const CartProvider = ({ children }: CartProviderProps) => {
 
     const CART_STORAGE_KEY = "cart";
+    const TABLE_SESSION_KEY = "persistedTable";
 
     const [numberOfItems, setNumberOfItems] = useState(0);
     const [cartLines, setCartLines] = useState<CartLine[]>([]);
@@ -189,7 +188,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         updateCartLines([]);
     }
 
-    const handleCreateOrderWithManualPayment = (tableName: string, customerName?: string, generalNote?: string): Promise<string> => {
+    const handleCreateOrderWithManualPayment = (businessId: string, tableName: string, customerName?: string, generalNote?: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
@@ -199,7 +198,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             })
 
             const newOrder: ABCreateOrderData = {
-                business_id: BUSINESS_ID,
+                business_id: businessId,
                 customer_id: user?.uid ?? "userid_not_found",
                 customer_nickname: customerName,
                 general_note: generalNote ?? null,
@@ -224,7 +223,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         });
     }
 
-    const handleCreateOrderWithDigitalPayment = (tableName: string, customerName?: string, generalNote?: string): Promise<string> => {
+    const handleCreateOrderWithDigitalPayment = (businessId: string, tableName: string, customerName?: string, generalNote?: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
@@ -234,7 +233,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             });
 
             const newOrder: ABCreateOrderData = {
-                business_id: BUSINESS_ID,
+                business_id: businessId,
                 customer_id: user?.uid ?? "userid_not_found",
                 customer_nickname: customerName,
                 general_note: generalNote ?? null,
@@ -259,12 +258,12 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         });
     }
 
-    const handleCreateStripePaymentIntent = (orderId: string): Promise<string> => {
+    const handleCreateStripePaymentIntent = (businessId: string, orderId: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
             var api_cart_lines: any[] = []
 
-            createStripePaymentIntent({business_id: BUSINESS_ID, order_id: orderId})
+            createStripePaymentIntent({business_id: businessId, order_id: orderId})
                 .then(result => {
                     if (!result) {
                         reject("undefined result");
@@ -284,14 +283,14 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     const handleSetSelectedTableId = (tableId: string | null) => {
 
         if (tableId != null && tableId.trim().length > 0) {
-            sessionStorage.setItem("persistedTable", tableId);
+            sessionStorage.setItem(TABLE_SESSION_KEY, tableId);
         } else {
-            sessionStorage.removeItem("persistedTable");
+            sessionStorage.removeItem(TABLE_SESSION_KEY);
         }
     }
 
     const handleGetSelectedTableId = (): string | null => {
-        return sessionStorage.getItem("persistedTable");
+        return sessionStorage.getItem(TABLE_SESSION_KEY);
     }
 
     return (
