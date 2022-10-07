@@ -21,7 +21,7 @@ const RootIndex: NextPage = () => {
             <Typography variant='h4'>We are serving the following stores:</Typography>
             <ul>
                 {VALID_BUSINESS_IDS.map(businessId => {
-                    return <li><Link href={`/${businessId}`}>{GET_SITE_CONFIG(businessId).TITLE}</Link></li>
+                    return <li key={businessId}><Link href={`/${businessId}`}>{GET_SITE_CONFIG(businessId).TITLE}</Link></li>
                 })}
             </ul>
         </Container>
