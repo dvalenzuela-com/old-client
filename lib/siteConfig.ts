@@ -44,7 +44,7 @@ export const GET_SITE_CONFIG = (businessId: string): SITE_CONFIG_TYPE => {
         }
         return {
             TITLE: "Alabarra.com",
-            BASE_COUNTRY: "CL",
+            BASE_COUNTRY: "DE",
             PRIMARY_COLOR: blue,
             CURRENCY: "clp",
         }

@@ -40,9 +40,11 @@ const Cart: NextPage = () => {
 		setSelectedTable(cart.getSelectedTableId());
 		// Fetch all available tables
 		(async () => {
-			setTables(await getAllTableIds(businessId));
+			const fetchedTables = await getAllTableIds(businessId);
+			console.log(fetchedTables);
+			setTables(fetchedTables);
 		})()
-	}, []);
+	}, [businessId]);
 
 	// use a dummy payment intent to see if a payment can be made
 	useEffect(() => {
