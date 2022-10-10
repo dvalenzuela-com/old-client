@@ -46,6 +46,7 @@ const defaultCart: Cart = {
 export const CartContext = createContext<Cart>(defaultCart)
 
 type CartProviderProps = {
+    businessId: string
     children: React.ReactNode
 }
 
@@ -56,9 +57,9 @@ export type CartLine = {
     options: ProductOptionSelection[];
     note: string | null;
 }
-export const CartProvider = ({ children }: CartProviderProps) => {
+export const CartProvider = ({ businessId, children }: CartProviderProps) => {
 
-    const CART_STORAGE_KEY = "cart";
+    const CART_STORAGE_KEY = `cart-${businessId}`;
     const TABLE_SESSION_KEY = "persistedTable";
 
     const [numberOfItems, setNumberOfItems] = useState(0);

@@ -5,8 +5,9 @@ import { Container } from '@mui/material';
 import { useProducts } from '@Lib/firestore';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
-import { CartContext } from '@Context/CartContext';
+import { CartContext, CartProvider } from '@Context/CartContext';
 import { VALID_BUSINESS_IDS } from '@Lib/siteConfig';
+import Layout from 'layout/Layout';
 
 const Index: NextPage = () => {
 
@@ -25,11 +26,11 @@ const Index: NextPage = () => {
 		}
 	}, [selectedTable]);
 
-  return (
-	<Container>
-		<ProductGrid products={products}></ProductGrid>
-	</Container>
-  )
+  	return (
+		<Container>
+			<ProductGrid products={products}></ProductGrid>
+		</Container>
+  	)
 }
 
 export default Index

@@ -9,6 +9,7 @@ import Layout from '../layout/Layout'
 import { UserContext, UserProvider } from '@Context/UserContext'
 import { useContext } from 'react'
 import './../i18n';
+import { useRouter } from 'next/router'
 
 
 // Call firestore to init it;
@@ -21,12 +22,15 @@ function MyApp({ Component, pageProps }: AppProps) {
 	// Initialize user
 	const user = useContext(UserContext).getUser();
 
+	const router = useRouter();
+	const businessId = router.query['business-id'] as string;
+
 	// import i18n (needs to be bundled ;))
   return (
     <>
 		<CssBaseline />
 		<UserProvider>
-			<CartProvider>
+			<CartProvider businessId={businessId}>
 				<Elements stripe={stripePromise}>
 					<Layout>
 						<Component {...pageProps} />
