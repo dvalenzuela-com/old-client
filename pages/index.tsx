@@ -1,11 +1,6 @@
 import type { NextPage } from 'next'
-
-import ProductGrid from '@Components/ProductGrid'
 import { Container, Typography } from '@mui/material';
-import { useProducts } from '@Lib/firestore';
 import { useRouter } from 'next/router';
-import { useContext, useEffect } from 'react';
-import { CartContext } from '@Context/CartContext';
 import { GET_SITE_CONFIG, VALID_BUSINESS_IDS } from '@Lib/siteConfig';
 import Link from 'next/link';
 

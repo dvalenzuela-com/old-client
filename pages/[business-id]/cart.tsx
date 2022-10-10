@@ -1,4 +1,4 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import { Autocomplete, Container, Grid, LinearProgress, List, ListItem, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import CartContent from '@Components/CartContent';
 import { useContext, useEffect, useState } from 'react';
@@ -11,7 +11,7 @@ import { useSnackbar } from "notistack";
 import { useRouter } from 'next/router';
 import LoadingButton from '@Components/LoadingButton';
 import { useTranslation } from 'react-i18next';
-import { GET_SITE_CONFIG } from '@Lib/siteConfig';
+import { GET_SITE_CONFIG, VALID_BUSINESS_IDS } from '@Lib/siteConfig';
 
 const Cart: NextPage = () => {
 
@@ -195,3 +195,21 @@ const Cart: NextPage = () => {
 }
 
 export default Cart
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    const businessId = context.query['business-id'] as string;
+    if (businessId && !VALID_BUSINESS_IDS.includes(businessId)) {
+        return {
+            redirect: {
+                permanent: true,
+                destination: "/"
+            },
+            props: {}
+        }
+    }
+
+    return {
+        props: {}
+    }
+}

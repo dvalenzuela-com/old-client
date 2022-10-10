@@ -1,4 +1,4 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 
 import ProductGrid from '@Components/ProductGrid'
 import { Container } from '@mui/material';
@@ -6,6 +6,7 @@ import { useProducts } from '@Lib/firestore';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 import { CartContext } from '@Context/CartContext';
+import { VALID_BUSINESS_IDS } from '@Lib/siteConfig';
 
 const Index: NextPage = () => {
 
@@ -32,3 +33,22 @@ const Index: NextPage = () => {
 }
 
 export default Index
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    const businessId = context.query['business-id'] as string;
+    if (businessId && !VALID_BUSINESS_IDS.includes(businessId)) {
+        return {
+            redirect: {
+                permanent: true,
+                destination: "/"
+            },
+            props: {}
+        }
+    }
+
+    return {
+        props: {}
+    }
+}
