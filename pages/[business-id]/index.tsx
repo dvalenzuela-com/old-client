@@ -2,20 +2,22 @@ import type { GetServerSideProps, NextPage } from 'next'
 
 import ProductGrid from '@Components/ProductGrid'
 import { Container } from '@mui/material';
-import { getAllBusinessIds, useProducts } from '@Lib/firestore';
+import { allProductsQuery, getAllBusinessIds, useProducts } from '@Lib/firestore';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 import { CartContext, CartProvider } from '@Context/CartContext';
 import { VALID_BUSINESS_IDS } from '@Lib/siteConfig';
 import Layout from 'layout/Layout';
+import { getDocs } from 'firebase/firestore';
+import { ABProduct } from '@dvalenzuela-com/alabarra-types';
 
-const Index: NextPage = () => {
+const Index: NextPage<{products: ABProduct[]}> = ({products}) => {
 
 	const router = useRouter();
 	const businessId = router.query['business-id'] as string;
 
-  	// Fetch all orders
-	const [products, productsLoading, productsError, productsSnapshot] = useProducts(businessId);
+	// Testing SSR
+	//const [products, productsLoading, productsError, productsSnapshot] = useProducts(businessId);
 
 	const cart = useContext(CartContext);
 	const selectedTable = router.query['t'] as string;
@@ -59,7 +61,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
+	// Testing SSR
+	const allProducts = (await getDocs(allProductsQuery(businessId))).docs.map(doc => doc.data());
     return {
-        props: {}
+        props: {products: JSON.parse(JSON.stringify(allProducts))}
     }
 }
