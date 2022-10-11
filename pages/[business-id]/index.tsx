@@ -27,9 +27,12 @@ const Index: NextPage = () => {
 	}, [selectedTable]);
 
   	return (
-		<Container>
-			<ProductGrid products={products}></ProductGrid>
-		</Container>
+		<Layout>
+			<Container>
+				<ProductGrid products={products}></ProductGrid>
+			</Container>
+		</Layout>
+
   	)
 }
 

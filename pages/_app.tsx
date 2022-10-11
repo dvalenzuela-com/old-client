@@ -10,6 +10,7 @@ import { UserContext, UserProvider } from '@Context/UserContext'
 import { useContext } from 'react'
 import './../i18n';
 import { useRouter } from 'next/router'
+import { SnackbarProvider } from 'notistack'
 
 
 // Call firestore to init it;
@@ -32,9 +33,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 		<UserProvider>
 			<CartProvider businessId={businessId}>
 				<Elements stripe={stripePromise}>
-					<Layout>
-						<Component {...pageProps} />
-					</Layout>
+						<SnackbarProvider>
+							<Component {...pageProps} />
+						</SnackbarProvider> 
 				</Elements>
 			</CartProvider>
 		</UserProvider>

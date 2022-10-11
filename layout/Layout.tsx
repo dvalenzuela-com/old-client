@@ -1,4 +1,3 @@
-import { SnackbarProvider } from "notistack";
 import { useState } from "react";
 import Navbar from "@Components/Navbar";
 import { GET_SITE_CONFIG } from "@Lib/siteConfig";
@@ -25,12 +24,10 @@ const Layout = ({ children }: LayoutProps) => {
 
     return (
         <>
-            <SnackbarProvider>
-                <ThemeProvider theme={theme}>
-                    <Navbar title={SITE_CONFIG.TITLE} />
-                    {children}
-                </ThemeProvider>
-            </SnackbarProvider> 
+            <ThemeProvider theme={theme}>
+                <Navbar title={SITE_CONFIG.TITLE} />
+                {children}
+            </ThemeProvider>
 		</>
     );
 }

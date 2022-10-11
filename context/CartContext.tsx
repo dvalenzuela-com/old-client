@@ -62,7 +62,6 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     const CART_STORAGE_KEY = `cart-${businessId}`;
     const TABLE_SESSION_KEY = "persistedTable";
 
-    const [numberOfItems, setNumberOfItems] = useState(0);
     const [cartLines, setCartLines] = useState<CartLine[]>([]);
 
     const user = useContext(UserContext).getUser();
@@ -79,7 +78,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
         if (localCart) {
             setCartLines(localCart);
         }
-    }, []);
+    }, [CART_STORAGE_KEY]);
 
 
     const updateCartLines = (cartLines: CartLine[]) => {

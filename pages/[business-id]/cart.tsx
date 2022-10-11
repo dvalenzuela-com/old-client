@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import LoadingButton from '@Components/LoadingButton';
 import { useTranslation } from 'react-i18next';
 import { GET_SITE_CONFIG, VALID_BUSINESS_IDS } from '@Lib/siteConfig';
+import Layout from 'layout/Layout';
 
 const Cart: NextPage = () => {
 
@@ -127,70 +128,72 @@ const Cart: NextPage = () => {
 
 
   return (
-	<Container>
-		<h1>{t('Cart.Title')}</h1>
+	<Layout>
+		<Container>
+			<h1>{t('Cart.Title')}</h1>
 
-		{cart.getNumberOfItems() == 0 && <h2>{t('Cart.CartEmpty.Title')}</h2>}
+			{cart.getNumberOfItems() == 0 && <h2>{t('Cart.CartEmpty.Title')}</h2>}
 
-		{cart.getNumberOfItems() != 0 &&
+			{cart.getNumberOfItems() != 0 &&
 
-			<Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
+				<Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
 
-				<Grid item xs={12} sm={6} md={6} lg={6}>
-					<h2>{t('Cart.OrderSummary.Title')}</h2>
-					<CartContent />
-				</Grid>
+					<Grid item xs={12} sm={6} md={6} lg={6}>
+						<h2>{t('Cart.OrderSummary.Title')}</h2>
+						<CartContent />
+					</Grid>
 
-				<Grid item xs={12} sm={6} md={6} lg={6}>
+					<Grid item xs={12} sm={6} md={6} lg={6}>
 
-					<h2>{t('Cart.SelectTable.Title')}</h2>
-					<Autocomplete
-						disablePortal
-						id="select-table"
-						options={tables}
-						value={selectedTable}
-						onChange={handleTableSelection}
-						renderInput={(params) => <TextField {...params} label={t('Cart.SelectTable.Placeholder')} variant="standard"/>}
-					/>
-					<h2>{t('Cart.Username.Title')}</h2>
-					<TextField value={customerName} placeholder={t('Cart.Username.Placeholder')} onChange={(e) => {setCustomerName(e.target.value)}} fullWidth></TextField>
-					<h2>{t('Cart.GeneralNote.Title')}</h2>
-					<TextField value={generalNote} placeholder={t('Cart.GeneralNote.Placeholder')} onChange={(e) => {setGeneralNote(e.target.value)}} fullWidth multiline></TextField>
-					<h2>{t('Cart.PaymentMethod.Title')}</h2>
-					<RadioGroup value={paymentType}>
-						<List>
-							<ListItem>
-								<Radio value='presential' onChange={handleSelectPaymentType}/>
-									<Typography><Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Presential.Title')}</Box>{t('Cart.PaymentMethod.Presential.Subtitle')}</Typography>
-							</ListItem>
-							{canMakeDigitalPayments &&
+						<h2>{t('Cart.SelectTable.Title')}</h2>
+						<Autocomplete
+							disablePortal
+							id="select-table"
+							options={tables}
+							value={selectedTable}
+							onChange={handleTableSelection}
+							renderInput={(params) => <TextField {...params} label={t('Cart.SelectTable.Placeholder')} variant="standard"/>}
+						/>
+						<h2>{t('Cart.Username.Title')}</h2>
+						<TextField value={customerName} placeholder={t('Cart.Username.Placeholder')} onChange={(e) => {setCustomerName(e.target.value)}} fullWidth></TextField>
+						<h2>{t('Cart.GeneralNote.Title')}</h2>
+						<TextField value={generalNote} placeholder={t('Cart.GeneralNote.Placeholder')} onChange={(e) => {setGeneralNote(e.target.value)}} fullWidth multiline></TextField>
+						<h2>{t('Cart.PaymentMethod.Title')}</h2>
+						<RadioGroup value={paymentType}>
+							<List>
 								<ListItem>
-									<Radio value='digital' onChange={handleSelectPaymentType} disabled={!canMakeDigitalPayments} />
-									<Typography><Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Digital.Title')}</Box>{t('Cart.PaymentMethod.Digital.Subtitle')}</Typography>
+									<Radio value='presential' onChange={handleSelectPaymentType}/>
+										<Typography><Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Presential.Title')}</Box>{t('Cart.PaymentMethod.Presential.Subtitle')}</Typography>
 								</ListItem>
-							}
+								{canMakeDigitalPayments &&
+									<ListItem>
+										<Radio value='digital' onChange={handleSelectPaymentType} disabled={!canMakeDigitalPayments} />
+										<Typography><Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Digital.Title')}</Box>{t('Cart.PaymentMethod.Digital.Subtitle')}</Typography>
+									</ListItem>
+								}
 
-						</List>
-					</RadioGroup>
-					{paymentType != '' &&
-						<>
-							<h2>{t('Cart.Order.Title')}</h2>
-							{ paymentType == "presential" &&
-								<LoadingButton onClick={handleManualOrder} disabled={!(selectedTable && customerName && customerName.trim().length > 0)} title={t('Cart.Order.PresentialPaymentButton')} loading={waitingForManualOrder} fullWidth/>
-							}
-							{ paymentType == "digital" && clientSecret == '' &&
-								<LinearProgress />
-							}
-							{ paymentType == "digital" && clientSecret != '' && 
-							// TODO: disable when no table is selected
-								<StripeButton amount={cart.getCartTotal()} clientSecret={clientSecret} onPaymentError={handleDigitalPaymentError} onPaymentSuccess={hanldeDigitalPaymentSuccess} />
-							}
-						</>
-					}
+							</List>
+						</RadioGroup>
+						{paymentType != '' &&
+							<>
+								<h2>{t('Cart.Order.Title')}</h2>
+								{ paymentType == "presential" &&
+									<LoadingButton onClick={handleManualOrder} disabled={!(selectedTable && customerName && customerName.trim().length > 0)} title={t('Cart.Order.PresentialPaymentButton')} loading={waitingForManualOrder} fullWidth/>
+								}
+								{ paymentType == "digital" && clientSecret == '' &&
+									<LinearProgress />
+								}
+								{ paymentType == "digital" && clientSecret != '' && 
+								// TODO: disable when no table is selected
+									<StripeButton amount={cart.getCartTotal()} clientSecret={clientSecret} onPaymentError={handleDigitalPaymentError} onPaymentSuccess={hanldeDigitalPaymentSuccess} />
+								}
+							</>
+						}
+					</Grid>
 				</Grid>
-			</Grid>
-		}
-	</Container>
+			}
+		</Container>
+	</Layout>
   )
 }
 
