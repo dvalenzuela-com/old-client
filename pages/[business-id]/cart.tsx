@@ -3,7 +3,7 @@ import { Autocomplete, Container, Grid, LinearProgress, List, ListItem, Radio, R
 import CartContent from '@Components/CartContent';
 import { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
-import { getAllTableIds } from '@Lib/firestore';
+import { getAllBusinessIds, getAllTableIds } from '@Lib/firestore';
 import StripeButton from '@Components/StripeButton';
 import { CartContext } from '@Context/CartContext';
 import { useStripe } from '@stripe/react-stripe-js';
@@ -198,8 +198,15 @@ export default Cart
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
+	context.res.setHeader(
+		'Cache-Control',
+		'public, s-maxage=60'
+	);
+
     const businessId = context.query['business-id'] as string;
-    if (businessId && !VALID_BUSINESS_IDS.includes(businessId)) {
+
+	const businessesIds = await getAllBusinessIds();
+    if (businessId && !businessesIds.includes(businessId)) {
         return {
             redirect: {
                 permanent: true,

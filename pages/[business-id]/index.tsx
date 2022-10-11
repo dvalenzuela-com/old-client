@@ -2,7 +2,7 @@ import type { GetServerSideProps, NextPage } from 'next'
 
 import ProductGrid from '@Components/ProductGrid'
 import { Container } from '@mui/material';
-import { useProducts } from '@Lib/firestore';
+import { getAllBusinessIds, useProducts } from '@Lib/firestore';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 import { CartContext, CartProvider } from '@Context/CartContext';
@@ -38,8 +38,15 @@ export default Index
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
+	context.res.setHeader(
+		'Cache-Control',
+		'public, s-maxage=60'
+	);
+
     const businessId = context.query['business-id'] as string;
-    if (businessId && !VALID_BUSINESS_IDS.includes(businessId)) {
+	
+	const businessesIds = await getAllBusinessIds();
+    if (businessId && !businessesIds.includes(businessId)) {
         return {
             redirect: {
                 permanent: true,

@@ -11,6 +11,7 @@ const categoriesCollection = (businessId: string) => collection(firestore, `busi
 const productsCollection = (businessId: string) => collection(firestore, `businesses/${businessId}/products`).withConverter(ProductConverter);
 const tablesCollection = (businessId: string) => collection(firestore, `businesses/${businessId}/tables`).withConverter(TableConverter);
 const usersCollection = collection(firestore, `users`);
+const businessesCollection = collection(firestore, `businesses`);
 
  export const allProductsQuery = (businessId: string) => query<ABProduct>(productsCollection(businessId), orderBy('created_at', 'desc'));
  export const allCategoriesQuery = (businessId: string) => query<ABCategory>(categoriesCollection(businessId), orderBy('created_at', 'desc'));
@@ -32,8 +33,13 @@ const usersCollection = collection(firestore, `users`);
  * Tables
  */
 
-export const getAllTableIds = async (businessId: string) => {
+ export const getAllTableIds = async (businessId: string) => {
     const results = await getDocs(tablesCollection(businessId));
+    return results.docs.map(doc => doc.id)
+}
+
+export const getAllBusinessIds = async () => {
+    const results = await getDocs(businessesCollection);
     return results.docs.map(doc => doc.id)
 }
 

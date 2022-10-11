@@ -11,7 +11,7 @@ interface SITE_CONFIG_TYPE {
 
 export const VALID_BUSINESS_IDS = [
     "g056ukCpnMDv2hej3tlP",
-    "Cattus"
+    "yvXbuPCwC1kwkd5h05qK"
 ]
 
 // TODO: Turn this into a react hook
@@ -28,7 +28,7 @@ export const GET_SITE_CONFIG = (businessId: string): SITE_CONFIG_TYPE => {
             BASE_COUNTRY: "DE",
             CURRENCY: "eur",
         }
-    } else if (businessId == "Cattus") {
+    } else if (businessId == "yvXbuPCwC1kwkd5h05qK") {
         if(i18n.language != "es") {
             i18n.changeLanguage("es");
         }
