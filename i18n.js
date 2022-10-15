@@ -21,6 +21,11 @@ i18n
 		resources: {
 			en: {
 				translation: {
+					Layout: {
+						PoweredBy: "Powered by",
+						Impressum: "Impressum",
+						Legals: "Legals"
+					},
 					CartContent: {
 						TableHeader: {
 							Count:  "Count",
@@ -101,6 +106,11 @@ i18n
 			},
 			es: {
 				translation: {
+					Layout: {
+						PoweredBy: "Powered by",
+						Impressum: "Impressum",
+						Legals: "Legals"
+					},
 					CartContent: {
 						TableHeader: {
 							Count:  "Cantidad",
