@@ -3,6 +3,7 @@ import { Container, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { GET_SITE_CONFIG, VALID_BUSINESS_IDS } from '@Lib/siteConfig';
 import Link from 'next/link';
+import Footer from '@Components/Footer';
 
 const RootIndex: NextPage = () => {
 
@@ -19,6 +20,7 @@ const RootIndex: NextPage = () => {
                     return <li key={businessId}><Link href={`/${businessId}`}>{GET_SITE_CONFIG(businessId).TITLE}</Link></li>
                 })}
             </ul>
+            <Footer />
         </Container>
     )
 }
