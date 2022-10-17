@@ -24,7 +24,7 @@ const ProductGrid = (props: ProductGridProps) => {
     }
     return (
         <>
-            <Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
+            <Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch' marginTop={1}>
                 {products && products.map((product) => {
                     return (
                         <ProductCard key={product.id} product={product} onClick={() => {handleProductClick(product)}} />
