@@ -11,7 +11,8 @@ interface SITE_CONFIG_TYPE {
 
 export const VALID_BUSINESS_IDS = [
     "g056ukCpnMDv2hej3tlP",
-    "yvXbuPCwC1kwkd5h05qK"
+    "yvXbuPCwC1kwkd5h05qK",
+    "i3kMMubfVD7t0Xykl3HV"
 ]
 
 // TODO: Turn this into a react hook
@@ -36,6 +37,16 @@ export const GET_SITE_CONFIG = (businessId: string): SITE_CONFIG_TYPE => {
             TITLE: "Pizzeria Cattus",
             BASE_COUNTRY: "DE", // Stripe does not support CL 🥲
             PRIMARY_COLOR: red,
+            CURRENCY: "clp",
+        }
+    } else if (businessId == "i3kMMubfVD7t0Xykl3HV") {
+        if(i18n.language != "es") {
+            i18n.changeLanguage("es");
+        }
+        return {
+            TITLE: "Amador",
+            BASE_COUNTRY: "DE", // Stripe does not support CL 🥲
+            PRIMARY_COLOR: blue,
             CURRENCY: "clp",
         }
     } else {
