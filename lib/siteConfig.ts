@@ -44,9 +44,9 @@ export const GET_SITE_CONFIG = (businessId: string): SITE_CONFIG_TYPE => {
             i18n.changeLanguage("es");
         }
         return {
-            TITLE: "Amador",
+            TITLE: "Burger King",
             BASE_COUNTRY: "DE", // Stripe does not support CL 🥲
-            PRIMARY_COLOR: blue,
+            PRIMARY_COLOR: red,
             CURRENCY: "clp",
         }
     } else {
