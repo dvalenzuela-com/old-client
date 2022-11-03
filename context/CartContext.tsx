@@ -5,7 +5,9 @@ import {
     ABProductOptionMultipleSelectionSelectedValues,
     ABCreateOrderData,
     ABCreateOrderResponse, 
-    ABResponseStatus} from "@dvalenzuela-com/alabarra-types";
+    ABResponseStatus,
+    ABCreateOrderDataCartLine,
+    ABFunctionCalculatePrice} from "@dvalenzuela-com/alabarra-types";
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
 import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "@Lib/functions";
@@ -139,43 +141,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     }
 
     const calculateTotalPrice = (product: ABProduct, selectedOptions: ProductOptionSelection[], quantity: number): number => {
-        //console.log(`calculateTotalPrice(${product}, ${selectedOptions}, ${quantity})`)
-        //console.log(selectedOptions);
-        // base price
-        let unitPrice = product.price;
-
-        // Go trough every selected option
-        selectedOptions.forEach((selectedOption, index) => {
-
-            // Original product option
-            if (product.options) {
-                const productOption = product.options[index];
-
-                if (productOption.type == ABProductOptionsType.SINGLE_SELECTION) {
-                    //Get selected option
-                    const singleSelectedOption = selectedOptions[index] as ABProductOptionSingleSelectionSelectedValue;
-
-                    if (singleSelectedOption) {
-                        // Find product option that is selected to find price adjustment value
-                        const originOption = productOption.possible_values.find(possible_value => possible_value.title == singleSelectedOption);
-                        unitPrice += originOption?.price_adjustment ?? 0;
-                    }
-                } else if (productOption.type == ABProductOptionsType.MULTIPLE_SELECTION) {
-                    
-                    //Get selected option
-                    const selectedValues = selectedOptions[index] as ABProductOptionMultipleSelectionSelectedValues;
-                    if (selectedValues) {
-                        selectedValues.forEach((selectedValue, index) => {
-                            if (selectedValue) {
-                                unitPrice += productOption.possible_values[index].price_adjustment;
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
-        return quantity * unitPrice;
+        return quantity * ABFunctionCalculatePrice(product.price, selectedOptions, product.options ?? []);
     }
 
     const getCartTotal = () => {
@@ -191,11 +157,17 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     const handleCreateOrderWithManualPayment = (businessId: string, tableName: string, customerName?: string, generalNote?: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
-            var api_cart_lines: any[] = []
+            var api_cart_lines: ABCreateOrderDataCartLine[] = []
 
             cartLines.forEach( line => {
-                api_cart_lines.push({product_id: line.product.id, quantity: line.quantity, note: line.note});
-            })
+                
+                api_cart_lines.push({
+                    product_id: line.product.id,
+                    selected_options: line.options,
+                    quantity: line.quantity,
+                    note: line.note,
+                });
+            });
 
             const newOrder: ABCreateOrderData = {
                 business_id: businessId,
@@ -226,10 +198,15 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     const handleCreateOrderWithDigitalPayment = (businessId: string, tableName: string, customerName?: string, generalNote?: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
-            var api_cart_lines: any[] = []
+            var api_cart_lines: ABCreateOrderDataCartLine[] = []
 
             cartLines.forEach( line => {
-                api_cart_lines.push({product_id: line.product.id, quantity: line.quantity, note: line.note});
+                api_cart_lines.push({
+                    product_id: line.product.id,
+                    selected_options: line.options,
+                    quantity: line.quantity,
+                    note: line.note
+                });
             });
 
             const newOrder: ABCreateOrderData = {
