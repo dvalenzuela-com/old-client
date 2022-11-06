@@ -7,29 +7,22 @@ const nextConfig = {
 	}
 }
 
-module.exports = nextConfig;
 
-
-/*
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-    enabled: process.env.ANALYZE === 'true'
-})
-  
-module.exports = withBundleAnalyzer({
-    env: {
-        NEXT_PUBLIC_ENV: 'PRODUCTION', //your next configs goes here
-    },
-})
-*/
-
-/*
 if (process.env.ANALYZE === 'true') {
 	console.warn("----> EXCECUTING BUNDLE ANALYSER <----");
 	const withBundleAnalyzer = require('@next/bundle-analyzer')({
-		enabled: process.env.ANALYZE === 'true',
-		openAnalyzer: false
+		enabled: process.env.ANALYZE === 'true'
 	});
-	module.exports = withBundleAnalyzer({})
+	module.exports = withBundleAnalyzer(nextConfig)
+} else {
+	module.exports = nextConfig;
 }
+
+/*
+module.exports = withBundleAnalyzer({
+		env: {
+			NEXT_PUBLIC_ENV: 'PRODUCTION', //your next configs goes here
+		},
+	})
 
 */
