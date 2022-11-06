@@ -57,12 +57,12 @@ export default Index
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
-	/*
+	
 	context.res.setHeader(
 		'Cache-Control',
-		'public, s-maxage=60'
+		'public, s-maxage=300'
 	);
-	*/
+	
     const businessId = context.query['business-id'] as string;
 	
 	const businessesIds = await getAllBusinessIds();
