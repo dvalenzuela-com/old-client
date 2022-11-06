@@ -35,7 +35,7 @@ const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) 
                 {props.productOption.possible_values.map((possible_value, index) => {
 
                     return (
-                        <Grid item xs={12}>
+                        <Grid item xs={12} key={index}>
                             <Grid container alignItems="stretch" justifyContent="space-between">
                                 <Grid item sx={{display: "flex", justifyContent: "center", alignItems: "center"}} >
                                     <Box>
