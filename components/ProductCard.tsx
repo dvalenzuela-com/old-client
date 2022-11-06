@@ -2,6 +2,7 @@ import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 import { ABProduct } from "@dvalenzuela-com/alabarra-types";
 import { useContext, useState } from "react";
 import { CartContext } from "@Context/CartContext";
+import Image from "next/image";
 
 type ProductCardProps = {
     product: ABProduct;
@@ -55,7 +56,11 @@ const ProductCard = (props: ProductCardProps) => {
         <>
             <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Card style={cardStyles} onClick={handleOnClick}>
-                    <CardMedia component='img' image={props.product.image_url} alt={props.product.title} style={cardMediaStyles}></CardMedia>
+                    <CardMedia style={cardMediaStyles}>
+                        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                            <Image src={props.product.image_url} layout='fill' objectFit="cover" />
+                        </div>
+                    </CardMedia>
                     <CardContent style={cardContentStyles}>
                         <Typography variant='h5'>{props.product.title}</Typography>
                         <Typography variant="body2">{props.product.description}</Typography>
