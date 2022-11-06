@@ -161,12 +161,12 @@ const Cart: NextPage = () => {
 						<h2>{t('Cart.PaymentMethod.Title')}</h2>
 						<RadioGroup value={paymentType}>
 							<List>
-								<ListItem>
-									<Radio value='presential' onChange={handleSelectPaymentType}/>
+								<ListItem disablePadding={true}>
+									<Radio value='presential' onChange={handleSelectPaymentType} />
 										<Typography><Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Presential.Title')}</Box>{t('Cart.PaymentMethod.Presential.Subtitle')}</Typography>
 								</ListItem>
 								{canMakeDigitalPayments &&
-									<ListItem>
+									<ListItem disablePadding={true}>
 										<Radio value='digital' onChange={handleSelectPaymentType} disabled={!canMakeDigitalPayments} />
 										<Typography><Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Digital.Title')}</Box>{t('Cart.PaymentMethod.Digital.Subtitle')}</Typography>
 									</ListItem>
