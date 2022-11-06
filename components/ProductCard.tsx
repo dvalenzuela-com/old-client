@@ -56,9 +56,9 @@ const ProductCard = (props: ProductCardProps) => {
         <>
             <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Card style={cardStyles} onClick={handleOnClick}>
-                    <CardMedia style={cardMediaStyles}>
+                    <CardMedia title={props.product.title} style={cardMediaStyles}>
                         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                            <Image src={props.product.image_url} layout='fill' objectFit="cover" />
+                            <Image src={props.product.image_url} layout='fill' objectFit="cover" alt={props.product.title} />
                         </div>
                     </CardMedia>
                     <CardContent style={cardContentStyles}>

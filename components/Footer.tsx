@@ -1,6 +1,8 @@
 import { Box, Button, Grid, Modal, Typography } from "@mui/material";
+import Image from "next/image";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import footerLogo from 'public/logo-4-white.png'
 
 const Footer = () => {
 
@@ -30,7 +32,7 @@ const Footer = () => {
                             {t('Layout.PoweredBy')}
                         </Grid>
                         <Grid item>
-                            <img src="/logo-4-white.png" height={32} style={{ marginTop: 6 }} />
+                            <Image src={footerLogo} height={32} width={158} alt="Alabarra.com" />
                         </Grid>
                     </Grid>
                 </Grid>
