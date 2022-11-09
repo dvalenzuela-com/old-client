@@ -1,4 +1,4 @@
-import type { GetServerSideProps, NextPage } from 'next'
+import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from 'next'
 
 import ProductGrid from '@Components/ProductGrid'
 import { Container } from '@mui/material';
@@ -47,31 +47,13 @@ const Index: NextPage<{products: ABProduct[], businessConfig: ABBusinessConfig}>
   	)
 }
 
-export default Index
+export default Index;
 
+ 
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getStaticProps: GetStaticProps = async (context) => {
 	
-    const businessId = context.query['business-id'] as string;
-	
-	// Redirect wrong business Ids to main page
-	const businessesIds = await getAllBusinessIds();
-    if (businessId && !businessesIds.includes(businessId)) {
-        return {
-            redirect: {
-                permanent: true,
-                destination: "/"
-            },
-            props: {}
-        }
-    }
-
-	// Fetch data about the business
-
-	context.res.setHeader(
-		'Cache-Control',
-		'public, s-maxage=300'
-	);
+    const businessId = (context.params as any)['business-id'] as string;
 
 	// Testing SSR
 	const allProducts = (await getDocs(allProductsQuery(businessId))).docs.map(doc => doc.data());
@@ -83,4 +65,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			businessConfig: businessConfig
 		}
     }
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+	
+	const businessesIds = await getAllBusinessIds();
+
+	const paths = businessesIds.map(businessId => {
+		return {
+			params: {'business-id': businessId}
+		}
+	});
+
+	return {
+		paths,
+		fallback: 'blocking'
+	}
 }
