@@ -1,10 +1,11 @@
 import { Grid, Radio, RadioGroup, Typography } from "@mui/material";
 import { ABProductOptionSingleSelection, ABProductOptionSingleSelectionSelectedValue } from "@dvalenzuela-com/alabarra-types";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
-import { CurrencyNumberFormat } from "@Lib/helper";
 import { red } from "@mui/material/colors";
 import { Box } from "@mui/system";
+import CurrencyText from "@Components/CurrencyText";
+import { BusinessConfigContext } from "@Context/BusinessConfigContext";
 
 type ProductOptionSingleSelectionProps = {
     index: number;
@@ -15,6 +16,7 @@ type ProductOptionSingleSelectionProps = {
 
 const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) => {
 
+    const businessConfig = useContext(BusinessConfigContext);
     const [selectedValue, setSelectedValue] = useState('');
 
     useEffect(() => {
@@ -50,7 +52,7 @@ const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) 
                                     {possible_value.price_adjustment != 0 &&
                                             (<Typography variant='body2'>
                                                 {possible_value.price_adjustment > 0 ? "+" : "-"}&nbsp;
-                                                <NumberFormat value={Math.abs(possible_value.price_adjustment)} displayType='text' {...CurrencyNumberFormat} />
+                                                <CurrencyText value={Math.abs(possible_value.price_adjustment)} businessConfig={businessConfig} />
                                             </Typography>)}
                                 </Grid>
                             </Grid>
@@ -65,21 +67,4 @@ const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) 
     );
 }
 
-export default ProductOptionSingleSelection
-
-/*
-
-<Grid container key={index} alignItems="stretch">   
-    <Grid item>
-        <Radio value={possible_value.title} onChange={handleChange} size='small'/>
-        <Typography variant='body2' display='inline'>{possible_value.title}</Typography>
-    </Grid>
-    <Grid item>
-        {possible_value.price_adjustment != 0 &&
-            (<Typography variant='body2' sx={{height: 38}}>
-                + <NumberFormat value={possible_value.price_adjustment} displayType='text' {...CurrencyNumberFormat} />
-            </Typography>)}
-    </Grid>
-</Grid>
-
-*/
+export default ProductOptionSingleSelection;

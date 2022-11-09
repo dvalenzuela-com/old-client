@@ -5,12 +5,11 @@ import { CartProvider } from '@Context/CartContext'
 import firestore from '../lib/firestore'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
-import Layout from '../layout/Layout'
 import { UserContext, UserProvider } from '@Context/UserContext'
 import { useContext } from 'react'
-import './../i18n';
 import { useRouter } from 'next/router'
 import { SnackbarProvider } from 'notistack'
+import './../i18n';
 
 
 // Call firestore to init it;

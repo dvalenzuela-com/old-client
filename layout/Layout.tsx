@@ -1,34 +1,37 @@
 import Navbar from "@Components/Navbar";
-import { GET_SITE_CONFIG } from "@Lib/siteConfig";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { useRouter } from "next/router";
 import Footer from "@Components/Footer";
+import { ABBusinessConfig } from "@dvalenzuela-com/alabarra-types";
+import { BusinessConfigContext } from "@Context/BusinessConfigContext";
+import './../i18n';
+import i18n from "./../i18n";
 
 type LayoutProps = {
-    children: React.ReactNode
+    children: React.ReactNode,
+    businessConfig: ABBusinessConfig
 }
-const Layout = ({ children }: LayoutProps) => {
 
+const Layout = ({ children, businessConfig }: LayoutProps) => {
 
-    const router = useRouter();
-	const businessId = router.query['business-id'] as string;
+    if(i18n.language != businessConfig.main_language) {
+        i18n.changeLanguage(businessConfig.main_language);
+    }
     
-    const SITE_CONFIG = GET_SITE_CONFIG(businessId);
-
     const theme = createTheme({
         palette: {
-            primary: SITE_CONFIG.PRIMARY_COLOR
+            ...businessConfig.colors
         }
     });
-
+    
     return (
         <>
-            <ThemeProvider theme={theme}>
-                <Navbar title={SITE_CONFIG.TITLE} />
-                {children}
-
-                <Footer />
-            </ThemeProvider>
+            <BusinessConfigContext.Provider value={businessConfig}>
+                <ThemeProvider theme={theme}>
+                    <Navbar title={businessConfig.business_name} />
+                    {children}
+                    <Footer />
+                </ThemeProvider>
+            </BusinessConfigContext.Provider>
 		</>
     );
       

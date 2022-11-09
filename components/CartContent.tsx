@@ -4,13 +4,17 @@ import { CartContext, CartLine, ProductOptionSelection } from "@Context/CartCont
 import NumberFormat from 'react-number-format';
 import ProductDialog, { ProductDialogMode } from "./ProductDialog";
 import { ABProduct, ABProductOptionMultipleSelectionSelectedValues, ABProductOptionSingleSelectionSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
-import { CurrencyNumberFormat } from "@Lib/helper";
 import { useTranslation } from "react-i18next";
+import CurrencyText from "./CurrencyText";
+import { BusinessConfigContext } from "@Context/BusinessConfigContext";
 
 
 const CartContent = () => {
 
     const cart = useContext(CartContext);
+
+    const businessConfig = useContext(BusinessConfigContext);
+
     const { t } = useTranslation();
 
     const [activeProduct, setActiveProduct] = useState<ABProduct | undefined>(undefined);
@@ -90,7 +94,7 @@ const CartContent = () => {
                                         </>
                                     </TableCell>
                                     <TableCell onClick={() => {handleRowClick(line)}}>
-                                        <NumberFormat value={cart.calculateTotalPrice(line.product, line.options, line.quantity)} displayType='text' {...CurrencyNumberFormat} />
+                                        <CurrencyText value={cart.calculateTotalPrice(line.product, line.options, line.quantity)} businessConfig={businessConfig} />
                                     </TableCell>
                                 </TableRow>
                             )
@@ -99,7 +103,7 @@ const CartContent = () => {
                         <TableRow>
                             <TableCell></TableCell>
                             <TableCell>{t('CartContent.TableFooter.Total')}</TableCell>
-                            <TableCell><NumberFormat value={cart.getCartTotal()} displayType='text' {...CurrencyNumberFormat}/></TableCell>
+                            <TableCell><CurrencyText value={cart.getCartTotal()} businessConfig={businessConfig} /></TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>

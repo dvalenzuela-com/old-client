@@ -3,7 +3,7 @@ import { Autocomplete, Container, Grid, LinearProgress, List, ListItem, Radio, R
 import CartContent from '@Components/CartContent';
 import { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
-import { getAllBusinessIds, getAllTableIds } from '@Lib/firestore';
+import { getAllBusinessIds, getAllTableIds, getBusinessConfig } from '@Lib/firestore';
 import StripeButton from '@Components/StripeButton';
 import { CartContext } from '@Context/CartContext';
 import { useStripe } from '@stripe/react-stripe-js';
@@ -11,17 +11,15 @@ import { useSnackbar } from "notistack";
 import { useRouter } from 'next/router';
 import LoadingButton from '@Components/LoadingButton';
 import { useTranslation } from 'react-i18next';
-import { GET_SITE_CONFIG, VALID_BUSINESS_IDS } from '@Lib/siteConfig';
 import Layout from 'layout/Layout';
+import { ABBusinessConfig } from '@dvalenzuela-com/alabarra-types';
 
-const Cart: NextPage = () => {
+const Cart: NextPage<{businessConfig: ABBusinessConfig}> = ({businessConfig}) => {
 
 	const { t } = useTranslation();
 
 	const router = useRouter();
 	const businessId = router.query['business-id'] as string;
-
-	const SITE_CONFIG = GET_SITE_CONFIG(businessId);
 
 	const {enqueueSnackbar} = useSnackbar();
 	const cart = useContext(CartContext);
@@ -51,8 +49,8 @@ const Cart: NextPage = () => {
 	useEffect(() => {
 		if (stripe) {
 			const pr = stripe.paymentRequest({
-				country: SITE_CONFIG.BASE_COUNTRY,
-				currency: SITE_CONFIG.CURRENCY,
+				country: businessConfig.country,
+				currency: businessConfig.currency.toLowerCase(),
 				total: {
 					label: t('StripeButton.Order.Label'),
 					amount: cart.getCartTotal(),
@@ -128,7 +126,7 @@ const Cart: NextPage = () => {
 
 
   return (
-	<Layout>
+	<Layout businessConfig={businessConfig}>
 		<Container>
 			<h1>{t('Cart.Title')}</h1>
 
@@ -200,15 +198,10 @@ const Cart: NextPage = () => {
 export default Cart
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-
-	/*
-	context.res.setHeader(
-		'Cache-Control',
-		'public, s-maxage=60'
-	);
-	*/
+	
     const businessId = context.query['business-id'] as string;
-
+	
+	// Redirect wrong business Ids to main page
 	const businessesIds = await getAllBusinessIds();
     if (businessId && !businessesIds.includes(businessId)) {
         return {
@@ -220,7 +213,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    return {
-        props: {}
+	// Fetch data about the business
+
+	context.res.setHeader(
+		'Cache-Control',
+		'public, s-maxage=300'
+	);
+
+	const businessConfig = await getBusinessConfig(businessId);
+	
+	return {
+        props: {
+			businessConfig: businessConfig
+		}
     }
 }

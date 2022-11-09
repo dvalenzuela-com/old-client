@@ -2,8 +2,9 @@ import { ABProduct } from "@dvalenzuela-com/alabarra-types";
 import { useContext } from "react";
 import NumberFormat from "react-number-format";
 import { CartContext, ProductOptionSelection } from "@Context/CartContext";
-import { CurrencyNumberFormat } from "@Lib/helper";
 import { ProductDialogMode } from "./ProductDialog";
+import CurrencyText from "./CurrencyText";
+import { BusinessConfigContext } from "@Context/BusinessConfigContext";
 
 
 type ProductDialogButtonProps = {
@@ -15,14 +16,12 @@ type ProductDialogButtonProps = {
 const ProductDialogButton = (props: ProductDialogButtonProps) => {
 
     const cart = useContext(CartContext);
+    const businessConfig = useContext(BusinessConfigContext);
 
     if (props.mode == ProductDialogMode.NewLine) {
         return (
             <>
-                Add (<NumberFormat 
-                    value={cart.calculateTotalPrice(props.product, props.selectedOptions, props.selectedQuantity)}
-                    displayType='text'
-                    {...CurrencyNumberFormat}/>)
+                Add (<CurrencyText value={cart.calculateTotalPrice(props.product, props.selectedOptions, props.selectedQuantity)} businessConfig={businessConfig} />)
             </>
         );
     } else if (props.mode == ProductDialogMode.EditLine && props.selectedQuantity == 0) {
@@ -30,10 +29,7 @@ const ProductDialogButton = (props: ProductDialogButtonProps) => {
     } else if (props.mode == ProductDialogMode.EditLine && props.selectedQuantity > 0) {
         return (
             <>
-                Update (<NumberFormat 
-                value={cart.calculateTotalPrice(props.product, props.selectedOptions, props.selectedQuantity)}
-                displayType='text'
-                {...CurrencyNumberFormat}/>)
+                Update (<CurrencyText value={cart.calculateTotalPrice(props.product, props.selectedOptions, props.selectedQuantity)} businessConfig={businessConfig} />)
             </>
         );
     } else {

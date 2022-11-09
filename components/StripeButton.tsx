@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import {PaymentRequestButtonElement, useStripe, } from '@stripe/react-stripe-js';
+import React, {useState, useEffect, useContext} from 'react';
+import { PaymentRequestButtonElement, useStripe } from '@stripe/react-stripe-js';
 import { useTranslation } from 'react-i18next';
-import { GET_SITE_CONFIG } from '@Lib/siteConfig';
 import { useRouter } from 'next/router';
+import { BusinessConfigContext } from '@Context/BusinessConfigContext';
 
 interface StripeButtonProps {
     amount: number;
@@ -15,18 +15,18 @@ const StripeButton = (props: StripeButtonProps) => {
   const stripe = useStripe();
   const { t } = useTranslation();
 
+  const businessConfig = useContext(BusinessConfigContext);
+
   const router = useRouter();
   const businessId = router.query['business-id'] as string;
-
-  const SITE_CONFIG = GET_SITE_CONFIG(businessId);
 
   const [paymentRequest, setPaymentRequest] = useState<any>(null);
 
   useEffect(() => {
     if (stripe) {
         const pr = stripe.paymentRequest({
-            country: SITE_CONFIG.BASE_COUNTRY,
-            currency: SITE_CONFIG.CURRENCY,
+            country: businessConfig.country,
+            currency: businessConfig.currency.toLowerCase(),
             total: {
                 label: t('StripeButton.Order.Label'),
                 amount: props.amount,

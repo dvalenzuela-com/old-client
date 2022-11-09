@@ -1,6 +1,2 @@
-
-export const CurrencyNumberFormat = {
-    thousandSeparator: '.',
-    decimalSeparator: ",",
-    prefix: "$"
-}
+// TBD
+export {}

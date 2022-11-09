@@ -1,8 +1,9 @@
 import { Checkbox, Grid, Typography } from "@mui/material";
 import { ABProductOptionMultipleSelection, ABProductOptionMultipleSelectionSelectedValues } from "@dvalenzuela-com/alabarra-types";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
-import { CurrencyNumberFormat } from "@Lib/helper";
+import CurrencyText from "@Components/CurrencyText";
+import { BusinessConfigContext } from "@Context/BusinessConfigContext";
 
 type ProductOptionMultipleSelectionProps = {
     index: number;
@@ -13,6 +14,8 @@ type ProductOptionMultipleSelectionProps = {
 
 const ProductOptionMultipleSelection = (props: ProductOptionMultipleSelectionProps) => {
 
+    const businessConfig = useContext(BusinessConfigContext);
+    
     const [checkedOptions, setCheckedOptions] = useState<ABProductOptionMultipleSelectionSelectedValues>([]);
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
 
@@ -72,7 +75,7 @@ const ProductOptionMultipleSelection = (props: ProductOptionMultipleSelectionPro
                         <Grid item flexDirection='column' justifyContent='center' display='flex'>
                             {possible_value.price_adjustment != 0 &&
                                 (<Typography variant='body2' >
-                                    + <NumberFormat value={possible_value.price_adjustment} displayType='text' {...CurrencyNumberFormat} />
+                                    + <CurrencyText value={possible_value.price_adjustment} businessConfig={businessConfig} />
                                 </Typography>)}
                         </Grid>
                     </React.Fragment>
