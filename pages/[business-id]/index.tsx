@@ -49,8 +49,25 @@ const Index: NextPage<{products: ABProduct[], businessConfig: ABBusinessConfig}>
 
 export default Index;
 
- 
+// Statically generate all product pages for all existing businessess
+// TODO: Add revalidate when creating a new business and/or when changing products
+export const getStaticPaths: GetStaticPaths = async () => {
+	
+	const businessesIds = await getAllBusinessIds();
 
+	const paths = businessesIds.map(businessId => {
+		return {
+			params: {'business-id': businessId}
+		}
+	});
+
+	return {
+		paths,
+		fallback: 'blocking'
+	}
+}
+
+// statically generate pages
 export const getStaticProps: GetStaticProps = async (context) => {
 	
     const businessId = (context.params as any)['business-id'] as string;
@@ -67,18 +84,38 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
+// Fallback mechanism. Once revalidate() is implemented, it will only be used when the business id is entered incorrectly
+export const getServerSideProps: GetServerSideProps = async (context) => {
 	
+    const businessId = context.query['business-id'] as string;
+	
+	// Redirect wrong business Ids to main page
 	const businessesIds = await getAllBusinessIds();
+    if (businessId && !businessesIds.includes(businessId)) {
+        return {
+            redirect: {
+                permanent: true,
+                destination: "/"
+            },
+            props: {}
+        }
+    }
 
-	const paths = businessesIds.map(businessId => {
-		return {
-			params: {'business-id': businessId}
-		}
-	});
+	// Fetch data about the business
+
+	context.res.setHeader(
+		'Cache-Control',
+		'public, s-maxage=300'
+	);
+
+	// Testing SSR
+	const allProducts = (await getDocs(allProductsQuery(businessId))).docs.map(doc => doc.data());
+	const businessConfig = await getBusinessConfig(businessId);
 
 	return {
-		paths,
-		fallback: 'blocking'
-	}
+        props: {
+			products: JSON.parse(JSON.stringify(allProducts)),
+			businessConfig: businessConfig
+		}
+    }
 }
