@@ -7,7 +7,6 @@ export const BusinessConfigContext = createContext<ABBusinessConfig>({
     country: ABBusinessConfigCountry.CL,
     main_language: "dummy",
     currency: ABBusinessConfigCurrency.EUR,
-    primary_color: "dummy",
     logo_url: "dummy",
-    colors: undefined
+    palette: undefined
 });
