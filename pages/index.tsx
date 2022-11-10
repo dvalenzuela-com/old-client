@@ -1,10 +1,9 @@
-import type { GetServerSideProps, NextPage } from 'next'
+import type { GetStaticProps, NextPage } from 'next'
 import { Container, Typography } from '@mui/material';
 import Link from 'next/link';
 import Footer from '@Components/Footer';
 import { getAllBusinessConfigs } from '@Lib/firestore';
 import { ABBusinessConfig } from '@dvalenzuela-com/alabarra-types';
-import CurrencyText from '@Components/CurrencyText';
 
 const RootIndex: NextPage<{businessConfigs: ABBusinessConfig[]}> = ({businessConfigs}) => {
 
@@ -26,9 +25,13 @@ const RootIndex: NextPage<{businessConfigs: ABBusinessConfig[]}> = ({businessCon
 
 export default RootIndex
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+/**
+ * STATIC SITE GENERATION 
+ */
+
+// statically generate pages
+export const getStaticProps: GetStaticProps = async (context) => {
 	
-    // Fetch all businesses
 	const businessConfigs = await getAllBusinessConfigs();
 
 	return {
@@ -37,3 +40,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
     }
 }
+
+/**
+ * SERVER SIDE RENDERING 
+ */
+
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+	
+//     // Fetch all businesses
+// 	const businessConfigs = await getAllBusinessConfigs();
+
+// 	return {
+//         props: {
+// 			businessConfigs: businessConfigs
+// 		}
+//     }
+// }

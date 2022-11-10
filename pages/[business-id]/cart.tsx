@@ -1,4 +1,4 @@
-import type { GetServerSideProps, NextPage } from 'next'
+import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import { Autocomplete, Container, Grid, LinearProgress, List, ListItem, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import CartContent from '@Components/CartContent';
 import { useContext, useEffect, useState } from 'react';
@@ -195,15 +195,37 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig}> = ({businessConfig}) =>
   )
 }
 
-export default Cart
+export default Cart;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+/**
+ * STATIC SITE GENERATION 
+ */
+
+// Statically generate all product pages for all existing businessess
+// TODO: Add revalidate when creating a new business and/or when changing products
+export const getStaticPaths: GetStaticPaths = async () => {
 	
-    const businessId = context.query['business-id'] as string;
-	
-	// Redirect wrong business Ids to main page
 	const businessesIds = await getAllBusinessIds();
-    if (businessId && !businessesIds.includes(businessId)) {
+
+	const paths = businessesIds.map(businessId => {
+		return {
+			params: {'business-id': businessId}
+		}
+	});
+
+	return {
+		paths,
+		fallback: 'blocking'
+	}
+}
+
+// statically generate pages
+export const getStaticProps: GetStaticProps = async (context) => {
+	
+    const businessId = (context.params as any)['business-id'] as string;
+	const businessesIds = await getAllBusinessIds();
+
+	if (businessId && !businessesIds.includes(businessId)) {
         return {
             redirect: {
                 permanent: true,
@@ -213,14 +235,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-	// Fetch data about the business
-	/*
-	context.res.setHeader(
-		'Cache-Control',
-		'public, s-maxage=300'
-	);
-	*/
-
 	const businessConfig = await getBusinessConfig(businessId);
 	
 	return {
@@ -229,3 +243,40 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
     }
 }
+
+/**
+ * SERVER SIDE RENDERING 
+ */
+
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+	
+//     const businessId = context.query['business-id'] as string;
+	
+// 	// Redirect wrong business Ids to main page
+// 	const businessesIds = await getAllBusinessIds();
+//     if (businessId && !businessesIds.includes(businessId)) {
+//         return {
+//             redirect: {
+//                 permanent: true,
+//                 destination: "/"
+//             },
+//             props: {}
+//         }
+//     }
+
+// 	// Fetch data about the business
+// 	/*
+// 	context.res.setHeader(
+// 		'Cache-Control',
+// 		'public, s-maxage=300'
+// 	);
+// 	*/
+
+// 	const businessConfig = await getBusinessConfig(businessId);
+	
+// 	return {
+//         props: {
+// 			businessConfig: businessConfig
+// 		}
+//     }
+// }
