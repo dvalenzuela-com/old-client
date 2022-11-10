@@ -18,9 +18,7 @@ const Layout = ({ children, businessConfig }: LayoutProps) => {
     }
     
     const theme = createTheme({
-        palette: {
-            ...businessConfig.colors
-        }
+        palette: businessConfig.palette
     });
     
     return (

@@ -214,11 +214,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
 	// Fetch data about the business
-
+	/*
 	context.res.setHeader(
 		'Cache-Control',
 		'public, s-maxage=300'
 	);
+	*/
 
 	const businessConfig = await getBusinessConfig(businessId);
 	
