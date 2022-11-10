@@ -71,8 +71,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
 	
     const businessId = (context.params as any)['business-id'] as string;
+	const businessesIds = await getAllBusinessIds();
 
-	// Testing SSR
+	if (businessId && !businessesIds.includes(businessId)) {
+        return {
+            redirect: {
+                permanent: true,
+                destination: "/"
+            },
+            props: {}
+        }
+    }
+
 	const allProducts = (await getDocs(allProductsQuery(businessId))).docs.map(doc => doc.data());
 	const businessConfig = await getBusinessConfig(businessId);
 
@@ -84,7 +94,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
 }
 
-// Fallback mechanism. Once revalidate() is implemented, it will only be used when the business id is entered incorrectly
+/*
+// SSR
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	
     const businessId = context.query['business-id'] as string;
@@ -119,3 +130,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
     }
 }
+*/
