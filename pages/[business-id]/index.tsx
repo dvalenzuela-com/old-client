@@ -49,53 +49,60 @@ const Index: NextPage<{products: ABProduct[], businessConfig: ABBusinessConfig}>
 
 export default Index;
 
+/**
+ * STATIC SITE GENERATION 
+ */
+
 // Statically generate all product pages for all existing businessess
 // TODO: Add revalidate when creating a new business and/or when changing products
-export const getStaticPaths: GetStaticPaths = async () => {
+// export const getStaticPaths: GetStaticPaths = async () => {
 	
-	const businessesIds = await getAllBusinessIds();
+// 	const businessesIds = await getAllBusinessIds();
 
-	const paths = businessesIds.map(businessId => {
-		return {
-			params: {'business-id': businessId}
-		}
-	});
+// 	const paths = businessesIds.map(businessId => {
+// 		return {
+// 			params: {'business-id': businessId}
+// 		}
+// 	});
 
-	return {
-		paths,
-		fallback: 'blocking'
-	}
-}
+// 	return {
+// 		paths,
+// 		fallback: 'blocking'
+// 	}
+// }
 
-// statically generate pages
-export const getStaticProps: GetStaticProps = async (context) => {
+// // statically generate pages
+// export const getStaticProps: GetStaticProps = async (context) => {
 	
-    const businessId = (context.params as any)['business-id'] as string;
-	const businessesIds = await getAllBusinessIds();
+//     const businessId = (context.params as any)['business-id'] as string;
+// 	const businessesIds = await getAllBusinessIds();
 
-	if (businessId && !businessesIds.includes(businessId)) {
-        return {
-            redirect: {
-                permanent: true,
-                destination: "/"
-            },
-            props: {}
-        }
-    }
+// 	if (businessId && !businessesIds.includes(businessId)) {
+//         return {
+//             redirect: {
+//                 permanent: true,
+//                 destination: "/"
+//             },
+//             props: {}
+//         }
+//     }
 
-	const allProducts = (await getDocs(allProductsQuery(businessId))).docs.map(doc => doc.data());
-	const businessConfig = await getBusinessConfig(businessId);
+// 	const allProducts = (await getDocs(allProductsQuery(businessId))).docs.map(doc => doc.data());
+// 	const businessConfig = await getBusinessConfig(businessId);
 
-	return {
-        props: {
-			products: JSON.parse(JSON.stringify(allProducts)),
-			businessConfig: businessConfig
-		}
-    }
-}
+// 	return {
+//         props: {
+// 			products: JSON.parse(JSON.stringify(allProducts)),
+// 			businessConfig: businessConfig
+// 		}
+//     }
+// }
 
-/*
-// SSR
+
+/**
+ * SERVER SIDE RENDERING 
+ */
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	
     const businessId = context.query['business-id'] as string;
@@ -130,4 +137,3 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
     }
 }
-*/
