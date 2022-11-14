@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import Layout from 'layout/Layout';
 import { ABBusinessConfig } from '@dvalenzuela-com/alabarra-types';
 
-const Cart: NextPage<{businessConfig: ABBusinessConfig}> = ({businessConfig}) => {
+const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({businessConfig, tables}) => {
 
 	const { t } = useTranslation();
 
@@ -25,7 +25,6 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig}> = ({businessConfig}) =>
 	const cart = useContext(CartContext);
 	const stripe = useStripe();
 
-	const [tables, setTables] = useState<string[]>([]);
 	const [selectedTable, setSelectedTable] = useState<string | null>(null);
 	const [customerName, setCustomerName] = useState<string | undefined>(undefined);
 	const [generalNote, setGeneralNote] = useState<string | undefined>(undefined);
@@ -34,16 +33,9 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig}> = ({businessConfig}) =>
 	const [canMakeDigitalPayments, setCanMakeDigitalPayments] = useState<boolean>(false);
 	const [waitingForManualOrder, setWaitingForManualOrder] = useState<boolean>(false);
 
-	useEffect( () => {
-		console.log(businessId);
+	useEffect(() => {
 		setSelectedTable(cart.getSelectedTableId());
-		// Fetch all available tables
-		(async () => {
-			const fetchedTables = await getAllTableIds(businessId);
-			console.log(fetchedTables);
-			setTables(fetchedTables);
-		})()
-	}, [businessId]);
+	}, []);
 
 	// use a dummy payment intent to see if a payment can be made
 	useEffect(() => {
@@ -236,10 +228,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
 
 	const businessConfig = await getBusinessConfig(businessId);
-	
+	const tables = await getAllTableIds(businessId);
+
 	return {
         props: {
-			businessConfig: businessConfig
+			businessConfig: businessConfig,
+			tables: tables
 		}
     }
 }
