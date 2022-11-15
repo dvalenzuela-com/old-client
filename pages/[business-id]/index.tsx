@@ -2,16 +2,16 @@ import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } fro
 
 import ProductGrid from '@Components/ProductGrid'
 import { Container } from '@mui/material';
-import { allProductsQuery, getAllBusinessIds, getBusinessConfig } from '@Lib/firestore';
+import { allCategoriesQuery, allProductsQuery, getAllBusinessIds, getBusinessConfig } from '@Lib/firestore';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 import { CartContext } from '@Context/CartContext';
 import Layout from 'layout/Layout';
 import { getDocs } from 'firebase/firestore';
-import { ABBusinessConfig, ABProduct } from '@dvalenzuela-com/alabarra-types';
+import { ABBusinessConfig, ABCategory, ABProduct } from '@dvalenzuela-com/alabarra-types';
 import { NextSeo } from 'next-seo';
 
-const Index: NextPage<{products: ABProduct[], businessConfig: ABBusinessConfig}> = ({products, businessConfig}) => {
+const Index: NextPage<{categories: ABCategory[], products: ABProduct[], businessConfig: ABBusinessConfig}> = ({categories, products, businessConfig}) => {
 
 	const router = useRouter();
 	const businessId = router.query['business-id'] as string;
@@ -38,7 +38,7 @@ const Index: NextPage<{products: ABProduct[], businessConfig: ABBusinessConfig}>
 			/>
 			<Layout businessConfig={businessConfig}>
 				<Container>
-					<ProductGrid products={products}></ProductGrid>
+					<ProductGrid categories={categories} products={products}></ProductGrid>
 				</Container>
 			</Layout>
 		</>
@@ -87,10 +87,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
 
 	const allProducts = (await getDocs(allProductsQuery(businessId))).docs.map(doc => doc.data());
+	const allCategories = (await getDocs(allCategoriesQuery(businessId))).docs.map(doc => doc.data());
 	const businessConfig = await getBusinessConfig(businessId);
 
 	return {
         props: {
+			categories: JSON.parse(JSON.stringify(allCategories)),
 			products: JSON.parse(JSON.stringify(allProducts)),
 			businessConfig: businessConfig
 		}

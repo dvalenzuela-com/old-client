@@ -14,7 +14,7 @@ const businessesCollection = collection(firestore, `businesses`).withConverter(B
 const usersCollection = collection(firestore, `users`);
 
 export const allProductsQuery = (businessId: string) => query<ABProduct>(productsCollection(businessId), orderBy('created_at', 'asc'));
-export const allCategoriesQuery = (businessId: string) => query<ABCategory>(categoriesCollection(businessId), orderBy('created_at', 'asc'));
+export const allCategoriesQuery = (businessId: string) => query<ABCategory>(categoriesCollection(businessId), orderBy('rank', 'asc'));
 export const allTablesQuery = (businessId: string) => query<ABTable>(tablesCollection(businessId), orderBy('created_at', 'desc'));
 
 export const useCategories = (businessId: string) => {

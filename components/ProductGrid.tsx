@@ -1,8 +1,9 @@
 import { Grid } from "@mui/material";
-import { ABProduct } from "@dvalenzuela-com/alabarra-types";
+import { ABCategory, ABProduct } from "@dvalenzuela-com/alabarra-types";
 import { CSSProperties, useState } from "react";
 import ProductCard from "./ProductCard";
 import ProductDialog, { ProductDialogMode } from "./ProductDialog";
+import CategoryHeader from "./CategoryHeader";
 
 const tempDivStyle: CSSProperties = {
     backgroundColor: 'lightGray',
@@ -11,11 +12,11 @@ const tempDivStyle: CSSProperties = {
 }
 
 type ProductGridProps = {
-    products: ABProduct[] | undefined
+    categories: ABCategory[];
+    products: ABProduct[];
 }
 
 const ProductGrid = (props: ProductGridProps) => {
-    const products = props.products
 
     const [activeProduct, setActiveProduct] = useState<ABProduct | undefined> (undefined);
 
@@ -25,10 +26,23 @@ const ProductGrid = (props: ProductGridProps) => {
     return (
         <>
             <Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch' marginTop={1}>
-                {products && products.map((product) => {
-                    return (
-                        <ProductCard key={product.id} product={product} onClick={() => {handleProductClick(product)}} />
-                    )
+                {props.categories.map(category => {
+                    const toReturn = [<CategoryHeader category={category} />];
+                    const productsInCategory = category.products.map(productId => {
+                        return props.products.find((value) => {
+                            if (value.path == productId) {
+                                return value;
+                            }
+                        });
+                    });
+                    // TODO: Rank-order products
+                    //productsInCategory.sort((a, b) => a.rank > b.rank);
+                    productsInCategory.forEach(product => {
+                        if (product) {
+                            toReturn.push(<ProductCard key={product.id} product={product} onClick={() => {handleProductClick(product)}} />);
+                        }
+                    });
+                    return toReturn;
                 })}
             </Grid>
             {activeProduct && <ProductDialog mode={ProductDialogMode.NewLine} product={activeProduct} quantity={1} comment={null} onClose={() => {setActiveProduct(undefined)}} />}
