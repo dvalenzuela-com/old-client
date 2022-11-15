@@ -27,7 +27,7 @@ const ProductGrid = (props: ProductGridProps) => {
         <>
             <Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch' marginTop={1}>
                 {props.categories.map(category => {
-                    const toReturn = [<CategoryHeader category={category} />];
+                    const toReturn = [<CategoryHeader category={category} key={category.id} />];
                     const productsInCategory = category.products.map(productId => {
                         return props.products.find((value) => {
                             if (value.path == productId) {
