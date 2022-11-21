@@ -38,36 +38,17 @@ const ProductDialog = (props: ProductDialogProps) => {
     useEffect(() => {
         // Show saved comment if available
         setComment(props.comment != null ? props.comment : '');
-        
-        // Show saved quantity if available
-        //setSelectedQuantity(props.quantity);
 
-        // Show saved options if available, otherwise default options if defined
-        const updatedOptions = props.product.options.map( (option, index) => { 
+    }, [props.comment]);
 
-            if (option.type == ABProductOptionsType.SINGLE_SELECTION) {
-                const singleOption = option as ABProductOptionSingleSelection;
-                if (props.options && props.options[index]) {
-                    return props.options[index];
-                } else {
-                    return singleOption.default_value;
-                }
-            } else if (option.type == ABProductOptionsType.MULTIPLE_SELECTION) {
-                const multipleOption = option as ABProductOptionMultipleSelection;
-                if (props.options && props.options[index]) {
-                    return props.options[index];
-                } else {
-                    return multipleOption.default_values;
-                }
-            }
-        }) as ABProductOptionSelections[];
-
-        setSelectedOptions(updatedOptions);
+    useEffect(() => {
+        const newOptions = props.options ?? [];
+        setSelectedOptions(newOptions);
 
         // Check if there are mandatory options. If so, deactivate the add to cart button
-        handleAddToCartDisabled(props.product.options, updatedOptions);
+        handleAddToCartDisabled(props.product.options, newOptions);
 
-    }, [props.product, props.options, props.quantity, props.comment]);
+    }, [props.product, props.options]);
 
 
     const handleAddToCartDisabled = (productOptions: ABProductOption[], selectedOptions: ABProductOptionSelections[]) => {
@@ -85,12 +66,10 @@ const ProductDialog = (props: ProductDialogProps) => {
                 // If we have a minimum selection, which in turn is higher as the default values, deactivate the button
                 if (multipleOption.min_selection > 0) {
 
-                    if (currentSelectedOption && currentSelectedOption.selected_values.length < multipleOption.min_selection) {
+                    if (currentSelectedOption && currentSelectedOption.selected_values && currentSelectedOption.selected_values.length < multipleOption.min_selection) {
                         addToCartButtonStartsDisabled = true;
                     } 
                 }   
-
-                // If we have selected
             }
         });
         
@@ -147,23 +126,25 @@ const ProductDialog = (props: ProductDialogProps) => {
         handleClose();
     }
 
-    const handleOptionChange = (optionIndex: number, selectedOption: ABProductOptionSelections) => { 
+    const handleOptionChange = (selectedOption: ABProductOptionSelections) => { 
 
-        const newSelectedOptions = selectedOptions.map((oldSelectedOption, index) => {
-            if (index == optionIndex) {
-                return selectedOption;
-            } else {
-                return oldSelectedOption;
-            }
-        });
+        const indexOfOption = selectedOptions.findIndex(obj => obj.option_id === selectedOption.option_id);
+        
+        const newSelectedOptions = [...selectedOptions];
+
+        if (indexOfOption >= 0) {
+            // The option was there already. replace it with a new one.
+            newSelectedOptions.splice(indexOfOption, 1, selectedOption);
+        } else {
+            // The option was no there. Add it.
+            newSelectedOptions.push(selectedOption);
+        }
         setSelectedOptions(newSelectedOptions);
-        //console.log("newSelectedOptions", newSelectedOptions);
         handleAddToCartDisabled(props.product.options!, newSelectedOptions);
     }
 
     const selectedValuesForOption = (optionId: string) => {
         const result = selectedOptions.find(obj => obj.option_id === optionId);
-        //console.log(`selectedValuesForOption(${optionId})`, result);
         return result;
     }
     return (
@@ -186,7 +167,7 @@ const ProductDialog = (props: ProductDialogProps) => {
                                             index={index}
                                             productOption={option as ABProductOptionSingleSelection}
                                             selectedOption={selectedValuesForOption(option.id) as ABProductOptionSingleSelectedValue}
-                                            onOptionChange={(selectedOption) => {handleOptionChange(index, selectedOption)}}
+                                            onOptionChange={(selectedOption) => {handleOptionChange(selectedOption)}}
                                         />
                                     );
                                 } else if (option.type == ABProductOptionsType.MULTIPLE_SELECTION) {
@@ -196,7 +177,7 @@ const ProductDialog = (props: ProductDialogProps) => {
                                             index={index}
                                             productOption={option as ABProductOptionMultipleSelection}
                                             selectedValues={selectedValuesForOption(option.id) as ABProductOptionMultipleSelectedValues}
-                                            onOptionChange={(selectedOption) => {handleOptionChange(index, selectedOption)}}
+                                            onOptionChange={(selectedOption) => {handleOptionChange(selectedOption)}}
                                         />
                                     );
                                 }       

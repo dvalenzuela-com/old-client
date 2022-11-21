@@ -27,6 +27,8 @@ const CartContent = () => {
         setActiveQuantity(cartLine.quantity);
         setActiveLineId(cartLine.lineId);
         setActiveComment(cartLine.note);
+
+        console.log("cartLine.options", cartLine.options);
         setActiveOptions(cartLine.options);
         setActiveProduct(cartLine.product);
     }
@@ -56,32 +58,22 @@ const CartContent = () => {
 
                                             {/** Print line options */}                                            
                                             {line.options.map((selectedOption, index) => {
+                                                console.log(selectedOption);
                                                 // Original product option
-                                                if (line.product.options) {
-                                                    const productOption = line.product.options[index];
-
+                                                const productOption = line.product.options.find( obj => obj.id === selectedOption.option_id);
+                                                if (productOption) {
                                                     if (productOption.type == ABProductOptionsType.SINGLE_SELECTION) {
-                                                        //Get selected option
-                                                        const singleSelectedOption = line.options[index] as ABProductOptionSingleSelectedValue;
-
-                                                        if (singleSelectedOption) {
-                                                            // Find product option that is selected to find price adjustment value
-                                                            const originOption = productOption.possible_values.find(possible_value => possible_value.title == singleSelectedOption);
-                                                            // TODO: Improve key
-                                                            return (<Typography variant="subtitle2" key={index}>{originOption?.title}</Typography>);
-                                                        }
+                                                        const singleOption = selectedOption as ABProductOptionSingleSelectedValue;
+                                                        const selectedValue = productOption.possible_values.find(obj => obj.id === singleOption.selected_value);
+                                                        return (<Typography variant="subtitle2" key={selectedValue?.id}>{selectedValue?.title}</Typography>);
                                                     } else if (productOption.type == ABProductOptionsType.MULTIPLE_SELECTION) {
                                                         
                                                         //Get selected option
-                                                        const selectedValues = line.options[index] as ABProductOptionMultipleSelectedValues;
-                                                        if (selectedValues) {
-                                                            return selectedValues.map((selectedValue, index) => {
-                                                                if (selectedValue) {
-                                                                    // TODO: Improve key
-                                                                    return (<Typography variant="subtitle2" key={index}>{productOption.possible_values[index].title}</Typography>);
-                                                                }
-                                                            });
-                                                        }
+                                                        const selectedValues = selectedOption as ABProductOptionMultipleSelectedValues;
+                                                        return selectedValues.selected_values.map((value) => {
+                                                            const selectedValue = productOption.possible_values.find(obj => obj.id === value);
+                                                            return (<Typography variant="subtitle2" key={selectedValue?.id}>{selectedValue?.title}</Typography>);
+                                                        });
                                                     }
                                                 }
                                                 })
@@ -107,7 +99,15 @@ const CartContent = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            {activeProduct && <ProductDialog mode={ProductDialogMode.EditLine} lineId={activeLineId} product={activeProduct} quantity={activeQuantity} options={activeOptions} comment={activeComment} onClose={() => {setActiveProduct(undefined)}} />}
+            {activeProduct &&
+                <ProductDialog
+                    mode={ProductDialogMode.EditLine}
+                    lineId={activeLineId}
+                    product={activeProduct}
+                    quantity={activeQuantity}
+                    options={activeOptions}
+                    comment={activeComment}
+                    onClose={() => {setActiveProduct(undefined)}} />}
         </>
     )
 }
