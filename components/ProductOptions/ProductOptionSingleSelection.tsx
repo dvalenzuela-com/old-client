@@ -1,8 +1,6 @@
 import { Grid, Radio, RadioGroup, Typography } from "@mui/material";
-import { ABProductOptionSingleSelection, ABProductOptionSingleSelectionSelectedValue } from "@dvalenzuela-com/alabarra-types";
+import { ABProductOptionSingleSelection, ABProductOptionSingleSelectedValue } from "@dvalenzuela-com/alabarra-types";
 import React, { useContext, useEffect, useState } from "react";
-import NumberFormat from "react-number-format";
-import { red } from "@mui/material/colors";
 import { Box } from "@mui/system";
 import CurrencyText from "@Components/CurrencyText";
 import { BusinessConfigContext } from "@Context/BusinessConfigContext";
@@ -10,23 +8,26 @@ import { BusinessConfigContext } from "@Context/BusinessConfigContext";
 type ProductOptionSingleSelectionProps = {
     index: number;
     productOption: ABProductOptionSingleSelection;
-    selectedOption: ABProductOptionSingleSelectionSelectedValue;
-    onOptionChange: (selectedOption: string) => void;
+    selectedOption?: ABProductOptionSingleSelectedValue;
+    onOptionChange: (selectedOption: ABProductOptionSingleSelectedValue) => void;
 }
 
 const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) => {
 
     const businessConfig = useContext(BusinessConfigContext);
-    const [selectedValue, setSelectedValue] = useState('');
-
+    const [selectedValue, setSelectedValue] = useState<string>(props.selectedOption != undefined ? props.selectedOption.selected_value : props.productOption.default_value);
+    
     useEffect(() => {
-        setSelectedValue(props.selectedOption != undefined ? props.selectedOption : (props.productOption.default_value ? props.productOption.default_value : ''));
-    }, [props.productOption, props.selectedOption]);
+        setSelectedValue(props.selectedOption != undefined ? props.selectedOption.selected_value : props.productOption.default_value);
+    }, [props.selectedOption]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedValue(event.target.value);
+        const selectedId = event.target.value;
+        console.log(selectedId);
+        setSelectedValue(selectedId);
         
-        props.onOptionChange(event.target.value);
+        const selectedPossibleValue = props.productOption.possible_values.find(possibleValue => { return possibleValue.id === selectedId})!;
+        props.onOptionChange({option_id: props.productOption.id, selected_value: selectedPossibleValue.id});
     }
 
     return (
@@ -41,7 +42,7 @@ const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) 
                             <Grid container alignItems="stretch" justifyContent="space-between">
                                 <Grid item sx={{display: "flex", justifyContent: "center", alignItems: "center"}} >
                                     <Box>
-                                        <Radio value={possible_value.title} onChange={handleChange} size='small' />
+                                        <Radio value={possible_value.id} onChange={handleChange} size='small' />
                                     </Box>
                                     {/* //TODO: Fix layout when title too long  */}
                                     <Box>

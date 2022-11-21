@@ -35,8 +35,6 @@ const ProductGrid = (props: ProductGridProps) => {
                             }
                         });
                     });
-                    // TODO: Rank-order products
-                    //productsInCategory.sort((a, b) => a.rank > b.rank);
                     productsInCategory.forEach(product => {
                         if (product) {
                             toReturn.push(<ProductCard key={product.id} product={product} onClick={() => {handleProductClick(product)}} />);

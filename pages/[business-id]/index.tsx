@@ -129,10 +129,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 // 	*/
 
 // 	const allProducts = (await getDocs(allProductsQuery(businessId))).docs.map(doc => doc.data());
+// 	const allCategories = (await getDocs(allCategoriesQuery(businessId))).docs.map(doc => doc.data());
 // 	const businessConfig = await getBusinessConfig(businessId);
 
 // 	return {
 //         props: {
+// 			categories: JSON.parse(JSON.stringify(allCategories)),
 // 			products: JSON.parse(JSON.stringify(allProducts)),
 // 			businessConfig: businessConfig
 // 		}

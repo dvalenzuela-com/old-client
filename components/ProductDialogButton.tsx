@@ -1,7 +1,6 @@
-import { ABProduct } from "@dvalenzuela-com/alabarra-types";
+import { ABProduct, ABProductOptionSelections } from "@dvalenzuela-com/alabarra-types";
 import { useContext } from "react";
-import NumberFormat from "react-number-format";
-import { CartContext, ProductOptionSelection } from "@Context/CartContext";
+import { CartContext } from "@Context/CartContext";
 import { ProductDialogMode } from "./ProductDialog";
 import CurrencyText from "./CurrencyText";
 import { BusinessConfigContext } from "@Context/BusinessConfigContext";
@@ -10,7 +9,7 @@ import { BusinessConfigContext } from "@Context/BusinessConfigContext";
 type ProductDialogButtonProps = {
     mode: ProductDialogMode;
     product: ABProduct;
-    selectedOptions: ProductOptionSelection[];
+    selectedOptions: ABProductOptionSelections[];
     selectedQuantity: number;
 }
 const ProductDialogButton = (props: ProductDialogButtonProps) => {

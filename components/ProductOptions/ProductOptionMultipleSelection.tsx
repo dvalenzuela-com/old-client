@@ -1,65 +1,74 @@
 import { Checkbox, Grid, Typography } from "@mui/material";
-import { ABProductOptionMultipleSelection, ABProductOptionMultipleSelectionSelectedValues } from "@dvalenzuela-com/alabarra-types";
+import { ABProductOptionMultipleSelection, ABProductOptionMultipleSelectedValues } from "@dvalenzuela-com/alabarra-types";
 import React, { useContext, useEffect, useState } from "react";
-import NumberFormat from "react-number-format";
 import CurrencyText from "@Components/CurrencyText";
 import { BusinessConfigContext } from "@Context/BusinessConfigContext";
+import { Box, Stack } from "@mui/system";
 
 type ProductOptionMultipleSelectionProps = {
     index: number;
     productOption: ABProductOptionMultipleSelection;
-    selectedValues: ABProductOptionMultipleSelectionSelectedValues;
-    onOptionChange: (selectedValues: ABProductOptionMultipleSelectionSelectedValues) => void;
+    selectedValues?: ABProductOptionMultipleSelectedValues;
+    onOptionChange: (selectedValues: ABProductOptionMultipleSelectedValues) => void;
 }
 
 const ProductOptionMultipleSelection = (props: ProductOptionMultipleSelectionProps) => {
 
     const businessConfig = useContext(BusinessConfigContext);
     
-    const [checkedOptions, setCheckedOptions] = useState<ABProductOptionMultipleSelectionSelectedValues>([]);
+    const [checkedOptions, setCheckedOptions] = useState<ABProductOptionMultipleSelectedValues>(props.selectedValues != undefined ? props.selectedValues : props.productOption.default_values);
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);
 
     useEffect(() => {
         const newCheckedOptions = props.selectedValues != undefined ? props.selectedValues : props.productOption.default_values;
         setCheckedOptions(newCheckedOptions);
         // Initialize an empty array
-        calculateDisabledOptions(newCheckedOptions);
+        calculateDisabledOptions(props.selectedValues != undefined ? props.selectedValues : props.productOption.default_values);
     }, [props.productOption, props.selectedValues]);
 
 
-    const calculateDisabledOptions = (checkedOptions: boolean[]) => {
-        const checkedOptionCount = checkedOptions.reduce(((sum, option) => sum + (option ? 1 : 0)), 0);
+    const calculateDisabledOptions = (checkedOptions: ABProductOptionMultipleSelectedValues) => {
+        const checkedOptionCount = checkedOptions.length;
         
         // If we already reached the number of options, disable non-checked checkboxes
         if (props.productOption.max_selection && 
             checkedOptionCount >= props.productOption.max_selection) {
-            const newDisabledOptions = checkedOptions.map((option, index) => {
-                return !option;
-            })
+
+            const newDisabledOptions = props.productOption.possible_values.map((disabled, index) => {
+                const possibleValueForIndex = props.productOption.possible_values[index];
+                return !checkedOptions.includes(possibleValueForIndex.id);
+            });
             setDisabledOptions(newDisabledOptions);
         } else {
             // Enable all
-            setDisabledOptions(props.productOption.default_values.map(() => { return false }));
+            setDisabledOptions(props.productOption.possible_values.map(() => { return false }));
         }
     }
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>, id: string) => {
 
-        let newCheckedOptions = checkedOptions;
+        let newCheckedOptions = [...checkedOptions];
 
-        newCheckedOptions[index] = event.target.checked;
-        setCheckedOptions(newCheckedOptions);
-
-        calculateDisabledOptions(newCheckedOptions);
-
-        props.onOptionChange(newCheckedOptions);
+        if (event.target.checked && !newCheckedOptions.includes(id)) {
+            newCheckedOptions.push(id);
+            setCheckedOptions(newCheckedOptions);
+            calculateDisabledOptions(newCheckedOptions);
+            props.onOptionChange(newCheckedOptions);
+        }
+        if (!event.target.checked && newCheckedOptions.includes(id)) {
+            const positionOfId = newCheckedOptions.findIndex((obj) => obj === id);
+            newCheckedOptions.splice(positionOfId, 1);
+            setCheckedOptions(newCheckedOptions);
+            calculateDisabledOptions(newCheckedOptions);
+            props.onOptionChange(newCheckedOptions);
+        }
     }
 
     return (
         <>
             <Typography display='inline'>{props.productOption.title}</Typography>
             {props.productOption.min_selection > 0 &&
-                <Typography variant="body2" display='inline'>{`* (min. ${props.productOption.min_selection})`}</Typography>
+                <Typography variant="body2" display='inline'>{`* (min: ${props.productOption.min_selection}, max: ${props.productOption.max_selection})`}</Typography>
             }
             <Grid container spacing={0} justifyContent='space-between' alignItems='stretch'>
 
@@ -67,16 +76,23 @@ const ProductOptionMultipleSelection = (props: ProductOptionMultipleSelectionPro
 
                 return (
                     <React.Fragment key={index}>   
-                        <Grid item>
-                            <Checkbox onChange={(e) => (handleChange(e, index))} checked={checkedOptions[index] ?? false} disabled={disabledOptions[index]} size='small' />
-                            {/* TODO: Disable typography */}
-                            <Typography variant='body2' display='inline'>{possible_value.title}</Typography>
-                        </Grid>
-                        <Grid item flexDirection='column' justifyContent='center' display='flex'>
-                            {possible_value.price_adjustment != 0 &&
-                                (<Typography variant='body2' >
-                                    + <CurrencyText value={possible_value.price_adjustment} businessConfig={businessConfig} />
-                                </Typography>)}
+                        <Grid item xs={12}>
+                            <Stack direction='row' alignItems='center' justifyContent="space-between">
+                                <Box>
+                                    <Checkbox
+                                        onChange={(e) => (handleChange(e, possible_value.id))}
+                                        checked={checkedOptions.includes(possible_value.id)}
+                                        disabled={disabledOptions[index]}
+                                        size='small' />
+                                    <Typography variant='body2' display='inline'>{possible_value.title}</Typography>
+                                </Box>
+                                <Box textAlign='right'>
+                                    {possible_value.price_adjustment != 0 &&
+                                    (<Typography variant='body2' >
+                                        + <CurrencyText value={possible_value.price_adjustment} businessConfig={businessConfig} />
+                                    </Typography>)}
+                                </Box>
+                            </Stack>
                         </Grid>
                     </React.Fragment>
                 );

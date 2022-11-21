@@ -1,4 +1,4 @@
-import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
+import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import { Autocomplete, Container, Grid, LinearProgress, List, ListItem, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import CartContent from '@Components/CartContent';
 import { useContext, useEffect, useState } from 'react';
@@ -267,10 +267,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 // 	*/
 
 // 	const businessConfig = await getBusinessConfig(businessId);
-	
+// 	const tables = await getAllTableIds(businessId);
+
 // 	return {
 //         props: {
-// 			businessConfig: businessConfig
+// 			businessConfig: businessConfig,
+// 			tables: tables
 // 		}
 //     }
 // }

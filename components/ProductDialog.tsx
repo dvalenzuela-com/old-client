@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
-import { ABProduct, ABProductOption, ABProductOptionMultipleSelection, ABProductOptionMultipleSelectionSelectedValues, ABProductOptionSingleSelection, ABProductOptionSingleSelectionSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
+import { ABProduct, ABProductOption, ABProductOptionMultipleSelection, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionSingleSelection, ABProductOptionSingleSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
 import React, { useContext, useEffect, useState } from "react";
-import { CartContext, ProductOptionSelection } from "@Context/CartContext";
+import { CartContext } from "@Context/CartContext";
 import ProductDialogButton from "./ProductDialogButton";
 import ProductOptionMultipleSelection from "./ProductOptions/ProductOptionMultipleSelection";
 import ProductOptionSingleSelection from "./ProductOptions/ProductOptionSingleSelection";
@@ -15,10 +15,11 @@ export enum ProductDialogMode {
 
 export type ProductDialogProps = {
     mode: ProductDialogMode;
+    product: ABProduct;
+
     lineId?: string;
-    product: ABProduct | undefined;
     quantity: number;
-    options?: ProductOptionSelection[];
+    options?: ABProductOptionSelections[];
     comment: string | null;
     onClose: () => void;
 }
@@ -29,78 +30,65 @@ const ProductDialog = (props: ProductDialogProps) => {
 
     const cart = useContext(CartContext);
 
-    const [selectedOptions, setSelectedOptions] = useState<ProductOptionSelection[]>([]);
+    const [selectedOptions, setSelectedOptions] = useState<ABProductOptionSelections[]>([]);
     const [addToCartDisabled, setAddToCartDisabled] = useState<boolean>(false);
     const [comment, setComment] = useState<string>('');
-    const [selectedQuantity, setSelectedQuantity] = useState<number>(0);
+    const [selectedQuantity, setSelectedQuantity] = useState<number>(props.quantity ?? 0);
 
     useEffect(() => {
         // Show saved comment if available
         setComment(props.comment != null ? props.comment : '');
         
         // Show saved quantity if available
-        setSelectedQuantity(props.quantity);
+        //setSelectedQuantity(props.quantity);
 
         // Show saved options if available, otherwise default options if defined
-        const productOptions = props.product?.options
-        if (productOptions) {            
-            const updatedOptions = productOptions.map( (option, index) => { 
+        const updatedOptions = props.product.options.map( (option, index) => { 
 
-                if (option.type == ABProductOptionsType.SINGLE_SELECTION) {
-                    const singleOption = option as ABProductOptionSingleSelection;
-                    if (props.options && props.options[index]) {
-                        return props.options[index];
-                    } else {
-                        return singleOption.default_value;
-                    }
-                } else if (option.type == ABProductOptionsType.MULTIPLE_SELECTION) {
-                    const multipleOption = option as ABProductOptionMultipleSelection;
-                    if (props.options && props.options[index]) {
-                        return props.options[index];
-                    } else {
-                        return multipleOption.default_values;
-                    }
+            if (option.type == ABProductOptionsType.SINGLE_SELECTION) {
+                const singleOption = option as ABProductOptionSingleSelection;
+                if (props.options && props.options[index]) {
+                    return props.options[index];
+                } else {
+                    return singleOption.default_value;
                 }
-            }) as ProductOptionSelection[];
-            setSelectedOptions(updatedOptions);
-        } else {
-            setSelectedOptions([])
-        }
+            } else if (option.type == ABProductOptionsType.MULTIPLE_SELECTION) {
+                const multipleOption = option as ABProductOptionMultipleSelection;
+                if (props.options && props.options[index]) {
+                    return props.options[index];
+                } else {
+                    return multipleOption.default_values;
+                }
+            }
+        }) as ABProductOptionSelections[];
 
-        if (productOptions) {
-            // Check if there are mandatory options. If so, deactivate the add to cart button
-            handleAddToCartDisabled(productOptions);
-        }
+        setSelectedOptions(updatedOptions);
+
+        // Check if there are mandatory options. If so, deactivate the add to cart button
+        handleAddToCartDisabled(props.product.options, updatedOptions);
 
     }, [props.product, props.options, props.quantity, props.comment]);
 
 
-    const handleAddToCartDisabled = (productOptions: ABProductOption[]) => {
+    const handleAddToCartDisabled = (productOptions: ABProductOption[], selectedOptions: ABProductOptionSelections[]) => {
         let addToCartButtonStartsDisabled = false;
         productOptions.forEach( (option, index) => {
             if (option.type == ABProductOptionsType.SINGLE_SELECTION) {
                 // Single options always contain a default value, therefore do not need a mandatory check
                 const singleOption = option as ABProductOptionSingleSelection;
-                const currentSelectedOption = selectedOptions[index] as ABProductOptionSingleSelectionSelectedValue;
-                // TODO: Bug here. The currentSelectedOption is not being updated "fast enough" and the old/wrong value is compared               
-                // if (singleOption.mandatory &&
-                //     !singleOption.possible_values.some(possible_value => possible_value.title == currentSelectedOption) &&
-                //     !singleOption.default_value) {
-                //     addToCartButtonStartsDisabled = true;
-                // }
+                const currentSelectedOption = selectedOptions[index] as ABProductOptionSingleSelectedValue;
+                // Nothing to do here :) 
             } else if (option.type == ABProductOptionsType.MULTIPLE_SELECTION) {
                 const multipleOption = option as ABProductOptionMultipleSelection;
-                const currentSelectedOption = selectedOptions[index] as ABProductOptionMultipleSelectionSelectedValues;
+                const currentSelectedOption = selectedOptions[index] as ABProductOptionMultipleSelectedValues;
 
                 // If we have a minimum selection, which in turn is higher as the default values, deactivate the button
-                if (multipleOption.min_selection > 0 &&
-                    currentSelectedOption &&
-                    multipleOption.min_selection > currentSelectedOption.filter(value => value === true).length) {
-                    addToCartButtonStartsDisabled = true;
-                } else if (multipleOption.min_selection > 0 &&
-                    multipleOption.default_values.filter(value => value === true).length < multipleOption.min_selection) {
-                    addToCartButtonStartsDisabled = true;
-                }
+                if (multipleOption.min_selection > 0) {
+
+                    if (currentSelectedOption && currentSelectedOption.selected_values.length < multipleOption.min_selection) {
+                        addToCartButtonStartsDisabled = true;
+                    } 
+                }   
 
                 // If we have selected
             }
@@ -159,7 +147,7 @@ const ProductDialog = (props: ProductDialogProps) => {
         handleClose();
     }
 
-    const handleOptionChange = (optionIndex: number, selectedOption: ProductOptionSelection) => { 
+    const handleOptionChange = (optionIndex: number, selectedOption: ABProductOptionSelections) => { 
 
         const newSelectedOptions = selectedOptions.map((oldSelectedOption, index) => {
             if (index == optionIndex) {
@@ -169,12 +157,15 @@ const ProductDialog = (props: ProductDialogProps) => {
             }
         });
         setSelectedOptions(newSelectedOptions);
-
-        if (props.product && props.product.options) {
-            handleAddToCartDisabled(props.product.options!);
-        }
+        //console.log("newSelectedOptions", newSelectedOptions);
+        handleAddToCartDisabled(props.product.options!, newSelectedOptions);
     }
 
+    const selectedValuesForOption = (optionId: string) => {
+        const result = selectedOptions.find(obj => obj.option_id === optionId);
+        //console.log(`selectedValuesForOption(${optionId})`, result);
+        return result;
+    }
     return (
         <>
             {props.product &&
@@ -187,15 +178,14 @@ const ProductDialog = (props: ProductDialogProps) => {
                             <Typography variant='body1'>{props.product.description}</Typography>
                             <br />
 
-                            {props.product.options && props.product.options.map((option, index) => {
-                                
+                            {props.product.options.map((option, index) => {
                                 if (option.type == ABProductOptionsType.SINGLE_SELECTION) {
                                     return (
                                         <ProductOptionSingleSelection
                                             key={index}
                                             index={index}
                                             productOption={option as ABProductOptionSingleSelection}
-                                            selectedOption={selectedOptions[index] as ABProductOptionSingleSelectionSelectedValue}
+                                            selectedOption={selectedValuesForOption(option.id) as ABProductOptionSingleSelectedValue}
                                             onOptionChange={(selectedOption) => {handleOptionChange(index, selectedOption)}}
                                         />
                                     );
@@ -205,7 +195,7 @@ const ProductDialog = (props: ProductDialogProps) => {
                                             key={index}
                                             index={index}
                                             productOption={option as ABProductOptionMultipleSelection}
-                                            selectedValues={selectedOptions[index] as ABProductOptionMultipleSelectionSelectedValues}
+                                            selectedValues={selectedValuesForOption(option.id) as ABProductOptionMultipleSelectedValues}
                                             onOptionChange={(selectedOption) => {handleOptionChange(index, selectedOption)}}
                                         />
                                     );

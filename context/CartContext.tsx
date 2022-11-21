@@ -1,27 +1,23 @@
 import {
     ABProduct,
-    ABProductOptionsType,
-    ABProductOptionSingleSelectionSelectedValue,
-    ABProductOptionMultipleSelectionSelectedValues,
     ABCreateOrderData,
-    ABCreateOrderResponse, 
     ABResponseStatus,
     ABCreateOrderDataCartLine,
-    ABFunctionCalculatePrice} from "@dvalenzuela-com/alabarra-types";
+    ABFunctionCalculatePrice,
+    ABProductOptionSelections} from "@dvalenzuela-com/alabarra-types";
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
 import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "@Lib/functions";
 import { UserContext } from "./UserContext";
 
-export type ProductOptionSelection = (ABProductOptionSingleSelectionSelectedValue | ABProductOptionMultipleSelectionSelectedValues);
 
 export type Cart = {
     getNumberOfItems: () => number;
     getCartTotal: () => number;
-    addProduct: (product: ABProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => void;
+    addProduct: (product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => void;
     getLines: () => CartLine[];
-    editLineWithId: (id: string, product: ABProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => void;
-    calculateTotalPrice: (product: ABProduct, selectedOptions: ProductOptionSelection[], quantity: number) => number;
+    editLineWithId: (id: string, product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => void;
+    calculateTotalPrice: (product: ABProduct, selectedOptions: ABProductOptionSelections[], quantity: number) => number;
     clearCart: () => void;
     createOrderWithManualPayment: (businessId: string, tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
     createOrderWithDigitalPayment: (businessId: string, tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
@@ -56,7 +52,7 @@ export type CartLine = {
     lineId: string;
     product: ABProduct;
     quantity: number;
-    options: ProductOptionSelection[];
+    options: ABProductOptionSelections[];
     note: string | null;
 }
 export const CartProvider = ({ businessId, children }: CartProviderProps) => {
@@ -94,7 +90,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     const [createDigitalPaymentOrder] = useCreateDigitalPaymentOrder();
     const [createStripePaymentIntent] = useCreateStripePaymentIntent();
 
-    const addItem = (product: ABProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => {
+    const addItem = (product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => {
         const newCartLine: CartLine = {
             lineId: v4(),
             note: comment,
@@ -109,7 +105,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
         return cartLines
     }
 
-    const editLineWithId = (id: string, product: ABProduct, quantity: number, options: ProductOptionSelection[], comment: string | null) => {
+    const editLineWithId = (id: string, product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => {
 
         if (quantity == 0 || product == null || product == undefined) {
             // Remove from cart
@@ -140,8 +136,8 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
         return cartLines.length
     }
 
-    const calculateTotalPrice = (product: ABProduct, selectedOptions: ProductOptionSelection[], quantity: number): number => {
-        return quantity * ABFunctionCalculatePrice(product.price, selectedOptions, product.options ?? []);
+    const calculateTotalPrice = (product: ABProduct, selectedOptions: ABProductOptionSelections[], quantity: number): number => {
+        return quantity * ABFunctionCalculatePrice(product, selectedOptions);
     }
 
     const getCartTotal = () => {
@@ -229,7 +225,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
                     }
                 })
                 .catch((error: any) => {
-                    console.log(error.message)
+                    console.error(error.message)
                     reject(error);
                 });
         });

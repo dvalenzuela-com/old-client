@@ -1,9 +1,8 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useContext, useState } from "react";
-import { CartContext, CartLine, ProductOptionSelection } from "@Context/CartContext";
-import NumberFormat from 'react-number-format';
+import { CartContext, CartLine } from "@Context/CartContext";
 import ProductDialog, { ProductDialogMode } from "./ProductDialog";
-import { ABProduct, ABProductOptionMultipleSelectionSelectedValues, ABProductOptionSingleSelectionSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
+import { ABProduct, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionSingleSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
 import { useTranslation } from "react-i18next";
 import CurrencyText from "./CurrencyText";
 import { BusinessConfigContext } from "@Context/BusinessConfigContext";
@@ -20,7 +19,7 @@ const CartContent = () => {
     const [activeProduct, setActiveProduct] = useState<ABProduct | undefined>(undefined);
     const [activeLineId, setActiveLineId] = useState<string>('');
     const [activeQuantity, setActiveQuantity] = useState<number>(1);
-    const [activeOptions, setActiveOptions] = useState<ProductOptionSelection[]>([]);
+    const [activeOptions, setActiveOptions] = useState<ABProductOptionSelections[]>([]);
     const [activeComment, setActiveComment] = useState<string | null>(null);
 
     const handleRowClick = (cartLine: CartLine) => {
@@ -63,7 +62,7 @@ const CartContent = () => {
 
                                                     if (productOption.type == ABProductOptionsType.SINGLE_SELECTION) {
                                                         //Get selected option
-                                                        const singleSelectedOption = line.options[index] as ABProductOptionSingleSelectionSelectedValue;
+                                                        const singleSelectedOption = line.options[index] as ABProductOptionSingleSelectedValue;
 
                                                         if (singleSelectedOption) {
                                                             // Find product option that is selected to find price adjustment value
@@ -74,7 +73,7 @@ const CartContent = () => {
                                                     } else if (productOption.type == ABProductOptionsType.MULTIPLE_SELECTION) {
                                                         
                                                         //Get selected option
-                                                        const selectedValues = line.options[index] as ABProductOptionMultipleSelectionSelectedValues;
+                                                        const selectedValues = line.options[index] as ABProductOptionMultipleSelectedValues;
                                                         if (selectedValues) {
                                                             return selectedValues.map((selectedValue, index) => {
                                                                 if (selectedValue) {
