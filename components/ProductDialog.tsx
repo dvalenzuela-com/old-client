@@ -53,26 +53,26 @@ const ProductDialog = (props: ProductDialogProps) => {
 
     const handleAddToCartDisabled = (productOptions: ABProductOption[], selectedOptions: ABProductOptionSelections[]) => {
         let addToCartButtonStartsDisabled = false;
-        productOptions.forEach( (option, index) => {
+
+        productOptions.forEach((option, index) => {
             if (option.type == ABProductOptionsType.SINGLE_SELECTION) {
                 // Single options always contain a default value, therefore do not need a mandatory check
-                const singleOption = option as ABProductOptionSingleSelection;
-                const currentSelectedOption = selectedOptions[index] as ABProductOptionSingleSelectedValue;
-                // Nothing to do here :) 
             } else if (option.type == ABProductOptionsType.MULTIPLE_SELECTION) {
                 const multipleOption = option as ABProductOptionMultipleSelection;
-                const currentSelectedOption = selectedOptions[index] as ABProductOptionMultipleSelectedValues;
+                const currentSelectedOption = selectedOptions.find(obj => obj.option_id === option.id);
 
                 // If we have a minimum selection, which in turn is higher as the default values, deactivate the button
                 if (multipleOption.min_selection > 0) {
-
-                    if (currentSelectedOption && currentSelectedOption.selected_values && currentSelectedOption.selected_values.length < multipleOption.min_selection) {
-                        addToCartButtonStartsDisabled = true;
-                    } 
-                }   
+                    if (currentSelectedOption) {
+                        const multipleSelection = currentSelectedOption as ABProductOptionMultipleSelectedValues;
+                        if (multipleSelection.selected_values.length < multipleOption.min_selection) {
+                            addToCartButtonStartsDisabled = true;
+                        }
+                    }
+                }
             }
         });
-        
+
         setAddToCartDisabled(addToCartButtonStartsDisabled);
     }
 

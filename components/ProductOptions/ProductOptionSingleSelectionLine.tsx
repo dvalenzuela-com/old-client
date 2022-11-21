@@ -20,10 +20,10 @@ const ProductOptionSingleSelectionLine = (props: ProductOptionSingleSelectionLin
                 <Typography variant='body2' display='inline'>{props.title}</Typography>
             </Box>
             <Box textAlign='right'>
-                {props.price != 0 &&
-                (<Typography variant='body2' >
-                    + <CurrencyText value={props.price} businessConfig={props.businessConfig} />
-                </Typography>)}
+                {props.price > 0 && 
+                    <Typography variant='body2' > + <CurrencyText value={props.price} businessConfig={props.businessConfig} /></Typography>}
+                {props.price < 0 &&
+                    <Typography variant='body2' > - <CurrencyText value={props.price} businessConfig={props.businessConfig} /></Typography>}
             </Box>
         </Stack>
     );

@@ -32,15 +32,15 @@ const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) 
             <Typography>{props.productOption.title}</Typography>
             <RadioGroup value={selectedValue}>
                 <Stack>
-                {props.productOption.possible_values.map((possible_value) => (
-                        <ProductOptionSingleSelectionLine
-                            key={possible_value.id}
-                            id={possible_value.id}
-                            title={possible_value.title}
-                            price={possible_value.price_adjustment}
-                            businessConfig={businessConfig}
-                            onChange={handleChange} />
-                ))}
+                    {props.productOption.possible_values.map((possible_value) => (
+                            <ProductOptionSingleSelectionLine
+                                key={possible_value.id}
+                                id={possible_value.id}
+                                title={possible_value.title}
+                                price={possible_value.price_adjustment}
+                                businessConfig={businessConfig}
+                                onChange={handleChange} />
+                    ))}
                 </Stack>
             </RadioGroup>
         </>
