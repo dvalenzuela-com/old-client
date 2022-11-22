@@ -1,8 +1,7 @@
 import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from 'next'
-import { Autocomplete, Container, Grid, LinearProgress, List, ListItem, Radio, RadioGroup, TextField, Typography } from '@mui/material';
+import { Autocomplete, Container, Grid, LinearProgress, TextField } from '@mui/material';
 import CartContent from '@Components/CartContent';
 import { useContext, useEffect, useState } from 'react';
-import { Box } from '@mui/system';
 import { getAllBusinessIds, getAllTableIds, getBusinessConfig } from '@Lib/firestore';
 import StripeButton from '@Components/StripeButton';
 import { CartContext } from '@Context/CartContext';
