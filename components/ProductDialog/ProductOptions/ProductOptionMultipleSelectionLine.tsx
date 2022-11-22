@@ -1,6 +1,6 @@
 import CurrencyText from "@Components/CurrencyText";
 import { ABBusinessConfig } from "@dvalenzuela-com/alabarra-types";
-import { Box, Checkbox, Radio, Stack, Typography } from "@mui/material";
+import { Box, Checkbox, Stack, Typography } from "@mui/material";
 
 type ProductOptionMultipleSelectionLineProps = {
     id: string;

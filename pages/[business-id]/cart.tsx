@@ -13,6 +13,7 @@ import LoadingButton from '@Components/LoadingButton';
 import { useTranslation } from 'react-i18next';
 import Layout from 'layout/Layout';
 import { ABBusinessConfig } from '@dvalenzuela-com/alabarra-types';
+import PaymentTypeSelection, { PaymentTypes } from '@Components/PaymentTypeSelection';
 
 const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({businessConfig, tables}) => {
 
@@ -59,16 +60,14 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 		}
 	}, [stripe]);
 
-
-
 	const handleTableSelection = (event: any, newValue: string | null) => {
 		setSelectedTable(newValue);
 	}
 
-	const handleSelectPaymentType = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPaymentType(event.target.value);
+	const handleSelectPaymentType = (selectedPaymentType: PaymentTypes) => {
+        setPaymentType(selectedPaymentType);
 
-		if(event.target.value == 'digital') {
+		if(selectedPaymentType == 'digital') {
 			if (selectedTable) {
 				cart.createOrderWithDigitalPayment(businessId, selectedTable, customerName?.trim(), generalNote)
 					.then((orderId: any) => {
@@ -142,28 +141,26 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 							options={tables}
 							value={selectedTable}
 							onChange={handleTableSelection}
-							renderInput={(params) => <TextField {...params} label={t('Cart.SelectTable.Placeholder')} variant="standard"/>}
+							renderInput={(params) => <TextField {...params} label={t('Cart.SelectTable.Placeholder')} variant="standard" />}
 						/>
 						<h2>{t('Cart.Username.Title')}</h2>
-						<TextField value={customerName} placeholder={t('Cart.Username.Placeholder')} onChange={(e) => {setCustomerName(e.target.value)}} fullWidth></TextField>
+						<TextField
+							value={customerName} 
+							placeholder={t('Cart.Username.Placeholder')}
+							onChange={(e) => {setCustomerName(e.target.value)}}
+							fullWidth />
 						<h2>{t('Cart.GeneralNote.Title')}</h2>
-						<TextField value={generalNote} placeholder={t('Cart.GeneralNote.Placeholder')} onChange={(e) => {setGeneralNote(e.target.value)}} fullWidth multiline></TextField>
+						<TextField
+							value={generalNote}
+							placeholder={t('Cart.GeneralNote.Placeholder')}
+							onChange={(e) => {setGeneralNote(e.target.value)}}
+							multiline
+							fullWidth />
 						<h2>{t('Cart.PaymentMethod.Title')}</h2>
-						<RadioGroup value={paymentType}>
-							<List>
-								<ListItem disablePadding={true}>
-									<Radio value='presential' onChange={handleSelectPaymentType} />
-										<Typography><Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Presential.Title')}</Box>{t('Cart.PaymentMethod.Presential.Subtitle')}</Typography>
-								</ListItem>
-								{canMakeDigitalPayments &&
-									<ListItem disablePadding={true}>
-										<Radio value='digital' onChange={handleSelectPaymentType} disabled={!canMakeDigitalPayments} />
-										<Typography><Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Digital.Title')}</Box>{t('Cart.PaymentMethod.Digital.Subtitle')}</Typography>
-									</ListItem>
-								}
-
-							</List>
-						</RadioGroup>
+						<PaymentTypeSelection
+							selectedPaymentType={paymentType as PaymentTypes}
+							canMakeDigitalPayments={canMakeDigitalPayments}
+							onChange={handleSelectPaymentType} />
 						{paymentType != '' &&
 							<>
 								<h2>{t('Cart.Order.Title')}</h2>
