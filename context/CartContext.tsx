@@ -107,6 +107,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
 
     const editLineWithId = (id: string, product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => {
 
+        // TODO: Where does the coment gets updated for existing lines?
         if (quantity == 0 || product == null || product == undefined) {
             // Remove from cart
             const newCart = cartLines.filter(cartLine => { return cartLine.lineId != id } )

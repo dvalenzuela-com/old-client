@@ -1,7 +1,7 @@
 import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from 'next'
 
 import ProductGrid from '@Components/ProductGrid'
-import { Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { allCategoriesQuery, allProductsQuery, getAllBusinessIds, getBusinessConfig } from '@Lib/firestore';
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
@@ -10,6 +10,9 @@ import Layout from 'layout/Layout';
 import { getDocs } from 'firebase/firestore';
 import { ABBusinessConfig, ABCategory, ABProduct } from '@dvalenzuela-com/alabarra-types';
 import { NextSeo } from 'next-seo';
+import { dummyAllProducts } from './../../lib/offlineTesting/dummyAllProducts';
+import { dummyAllCategories } from '../../lib/offlineTesting/dummyAllCategories';
+import { dummyBusinessConfig } from './../../lib/offlineTesting/dummyBusinessConfig';
 
 const Index: NextPage<{categories: ABCategory[], products: ABProduct[], businessConfig: ABBusinessConfig}> = ({categories, products, businessConfig}) => {
 
@@ -73,6 +76,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 // statically generate pages
 export const getStaticProps: GetStaticProps = async (context) => {
 	
+	/*
     const businessId = (context.params as any)['business-id'] as string;
 	const businessesIds = await getAllBusinessIds();
 
@@ -85,11 +89,18 @@ export const getStaticProps: GetStaticProps = async (context) => {
             props: {}
         }
     }
+*/
+	//const allProducts = (await getDocs(allProductsQuery(businessId))).docs.map(doc => doc.data());
+	//const allCategories = (await getDocs(allCategoriesQuery(businessId))).docs.map(doc => doc.data());
+	//const businessConfig = await getBusinessConfig(businessId);
 
-	const allProducts = (await getDocs(allProductsQuery(businessId))).docs.map(doc => doc.data());
-	const allCategories = (await getDocs(allCategoriesQuery(businessId))).docs.map(doc => doc.data());
-	const businessConfig = await getBusinessConfig(businessId);
+	const allProducts = dummyAllProducts;
+	const allCategories = dummyAllCategories;
+	const businessConfig = dummyBusinessConfig;
 
+	console.log(allCategories);
+	console.log(allProducts);
+	console.log(businessConfig);
 	return {
         props: {
 			categories: JSON.parse(JSON.stringify(allCategories)),

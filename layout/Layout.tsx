@@ -5,6 +5,7 @@ import { ABBusinessConfig } from "@dvalenzuela-com/alabarra-types";
 import { BusinessConfigContext } from "@Context/BusinessConfigContext";
 import './../i18n';
 import i18n from "./../i18n";
+import { AppBar, Box, Toolbar, Typography, useMediaQuery } from "@mui/material";
 
 type LayoutProps = {
     children: React.ReactNode,
@@ -20,14 +21,33 @@ const Layout = ({ children, businessConfig }: LayoutProps) => {
     const theme = createTheme({
         palette: businessConfig.palette
     });
+
+    const isStoreClosed = () => {
+        const now = new Date();
+        console.log(now);
+
+        return true;
+    }
     
     return (
         <>
             <BusinessConfigContext.Provider value={businessConfig}>
+            
                 <ThemeProvider theme={theme}>
-                    <Navbar title={businessConfig.business_name} />
-                    {children}
-                    <Footer />
+                    <Box>
+                        <Navbar title={businessConfig.business_name} />
+                        {isStoreClosed() && <Box sx={{
+                            backgroundColor:"black",
+                            color: "white",
+                            textAlign:'center',
+                            top: {xs:'56px', md: '64px'}, //TODO: Correct case for landscape
+                            position: 'sticky',
+                            zIndex: 1}}>
+                                <Typography sx={{pt: 1, pb: 1}}>Store is closed. Cart is disabled.</Typography>
+                        </Box>}
+                        {children}
+                        <Footer />
+                    </Box>
                 </ThemeProvider>
             </BusinessConfigContext.Provider>
 		</>

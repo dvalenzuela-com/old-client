@@ -1,11 +1,12 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { CartContext, CartLine } from "@Context/CartContext";
-import ProductDialog, { ProductDialogMode } from "./ProductDialog";
+import ProductDialog from "./ProductDialog/ProductDialog";
 import { ABProduct, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionSingleSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
 import { useTranslation } from "react-i18next";
 import CurrencyText from "./CurrencyText";
 import { BusinessConfigContext } from "@Context/BusinessConfigContext";
+import { ProductDialogMode } from "./ProductDialog/ProductDialogMode";
 
 
 const CartContent = () => {
@@ -27,8 +28,6 @@ const CartContent = () => {
         setActiveQuantity(cartLine.quantity);
         setActiveLineId(cartLine.lineId);
         setActiveComment(cartLine.note);
-
-        console.log("cartLine.options", cartLine.options);
         setActiveOptions(cartLine.options);
         setActiveProduct(cartLine.product);
     }
@@ -58,7 +57,6 @@ const CartContent = () => {
 
                                             {/** Print line options */}                                            
                                             {line.options.map((selectedOption, index) => {
-                                                console.log(selectedOption);
                                                 // Original product option
                                                 const productOption = line.product.options.find( obj => obj.id === selectedOption.option_id);
                                                 if (productOption) {

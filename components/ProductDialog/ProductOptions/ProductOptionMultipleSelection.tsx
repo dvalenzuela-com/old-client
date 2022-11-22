@@ -1,9 +1,7 @@
-import { Checkbox, Grid, Typography } from "@mui/material";
+import { Typography, Stack } from "@mui/material";
 import { ABProductOptionMultipleSelection, ABProductOptionMultipleSelectedValues } from "@dvalenzuela-com/alabarra-types";
 import React, { useContext, useEffect, useState } from "react";
-import CurrencyText from "@Components/CurrencyText";
 import { BusinessConfigContext } from "@Context/BusinessConfigContext";
-import { Box, Stack } from "@mui/system";
 import ProductOptionMultipleSelectionLine from "./ProductOptionMultipleSelectionLine";
 
 type ProductOptionMultipleSelectionProps = {

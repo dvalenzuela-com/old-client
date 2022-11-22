@@ -1,17 +1,12 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
-import { ABProduct, ABProductOption, ABProductOptionMultipleSelection, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionSingleSelection, ABProductOptionSingleSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
+import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { ABProduct, ABProductOption, ABProductOptionMultipleSelection, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
 import React, { useContext, useEffect, useState } from "react";
 import { CartContext } from "@Context/CartContext";
-import ProductDialogButton from "./ProductDialogButton";
-import ProductOptionMultipleSelection from "./ProductOptions/ProductOptionMultipleSelection";
-import ProductOptionSingleSelection from "./ProductOptions/ProductOptionSingleSelection";
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
-
-export enum ProductDialogMode {
-    NewLine,
-    EditLine
-}
+import ProductDialogActions from "./ProductDialogActions";
+import ProductDialogContent from "./ProductDialogContent";
+import { ProductDialogMode } from "./ProductDialogMode";
 
 export type ProductDialogProps = {
     mode: ProductDialogMode;
@@ -23,6 +18,7 @@ export type ProductDialogProps = {
     comment: string | null;
     onClose: () => void;
 }
+
 const ProductDialog = (props: ProductDialogProps) => {
 
     const {enqueueSnackbar} = useSnackbar();
@@ -42,16 +38,17 @@ const ProductDialog = (props: ProductDialogProps) => {
     }, [props.comment]);
 
     useEffect(() => {
+        // Use selected options if available
         const newOptions = props.options ?? [];
         setSelectedOptions(newOptions);
 
         // Check if there are mandatory options. If so, deactivate the add to cart button
-        handleAddToCartDisabled(props.product.options, newOptions);
+        disableAddToCartIfNeeded(props.product.options, newOptions);
 
     }, [props.product, props.options]);
 
 
-    const handleAddToCartDisabled = (productOptions: ABProductOption[], selectedOptions: ABProductOptionSelections[]) => {
+    const disableAddToCartIfNeeded = (productOptions: ABProductOption[], selectedOptions: ABProductOptionSelections[]) => {
         let addToCartButtonStartsDisabled = false;
 
         productOptions.forEach((option, index) => {
@@ -76,8 +73,8 @@ const ProductDialog = (props: ProductDialogProps) => {
         setAddToCartDisabled(addToCartButtonStartsDisabled);
     }
 
-    const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setComment(event.target.value);
+    const handleCommentChange = (newComment: string) => {
+        setComment(newComment);
     }
 
     const handleClose = () => {
@@ -140,63 +137,32 @@ const ProductDialog = (props: ProductDialogProps) => {
             newSelectedOptions.push(selectedOption);
         }
         setSelectedOptions(newSelectedOptions);
-        handleAddToCartDisabled(props.product.options!, newSelectedOptions);
+        disableAddToCartIfNeeded(props.product.options!, newSelectedOptions);
     }
 
-    const selectedValuesForOption = (optionId: string) => {
-        const result = selectedOptions.find(obj => obj.option_id === optionId);
-        return result;
-    }
     return (
         <>
             {props.product &&
                 <Dialog open={true} onClose={handleClose}>
-
                         <DialogTitle>{props.product.title}</DialogTitle>
                         <DialogContent>
-                            <img src={props.product.image_url} width='100%'/>
-                            <br />
-                            <Typography variant='body1'>{props.product.description}</Typography>
-                            <br />
-
-                            {props.product.options.map((option, index) => {
-                                if (option.type == ABProductOptionsType.SINGLE_SELECTION) {
-                                    return (
-                                        <ProductOptionSingleSelection
-                                            key={index}
-                                            index={index}
-                                            productOption={option as ABProductOptionSingleSelection}
-                                            selectedOption={selectedValuesForOption(option.id) as ABProductOptionSingleSelectedValue}
-                                            onOptionChange={(selectedOption) => {handleOptionChange(selectedOption)}}
-                                        />
-                                    );
-                                } else if (option.type == ABProductOptionsType.MULTIPLE_SELECTION) {
-                                    return (
-                                        <ProductOptionMultipleSelection
-                                            key={index}
-                                            index={index}
-                                            productOption={option as ABProductOptionMultipleSelection}
-                                            selectedValues={selectedValuesForOption(option.id) as ABProductOptionMultipleSelectedValues}
-                                            onOptionChange={(selectedOption) => {handleOptionChange(selectedOption)}}
-                                        />
-                                    );
-                                }       
-                            })}
-
-                            <TextField label={t('ProductCard.CommentPlaceholder')} multiline maxRows={4} value={comment} onChange={handleCommentChange} fullWidth />
-    
+                            <ProductDialogContent
+                                product={props.product}
+                                comment={comment}
+                                selectedOptions={selectedOptions}
+                                onOptionChange={handleOptionChange}
+                                onCommentChange={handleCommentChange} />    
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={handleDecreaseProductCount}>-</Button>{selectedQuantity}<Button onClick={handleIncreaseProductCount}>+</Button>
-                            <Button onClick={handleAddToOrder} disabled={addToCartDisabled}>
-
-                                <ProductDialogButton
-                                    mode={props.mode}
-                                    product={props.product}
-                                    selectedOptions={selectedOptions}
-                                    selectedQuantity={selectedQuantity}
-                                />
-                            </Button>
+                            <ProductDialogActions
+                                mode={props.mode}
+                                product={props.product}
+                                selectedOptions={selectedOptions}
+                                quantity={selectedQuantity}
+                                mainButtonDisabled={addToCartDisabled}
+                                onQuantityIncrease={handleIncreaseProductCount}
+                                onQuantityDecrease={handleDecreaseProductCount}
+                                onMainButtonPress={handleAddToOrder} />
                         </DialogActions>
                 </Dialog>
             }

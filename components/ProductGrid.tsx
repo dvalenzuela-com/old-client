@@ -2,8 +2,9 @@ import { Grid } from "@mui/material";
 import { ABCategory, ABProduct } from "@dvalenzuela-com/alabarra-types";
 import { CSSProperties, useState } from "react";
 import ProductCard from "./ProductCard";
-import ProductDialog, { ProductDialogMode } from "./ProductDialog";
+import ProductDialog from "./ProductDialog/ProductDialog";
 import CategoryHeader from "./CategoryHeader";
+import { ProductDialogMode } from "./ProductDialog/ProductDialogMode";
 
 const tempDivStyle: CSSProperties = {
     backgroundColor: 'lightGray',
@@ -23,6 +24,7 @@ const ProductGrid = (props: ProductGridProps) => {
     const handleProductClick = (product: ABProduct) => {
         setActiveProduct(product)
     }
+
     return (
         <>
             <Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch' marginTop={1}>
