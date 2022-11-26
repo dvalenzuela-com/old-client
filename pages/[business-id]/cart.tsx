@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import Layout from 'layout/Layout';
 import { ABBusinessConfig } from '@dvalenzuela-com/alabarra-types';
 import PaymentTypeSelection, { PaymentTypes } from '@Components/PaymentTypeSelection';
+import { isStoreOpen } from '@Lib/helper';
 
 const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({businessConfig, tables}) => {
 
@@ -26,8 +27,8 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 	const stripe = useStripe();
 
 	const [selectedTable, setSelectedTable] = useState<string | null>(null);
-	const [customerName, setCustomerName] = useState<string | undefined>(undefined);
-	const [generalNote, setGeneralNote] = useState<string | undefined>(undefined);
+	const [customerName, setCustomerName] = useState<string>('');
+	const [generalNote, setGeneralNote] = useState<string>('');
 	const [paymentType, setPaymentType] = useState<string>('');
 	const [clientSecret, setClientSecret] = useState<string>('');
 	const [canMakeDigitalPayments, setCanMakeDigitalPayments] = useState<boolean>(false);
@@ -63,22 +64,19 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 		setSelectedTable(newValue);
 	}
 
-	const handleSelectPaymentType = (selectedPaymentType: PaymentTypes) => {
+	const handleSelectPaymentType = async (selectedPaymentType: PaymentTypes) => {
         setPaymentType(selectedPaymentType);
 
 		if(selectedPaymentType == 'digital') {
 			if (selectedTable) {
-				cart.createOrderWithDigitalPayment(businessId, selectedTable, customerName?.trim(), generalNote)
-					.then((orderId: any) => {
-						return cart.createStripePaymentIntent(businessId, orderId);
-					})
-					.then((clientSecret: any) => {
-						setClientSecret(clientSecret);
-					})
-					.catch(error => {
-						console.log("Catch block")
-						console.log(error);
-					})
+				try {
+					const orderId = await cart.createOrderWithDigitalPayment(businessId, selectedTable, customerName.trim(), generalNote);
+					const clientSecret = await cart.createStripePaymentIntent(businessId, orderId);
+					setClientSecret(clientSecret);
+				} catch (error) {
+					console.log("Catch block")
+					console.log(error);
+				}
 			}
 		}
     }
@@ -86,19 +84,18 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 	const handleManualOrder = () => {
 		if (selectedTable) {
 			setWaitingForManualOrder(true);
-			cart.createOrderWithManualPayment(businessId, selectedTable, customerName?.trim(), generalNote)
-				.then(data => {
-					setWaitingForManualOrder(false);
-					// Clear cart, send the user to the index page and show a success message
-					cart.clearCart();
-					router.push(`/${businessId}`);
-					enqueueSnackbar(t('Cart.Snackbar.ManualOrderPlaced'), {variant: 'success'});
-				})
-				.catch(error => {
-					setWaitingForManualOrder(false);
-					enqueueSnackbar(t('Cart.Snackbar.OrderError'), {variant: 'error'});
-					console.log(error);
-				})
+			try {
+				const data = cart.createOrderWithManualPayment(businessId, selectedTable, customerName.trim(), generalNote);
+				setWaitingForManualOrder(false);
+				// Clear cart, send the user to the index page and show a success message
+				cart.clearCart();
+				router.push(`/${businessId}`);
+				enqueueSnackbar(t('Cart.Snackbar.ManualOrderPlaced'), {variant: 'success'});
+			} catch (error) {
+				setWaitingForManualOrder(false);
+				enqueueSnackbar(t('Cart.Snackbar.OrderError'), {variant: 'error'});
+				console.log(error);
+			}
 		}
 	}
 
@@ -111,76 +108,82 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 		cart.clearCart();
 		router.push(`/${businessId}`);
 		enqueueSnackbar(t('Cart.Snackbar.DigitalOrderPlaced'), {variant: 'success'});
-	
 	}
 
+	return (
+		<Layout businessConfig={businessConfig}>
+			<Container>
+				<h1>{t('Cart.Title')}</h1>
 
-  return (
-	<Layout businessConfig={businessConfig}>
-		<Container>
-			<h1>{t('Cart.Title')}</h1>
+				{cart.getNumberOfItems() == 0 && <h2>{t('Cart.CartEmpty.Title')}</h2>}
+				{cart.getNumberOfItems() != 0 &&
+					<Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
 
-			{cart.getNumberOfItems() == 0 && <h2>{t('Cart.CartEmpty.Title')}</h2>}
+						<Grid item xs={12} sm={6}>
+							<h2>{t('Cart.OrderSummary.Title')}</h2>
+							<CartContent />
+						</Grid>
 
-			{cart.getNumberOfItems() != 0 &&
-
-				<Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
-
-					<Grid item xs={12} sm={6} md={6} lg={6}>
-						<h2>{t('Cart.OrderSummary.Title')}</h2>
-						<CartContent />
+						<Grid item xs={12} sm={6}>
+							<h2>{t('Cart.SelectTable.Title')}</h2>
+							<Autocomplete
+								disablePortal
+								id="select-table"
+								options={tables}
+								value={selectedTable}
+								onChange={handleTableSelection}
+								renderInput={(params) => <TextField {...params} label={t('Cart.SelectTable.Placeholder')} variant="standard" />}
+							/>
+							<h2>{t('Cart.Username.Title')}</h2>
+							<TextField
+								value={customerName} 
+								placeholder={t('Cart.Username.Placeholder')}
+								onChange={(e) => {setCustomerName(e.target.value)}}
+								fullWidth />
+							<h2>{t('Cart.GeneralNote.Title')}</h2>
+							<TextField
+								value={generalNote}
+								placeholder={t('Cart.GeneralNote.Placeholder')}
+								onChange={(e) => {setGeneralNote(e.target.value)}}
+								multiline
+								fullWidth />
+							<h2>{t('Cart.PaymentMethod.Title')}</h2>
+							<PaymentTypeSelection
+								selectedPaymentType={paymentType as PaymentTypes}
+								canMakeDigitalPayments={canMakeDigitalPayments}
+								onChange={handleSelectPaymentType}
+								disabled={!isStoreOpen(businessConfig)} />
+							{paymentType != '' &&
+								<>
+									<h2>{t('Cart.Order.Title')}</h2>
+									{ paymentType == "presential" &&
+										<LoadingButton
+											onClick={handleManualOrder}
+											disabled={!(selectedTable && customerName.trim().length > 0 && isStoreOpen(businessConfig))}
+											title={t('Cart.Order.PresentialPaymentButton')}
+											loading={waitingForManualOrder}
+											fullWidth/>
+									}
+									{ paymentType == "digital" && clientSecret == '' &&
+										<LinearProgress />
+									}
+									{ paymentType == "digital" && clientSecret != '' && 
+									// TODO: disable when no table is selected
+									// TODO: disable when store closed
+										<StripeButton
+											amount={cart.getCartTotal()}
+											clientSecret={clientSecret}
+											onPaymentError={handleDigitalPaymentError}
+											onPaymentSuccess={hanldeDigitalPaymentSuccess} />
+									}
+								</>
+							}
+						</Grid>
 					</Grid>
-
-					<Grid item xs={12} sm={6} md={6} lg={6}>
-
-						<h2>{t('Cart.SelectTable.Title')}</h2>
-						<Autocomplete
-							disablePortal
-							id="select-table"
-							options={tables}
-							value={selectedTable}
-							onChange={handleTableSelection}
-							renderInput={(params) => <TextField {...params} label={t('Cart.SelectTable.Placeholder')} variant="standard" />}
-						/>
-						<h2>{t('Cart.Username.Title')}</h2>
-						<TextField
-							value={customerName} 
-							placeholder={t('Cart.Username.Placeholder')}
-							onChange={(e) => {setCustomerName(e.target.value)}}
-							fullWidth />
-						<h2>{t('Cart.GeneralNote.Title')}</h2>
-						<TextField
-							value={generalNote}
-							placeholder={t('Cart.GeneralNote.Placeholder')}
-							onChange={(e) => {setGeneralNote(e.target.value)}}
-							multiline
-							fullWidth />
-						<h2>{t('Cart.PaymentMethod.Title')}</h2>
-						<PaymentTypeSelection
-							selectedPaymentType={paymentType as PaymentTypes}
-							canMakeDigitalPayments={canMakeDigitalPayments}
-							onChange={handleSelectPaymentType} />
-						{paymentType != '' &&
-							<>
-								<h2>{t('Cart.Order.Title')}</h2>
-								{ paymentType == "presential" &&
-									<LoadingButton onClick={handleManualOrder} disabled={!(selectedTable && customerName && customerName.trim().length > 0)} title={t('Cart.Order.PresentialPaymentButton')} loading={waitingForManualOrder} fullWidth/>
-								}
-								{ paymentType == "digital" && clientSecret == '' &&
-									<LinearProgress />
-								}
-								{ paymentType == "digital" && clientSecret != '' && 
-								// TODO: disable when no table is selected
-									<StripeButton amount={cart.getCartTotal()} clientSecret={clientSecret} onPaymentError={handleDigitalPaymentError} onPaymentSuccess={hanldeDigitalPaymentSuccess} />
-								}
-							</>
-						}
-					</Grid>
-				</Grid>
-			}
-		</Container>
-	</Layout>
-  )
+				}
+			</Container>
+		</Layout>
+	);
 }
 
 export default Cart;
@@ -225,6 +228,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 	const businessConfig = await getBusinessConfig(businessId);
 	const tables = await getAllTableIds(businessId);
+	console.log(businessConfig);
 
 	return {
         props: {

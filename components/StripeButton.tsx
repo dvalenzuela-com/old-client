@@ -9,8 +9,8 @@ interface StripeButtonProps {
     clientSecret: string;
     onPaymentError: (error: any) => void;
     onPaymentSuccess: () => void;
-    disabled?: boolean;
 }
+
 const StripeButton = (props: StripeButtonProps) => {
   const stripe = useStripe();
   const { t } = useTranslation();

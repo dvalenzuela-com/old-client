@@ -170,7 +170,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
                 business_id: businessId,
                 customer_id: user?.uid ?? "userid_not_found",
                 customer_nickname: customerName,
-                general_note: generalNote ?? null,
+                general_note: (generalNote && generalNote.trim().length > 0) ? generalNote : null,
                 cart: api_cart_lines,
                 table_name: tableName
             };
@@ -210,7 +210,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
                 business_id: businessId,
                 customer_id: user?.uid ?? "userid_not_found",
                 customer_nickname: customerName,
-                general_note: generalNote ?? null,
+                general_note: (generalNote && generalNote.trim().length > 0) ? generalNote : null,
                 cart: api_cart_lines,
                 table_name: tableName
             }

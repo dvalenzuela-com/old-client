@@ -4,6 +4,7 @@ import { PaymentTypes } from "./PaymentTypeSelection";
 
 type PaymentTypeSelectionOptionProps = {
     paymentType: PaymentTypes;
+    disabled?: boolean;
     onChange: (newPaymentType: PaymentTypes) => void;
 }
 
@@ -13,7 +14,7 @@ const PaymentTypeSelectionOption = (props: PaymentTypeSelectionOptionProps) => {
 
     return (
         <>
-            <Radio value={props.paymentType} onChange={(e) => {props.onChange(e.target.value as PaymentTypes)}} />
+            <Radio value={props.paymentType} onChange={(e) => {props.onChange(e.target.value as PaymentTypes)}} disabled={props.disabled} />
             <Typography>
                 {props.paymentType === 'presential' &&
                     <>

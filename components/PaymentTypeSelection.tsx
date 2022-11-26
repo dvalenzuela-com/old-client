@@ -6,6 +6,7 @@ export type PaymentTypes = 'presential' | 'digital';
 type PaymentTypeSelectionProps = {
     selectedPaymentType: PaymentTypes;
     canMakeDigitalPayments: boolean;
+    disabled?: boolean;
     onChange: (newPaymentType: PaymentTypes) => void;
 }
 
@@ -16,13 +17,15 @@ const PaymentTypeSelection = (props: PaymentTypeSelectionProps) => {
                 <ListItem disablePadding={true}>
                     <PaymentTypeSelectionOption
                         paymentType='presential'
-                        onChange={props.onChange} />
+                        onChange={props.onChange}
+                        disabled={props.disabled} />
                 </ListItem>
                 {props.canMakeDigitalPayments &&
                     <ListItem disablePadding={true}>
                     <PaymentTypeSelectionOption
                         paymentType='digital'
-                        onChange={props.onChange} />
+                        onChange={props.onChange}
+                        disabled={props.disabled} />
                     </ListItem>
                 }
             </List>
