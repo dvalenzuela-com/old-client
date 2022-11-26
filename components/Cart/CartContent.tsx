@@ -1,12 +1,12 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { CartContext, CartLine } from "@Context/CartContext";
-import ProductDialog from "./ProductDialog/ProductDialog";
+import ProductDialog from "../ProductDialog/ProductDialog";
 import { ABProduct, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionSingleSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
 import { useTranslation } from "react-i18next";
-import CurrencyText from "./CurrencyText";
+import CurrencyText from "../CurrencyText";
 import { BusinessConfigContext } from "@Context/BusinessConfigContext";
-import { ProductDialogMode } from "./ProductDialog/ProductDialogMode";
+import { ProductDialogMode } from "../ProductDialog/ProductDialogMode";
 
 
 const CartContent = () => {

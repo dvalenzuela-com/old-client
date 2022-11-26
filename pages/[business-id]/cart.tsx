@@ -1,19 +1,19 @@
 import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from 'next'
-import { Autocomplete, Container, Grid, LinearProgress, TextField } from '@mui/material';
-import CartContent from '@Components/CartContent';
+import { Container, Grid } from '@mui/material';
+import CartContent from '@Components/Cart/CartContent';
 import { useContext, useEffect, useState } from 'react';
 import { getAllBusinessIds, getAllTableIds, getBusinessConfig } from '@Lib/firestore';
-import StripeButton from '@Components/StripeButton';
 import { CartContext } from '@Context/CartContext';
 import { useStripe } from '@stripe/react-stripe-js';
 import { useSnackbar } from "notistack";
 import { useRouter } from 'next/router';
-import LoadingButton from '@Components/LoadingButton';
 import { useTranslation } from 'react-i18next';
 import Layout from 'layout/Layout';
 import { ABBusinessConfig } from '@dvalenzuela-com/alabarra-types';
-import PaymentTypeSelection, { PaymentTypes } from '@Components/PaymentTypeSelection';
-import { isStoreOpen } from '@Lib/helper';
+import { PaymentTypes } from '@Components/PaymentTypeSelection';
+import CartDetails from '@Components/Cart/CartDetails';
+// import { dummyAllTables } from '@Lib/offlineTesting/dummyAllTables';
+// import { dummyBusinessConfig } from '@Lib/offlineTesting/dummyBusinessConfig';
 
 const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({businessConfig, tables}) => {
 
@@ -29,7 +29,7 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 	const [selectedTable, setSelectedTable] = useState<string | null>(null);
 	const [customerName, setCustomerName] = useState<string>('');
 	const [generalNote, setGeneralNote] = useState<string>('');
-	const [paymentType, setPaymentType] = useState<string>('');
+	const [paymentType, setPaymentType] = useState<PaymentTypes | ''>('');
 	const [clientSecret, setClientSecret] = useState<string>('');
 	const [canMakeDigitalPayments, setCanMakeDigitalPayments] = useState<boolean>(false);
 	const [waitingForManualOrder, setWaitingForManualOrder] = useState<boolean>(false);
@@ -118,66 +118,29 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 				{cart.getNumberOfItems() == 0 && <h2>{t('Cart.CartEmpty.Title')}</h2>}
 				{cart.getNumberOfItems() != 0 &&
 					<Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
-
 						<Grid item xs={12} sm={6}>
 							<h2>{t('Cart.OrderSummary.Title')}</h2>
 							<CartContent />
 						</Grid>
 
 						<Grid item xs={12} sm={6}>
-							<h2>{t('Cart.SelectTable.Title')}</h2>
-							<Autocomplete
-								disablePortal
-								id="select-table"
-								options={tables}
-								value={selectedTable}
-								onChange={handleTableSelection}
-								renderInput={(params) => <TextField {...params} label={t('Cart.SelectTable.Placeholder')} variant="standard" />}
-							/>
-							<h2>{t('Cart.Username.Title')}</h2>
-							<TextField
-								value={customerName} 
-								placeholder={t('Cart.Username.Placeholder')}
-								onChange={(e) => {setCustomerName(e.target.value)}}
-								fullWidth />
-							<h2>{t('Cart.GeneralNote.Title')}</h2>
-							<TextField
-								value={generalNote}
-								placeholder={t('Cart.GeneralNote.Placeholder')}
-								onChange={(e) => {setGeneralNote(e.target.value)}}
-								multiline
-								fullWidth />
-							<h2>{t('Cart.PaymentMethod.Title')}</h2>
-							<PaymentTypeSelection
-								selectedPaymentType={paymentType as PaymentTypes}
+							<CartDetails
+								businessConfig={businessConfig} 
+								tableIds={tables}
+								selectedTable={selectedTable}
+								customerName={customerName}
+								generalNote={generalNote}
+								paymentType={paymentType}
 								canMakeDigitalPayments={canMakeDigitalPayments}
-								onChange={handleSelectPaymentType}
-								disabled={!isStoreOpen(businessConfig)} />
-							{paymentType != '' &&
-								<>
-									<h2>{t('Cart.Order.Title')}</h2>
-									{ paymentType == "presential" &&
-										<LoadingButton
-											onClick={handleManualOrder}
-											disabled={!(selectedTable && customerName.trim().length > 0 && isStoreOpen(businessConfig))}
-											title={t('Cart.Order.PresentialPaymentButton')}
-											loading={waitingForManualOrder}
-											fullWidth/>
-									}
-									{ paymentType == "digital" && clientSecret == '' &&
-										<LinearProgress />
-									}
-									{ paymentType == "digital" && clientSecret != '' && 
-									// TODO: disable when no table is selected
-									// TODO: disable when store closed
-										<StripeButton
-											amount={cart.getCartTotal()}
-											clientSecret={clientSecret}
-											onPaymentError={handleDigitalPaymentError}
-											onPaymentSuccess={hanldeDigitalPaymentSuccess} />
-									}
-								</>
-							}
+								clientSecret={clientSecret}
+								waitingForManualOrder={waitingForManualOrder}
+								onTableSelection={setSelectedTable}
+								onCustomerNameChange={setCustomerName}
+								onGeneralNoteChange={setGeneralNote}
+								onChangePaymentType={handleSelectPaymentType}
+								onCreateManualOder={handleManualOrder}
+								onDigitalPaymentError={handleDigitalPaymentError}
+								onDigitalPaymentSuccess={hanldeDigitalPaymentSuccess} />
 						</Grid>
 					</Grid>
 				}
@@ -228,7 +191,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 	const businessConfig = await getBusinessConfig(businessId);
 	const tables = await getAllTableIds(businessId);
-	console.log(businessConfig);
+
+	// const businessConfig = dummyBusinessConfig;
+	// const tables = dummyAllTables;
 
 	return {
         props: {
@@ -237,42 +202,3 @@ export const getStaticProps: GetStaticProps = async (context) => {
 		}
     }
 }
-
-/**
- * SERVER SIDE RENDERING 
- */
-
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-	
-//     const businessId = context.query['business-id'] as string;
-	
-// 	// Redirect wrong business Ids to main page
-// 	const businessesIds = await getAllBusinessIds();
-//     if (businessId && !businessesIds.includes(businessId)) {
-//         return {
-//             redirect: {
-//                 permanent: true,
-//                 destination: "/"
-//             },
-//             props: {}
-//         }
-//     }
-
-// 	// Fetch data about the business
-// 	/*
-// 	context.res.setHeader(
-// 		'Cache-Control',
-// 		'public, s-maxage=300'
-// 	);
-// 	*/
-
-// 	const businessConfig = await getBusinessConfig(businessId);
-// 	const tables = await getAllTableIds(businessId);
-
-// 	return {
-//         props: {
-// 			businessConfig: businessConfig,
-// 			tables: tables
-// 		}
-//     }
-// }
