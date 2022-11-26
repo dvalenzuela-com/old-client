@@ -8,5 +8,14 @@ export const BusinessConfigContext = createContext<ABBusinessConfig>({
     main_language: "dummy",
     currency: ABBusinessConfigCurrency.EUR,
     logo_url: "dummy",
-    palette: undefined
+    palette: undefined,
+    week_opening_hours: {
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: [],
+        saturday: [],
+        sunday: []
+    }
 });
