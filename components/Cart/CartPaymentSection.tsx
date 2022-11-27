@@ -54,17 +54,14 @@ const CartPaymentSection = (props: CartPaymentSectionProps) => {
 
     
     const createPaymentIntent = useCallback(debounce(async (businessId: string, selectedTable: string, customerName: string, generalNote: string) => {
-        console.log(`createPaymentIntent(${businessId}, ${selectedTable}, ${customerName}, ${generalNote})`);
         try {
-            const orderId = await cart.createOrderWithDigitalPayment(businessId, selectedTable, customerName, generalNote);
-            const clientSecret = await cart.createStripePaymentIntent(businessId, orderId);
-            console.log("new client secret", clientSecret);
+            const clientSecret = await cart.createOrderWithStripePayment(businessId, selectedTable, customerName, generalNote);
             setClientSecret(clientSecret);
         } catch (error) {
             console.log("Catch block")
             console.log(error);
         }
-    }, 0.7 * 1000), []);
+    }, 0.9 * 1000), []);
 
     return (
         <>

@@ -19,7 +19,12 @@ import CartPaymentSection from '@Components/Cart/CartPaymentSection';
 // import { dummyAllTables } from '@Lib/offlineTesting/dummyAllTables';
 // import { dummyBusinessConfig } from '@Lib/offlineTesting/dummyBusinessConfig';
 
-const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({businessConfig, tables}) => {
+type CartProps = {
+	businessConfig: ABBusinessConfig;
+	tables: string[];
+}
+
+const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 
 	const { t } = useTranslation();
 

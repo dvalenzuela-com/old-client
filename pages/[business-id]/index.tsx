@@ -14,7 +14,13 @@ import { NextSeo } from 'next-seo';
 //import { dummyAllCategories } from '../../lib/offlineTesting/dummyAllCategories';
 //import { dummyBusinessConfig } from './../../lib/offlineTestingdummyBusinessConfig';
 
-const Index: NextPage<{categories: ABCategory[], products: ABProduct[], businessConfig: ABBusinessConfig}> = ({categories, products, businessConfig}) => {
+type IndexProps = {
+	categories: ABCategory[];
+	products: ABProduct[];
+	businessConfig: ABBusinessConfig;
+}
+
+const Index: NextPage<IndexProps> = ({categories, products, businessConfig}) => {
 
 	const router = useRouter();
 	const businessId = router.query['business-id'] as string;

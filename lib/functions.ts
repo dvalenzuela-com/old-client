@@ -1,4 +1,4 @@
-import { ABCreateOrderData, ABCreateOrderResponse, ABCreateStripePaymentIntentData, ABCreateStripePaymentIntentResponse } from "@dvalenzuela-com/alabarra-types";
+import { ABCreateOrderData, ABCreateOrderResponse, ABCreateStripePaymentOrderData, ABCreateStripePaymentOrderResponse, ABCreateStripePaymentIntentData, ABCreateStripePaymentIntentResponse } from "@dvalenzuela-com/alabarra-types";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { useHttpsCallable } from "react-firebase-hooks/functions";
 import firebaseApp from "./firebaseApp";
@@ -13,6 +13,11 @@ export const useCreateManualPaymentOrder = () => {
 export const useCreateDigitalPaymentOrder = () => {
     return useHttpsCallable<ABCreateOrderData, ABCreateOrderResponse>(functions, 'createDigitalPaymentOrder')
 };
+
+export const useCreateStripePaymentOrder = () => {
+    return useHttpsCallable<ABCreateStripePaymentOrderData, ABCreateStripePaymentOrderResponse>(functions, 'createStripePaymentOrder')
+};
+
 export const useCreateStripePaymentIntent = () => {
     return useHttpsCallable<ABCreateStripePaymentIntentData, ABCreateStripePaymentIntentResponse>(functions, 'createStripePaymentIntent')
 };

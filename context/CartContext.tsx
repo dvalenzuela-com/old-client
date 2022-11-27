@@ -4,10 +4,11 @@ import {
     ABResponseStatus,
     ABCreateOrderDataCartLine,
     ABFunctionCalculatePrice,
-    ABProductOptionSelections} from "@dvalenzuela-com/alabarra-types";
+    ABProductOptionSelections,
+    ABCreateStripePaymentOrderData} from "@dvalenzuela-com/alabarra-types";
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
-import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent } from "@Lib/functions";
+import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent, useCreateStripePaymentOrder } from "@Lib/functions";
 import { UserContext } from "./UserContext";
 
 
@@ -21,6 +22,7 @@ export type Cart = {
     clearCart: () => void;
     createOrderWithManualPayment: (businessId: string, tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
     createOrderWithDigitalPayment: (businessId: string, tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
+    createOrderWithStripePayment: (businessId: string, tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
     createStripePaymentIntent: (businessId: string, orderId: string) => Promise<string>;
     setSelectedTableId: (tableId: string | null) => void;
     getSelectedTableId: () => string | null;
@@ -36,6 +38,7 @@ const defaultCart: Cart = {
     calculateTotalPrice: () => 0,
     createOrderWithManualPayment: () => Promise.reject("override this promise"),
     createOrderWithDigitalPayment: () => Promise.reject("override this promise"),
+    createOrderWithStripePayment: () => Promise.reject("override this promise"),
     createStripePaymentIntent: () => Promise.reject("override this promise"),
     setSelectedTableId: () => {},
     getSelectedTableId: () => null
@@ -88,6 +91,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     // TODO: Move away from here!
     const [createManualPaymentOrder, executingCreateManualPaymentOrder, errorCreateManualPaymentOrder] = useCreateManualPaymentOrder();
     const [createDigitalPaymentOrder] = useCreateDigitalPaymentOrder();
+    const [createStripePaymentOrder] = useCreateStripePaymentOrder();
     const [createStripePaymentIntent] = useCreateStripePaymentIntent();
 
     const addItem = (product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => {
@@ -232,6 +236,46 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
         });
     }
 
+    const handleCreateOrderWithStripePayment = (businessId: string, tableName: string, customerName?: string, generalNote?: string): Promise<string> => {
+
+        return new Promise<string>((resolve, reject) => {
+            var api_cart_lines: ABCreateOrderDataCartLine[] = []
+
+            cartLines.forEach( line => {
+                api_cart_lines.push({
+                    product_id: line.product.id,
+                    selected_options: line.options,
+                    quantity: line.quantity,
+                    note: line.note
+                });
+            });
+
+            const newOrder: ABCreateStripePaymentOrderData = {
+                business_id: businessId,
+                customer_id: user?.uid ?? "userid_not_found",
+                customer_nickname: customerName,
+                general_note: (generalNote && generalNote.trim().length > 0) ? generalNote : null,
+                cart: api_cart_lines,
+                table_name: tableName
+            }
+
+            createStripePaymentOrder(newOrder)
+                .then(result => { 
+                    if (!result) {
+                        reject("undefined result");
+                    } else if (result.data.status == ABResponseStatus.ERROR) {
+                        reject(result.data.error_message);
+                    } else if (result.data.status == ABResponseStatus.SUCCESS) {
+                        resolve(result.data.result.client_secret);
+                    }
+                })
+                .catch((error: any) => {
+                    console.error(error.message)
+                    reject(error);
+                });
+        });
+    }
+
     const handleCreateStripePaymentIntent = (businessId: string, orderId: string): Promise<string> => {
 
         return new Promise<string>((resolve, reject) => {
@@ -278,6 +322,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
             calculateTotalPrice: calculateTotalPrice,
             createOrderWithManualPayment: handleCreateOrderWithManualPayment,
             createOrderWithDigitalPayment: handleCreateOrderWithDigitalPayment,
+            createOrderWithStripePayment: handleCreateOrderWithStripePayment,
             createStripePaymentIntent: handleCreateStripePaymentIntent,
             setSelectedTableId: handleSetSelectedTableId,
             getSelectedTableId: handleGetSelectedTableId
