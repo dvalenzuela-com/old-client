@@ -71,11 +71,11 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 
 	
 
-	const handleManualOrder = () => {
+	const handleManualOrder = async () => {
 		if (selectedTable) {
 			setWaitingForManualOrder(true);
 			try {
-				const data = cart.createOrderWithManualPayment(businessId, selectedTable, customerName.trim(), generalNote);
+				const data = await cart.createOrderWithManualPayment(businessId, selectedTable, customerName.trim(), generalNote);
 				setWaitingForManualOrder(false);
 				// Clear cart, send the user to the index page and show a success message
 				cart.clearCart();
