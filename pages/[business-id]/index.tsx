@@ -56,7 +56,6 @@ export default Index;
  */
 
 // Statically generate all product pages for all existing businessess
-// TODO: Add revalidate when creating a new business and/or when changing products
 export const getStaticPaths: GetStaticPaths = async () => {
 	
 	const businessesIds = await getAllBusinessIds();

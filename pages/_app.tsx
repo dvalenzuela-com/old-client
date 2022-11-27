@@ -15,7 +15,7 @@ import './../i18n';
 // Call firestore to init it;
 firestore;
 
-//const stripePromise = loadStripe('pk_test_51Jsny8HtcjByDkQ7PNk4TmPT4jfWZExCs4pAOuUrdqkaMIr3DP0NAOMtk8ku4K08ODJyXN7qP4fMl2nojYr8MrCb00EC83upJt')
+const stripePromise = loadStripe('pk_test_51Jsny8HtcjByDkQ7PNk4TmPT4jfWZExCs4pAOuUrdqkaMIr3DP0NAOMtk8ku4K08ODJyXN7qP4fMl2nojYr8MrCb00EC83upJt')
 
 function MyApp({ Component, pageProps }: AppProps) {
 
@@ -31,7 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 		<CssBaseline />
 		<UserProvider>
 			<CartProvider businessId={businessId}>
-				<Elements stripe={null}>
+				<Elements stripe={stripePromise}>
 						<SnackbarProvider>
 							<Component {...pageProps} />
 						</SnackbarProvider> 

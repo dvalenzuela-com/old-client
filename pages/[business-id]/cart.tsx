@@ -12,6 +12,10 @@ import Layout from 'layout/Layout';
 import { ABBusinessConfig } from '@dvalenzuela-com/alabarra-types';
 import { PaymentTypes } from '@Components/PaymentTypeSelection';
 import CartDetails from '@Components/Cart/CartDetails';
+import { CanMakePaymentResult, StripeError } from '@stripe/stripe-js';
+import { isStoreOpen } from '@Lib/helper';
+import CartPaymentSection from '@Components/Cart/CartPaymentSection';
+
 // import { dummyAllTables } from '@Lib/offlineTesting/dummyAllTables';
 // import { dummyBusinessConfig } from '@Lib/offlineTesting/dummyBusinessConfig';
 
@@ -30,10 +34,10 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 	const [customerName, setCustomerName] = useState<string>('');
 	const [generalNote, setGeneralNote] = useState<string>('');
 	const [paymentType, setPaymentType] = useState<PaymentTypes | ''>('');
-	const [clientSecret, setClientSecret] = useState<string>('');
-	const [canMakeDigitalPayments, setCanMakeDigitalPayments] = useState<boolean>(false);
+	const [canPayWithStripe, setCanPayWithStripe] = useState<boolean>(false);
 	const [waitingForManualOrder, setWaitingForManualOrder] = useState<boolean>(false);
 
+	// Pre-select table if the user scanned a specific qr
 	useEffect(() => {
 		setSelectedTable(cart.getSelectedTableId());
 	}, []);
@@ -52,34 +56,15 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 				requestPayerEmail: true,
 			});
 
-			pr.canMakePayment().then((result: any) => {
+			pr.canMakePayment().then((result: CanMakePaymentResult | null) => {
 				if (result) {
-					setCanMakeDigitalPayments(true);
+					setCanPayWithStripe(true);
 				}
 			});
 		}
 	}, [stripe]);
 
-	const handleTableSelection = (event: any, newValue: string | null) => {
-		setSelectedTable(newValue);
-	}
-
-	const handleSelectPaymentType = async (selectedPaymentType: PaymentTypes) => {
-        setPaymentType(selectedPaymentType);
-
-		if(selectedPaymentType == 'digital') {
-			if (selectedTable) {
-				try {
-					const orderId = await cart.createOrderWithDigitalPayment(businessId, selectedTable, customerName.trim(), generalNote);
-					const clientSecret = await cart.createStripePaymentIntent(businessId, orderId);
-					setClientSecret(clientSecret);
-				} catch (error) {
-					console.log("Catch block")
-					console.log(error);
-				}
-			}
-		}
-    }
+	
 
 	const handleManualOrder = () => {
 		if (selectedTable) {
@@ -99,7 +84,7 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 		}
 	}
 
-	const handleDigitalPaymentError = (error: any) => {
+	const handleDigitalPaymentError = (error: StripeError) => {
 		enqueueSnackbar(t('Cart.Snackbar.OrderError'), {variant: 'error'});
 		console.log(error);
 	}
@@ -125,22 +110,29 @@ const Cart: NextPage<{businessConfig: ABBusinessConfig, tables: string[]}> = ({b
 
 						<Grid item xs={12} sm={6}>
 							<CartDetails
-								businessConfig={businessConfig} 
+								storeOpen={isStoreOpen(businessConfig)}
 								tableIds={tables}
 								selectedTable={selectedTable}
 								customerName={customerName}
 								generalNote={generalNote}
 								paymentType={paymentType}
-								canMakeDigitalPayments={canMakeDigitalPayments}
-								clientSecret={clientSecret}
-								waitingForManualOrder={waitingForManualOrder}
+								canPayWithStripe={canPayWithStripe}
 								onTableSelection={setSelectedTable}
 								onCustomerNameChange={setCustomerName}
 								onGeneralNoteChange={setGeneralNote}
-								onChangePaymentType={handleSelectPaymentType}
-								onCreateManualOder={handleManualOrder}
-								onDigitalPaymentError={handleDigitalPaymentError}
-								onDigitalPaymentSuccess={hanldeDigitalPaymentSuccess} />
+								onChangePaymentType={setPaymentType} />
+
+							<CartPaymentSection
+								paymentType={paymentType}
+								selectedTable={selectedTable}
+								customerName={customerName}
+								generalNote={generalNote}
+								amount={cart.getCartTotal()}
+								storeOpen={isStoreOpen(businessConfig)}
+								waitingForManualOrder={waitingForManualOrder}
+								onCreateManualOrder={handleManualOrder}
+								onDigitalPaymentSuccess={hanldeDigitalPaymentSuccess}
+								onDigitalPaymentError={handleDigitalPaymentError} />
 						</Grid>
 					</Grid>
 				}
@@ -156,7 +148,6 @@ export default Cart;
  */
 
 // Statically generate all product pages for all existing businessess
-// TODO: Add revalidate when creating a new business and/or when changing products
 export const getStaticPaths: GetStaticPaths = async () => {
 	
 	const businessesIds = await getAllBusinessIds();

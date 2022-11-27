@@ -1,16 +1,12 @@
-import LoadingButton from "@Components/LoadingButton";
 import PaymentTypeSelection, { PaymentTypes } from "@Components/PaymentTypeSelection"
-import StripeButton from "@Components/StripeButton";
 import { CartContext } from "@Context/CartContext";
-import { ABBusinessConfig } from "@dvalenzuela-com/alabarra-types";
-import { isStoreOpen } from "@Lib/helper";
-import { Autocomplete, LinearProgress, TextField } from "@mui/material"
+import { Alert, Autocomplete, TextField } from "@mui/material"
 import { ChangeEvent, useContext } from "react";
 import { useTranslation } from "react-i18next";
 
 type CartDetailsProps = {
 
-    businessConfig: ABBusinessConfig;
+    storeOpen: boolean;
 
     tableIds: string[];
     selectedTable: string | null;
@@ -19,20 +15,12 @@ type CartDetailsProps = {
 
     paymentType: PaymentTypes | '';
 
-    canMakeDigitalPayments: boolean;
-
-    clientSecret: string;
-
-    waitingForManualOrder: boolean;
+    canPayWithStripe: boolean;
 
     onTableSelection: (selectedTableId: string | null) => void;
     onCustomerNameChange: (newCustomerName: string) => void;
     onGeneralNoteChange: (newGeneralNote: string) => void;
     onChangePaymentType: (newPaymentType: PaymentTypes) => void;
-
-    onCreateManualOder: () => void;
-    onDigitalPaymentError: (error: any) => void;
-    onDigitalPaymentSuccess: () => void;
 }
 
 const CartDetails = (props: CartDetailsProps) => {
@@ -79,34 +67,15 @@ const CartDetails = (props: CartDetailsProps) => {
                 multiline
                 fullWidth />
             <h2>{t('Cart.PaymentMethod.Title')}</h2>
-            <PaymentTypeSelection
-                selectedPaymentType={props.paymentType as PaymentTypes}
-                canMakeDigitalPayments={props.canMakeDigitalPayments}
-                onChange={props.onChangePaymentType}
-                disabled={!isStoreOpen(props.businessConfig)} />
-            {props.paymentType != '' &&
+            {!props.storeOpen && 
+                <Alert severity='warning'>The store is closed</Alert>}
+            {props.storeOpen &&
                 <>
-                    <h2>{t('Cart.Order.Title')}</h2>
-                    { props.paymentType == "presential" &&
-                        <LoadingButton
-                            onClick={props.onCreateManualOder}
-                            disabled={!(props.selectedTable && props.customerName.trim().length > 0 && isStoreOpen(props.businessConfig))}
-                            title={t('Cart.Order.PresentialPaymentButton')}
-                            loading={props.waitingForManualOrder}
-                            fullWidth/>
-                    }
-                    { props.paymentType == "digital" && props.clientSecret == '' &&
-                        <LinearProgress />
-                    }
-                    { props.paymentType == "digital" && props.clientSecret != '' && 
-                    // TODO: disable when no table is selected
-                    // TODO: disable when store closed
-                        <StripeButton
-                            amount={cart.getCartTotal()}
-                            clientSecret={props.clientSecret}
-                            onPaymentError={props.onDigitalPaymentError}
-                            onPaymentSuccess={props.onDigitalPaymentSuccess} />
-                    }
+                    <PaymentTypeSelection
+                        selectedPaymentType={props.paymentType as PaymentTypes}
+                        canPayWithStripe={props.canPayWithStripe}
+                        onChange={props.onChangePaymentType}
+                        disabled={!(props.storeOpen && props.selectedTable != null && props.customerName.trim().length > 0)} />
                 </>
             }
         </>

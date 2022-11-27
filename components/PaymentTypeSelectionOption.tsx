@@ -16,19 +16,18 @@ const PaymentTypeSelectionOption = (props: PaymentTypeSelectionOptionProps) => {
         <>
             <Radio value={props.paymentType} onChange={(e) => {props.onChange(e.target.value as PaymentTypes)}} disabled={props.disabled} />
             <Typography>
-                {props.paymentType === 'presential' &&
+                {props.paymentType === PaymentTypes.PRESENTIAL &&
                     <>
                         <Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Presential.Title')}</Box>
                         {t('Cart.PaymentMethod.Presential.Subtitle')}
                     </>
                 }
-                {props.paymentType === 'digital' &&
+                {props.paymentType === PaymentTypes.DIGITAL &&
                     <>
                         <Box display='inline' fontWeight='bold' component='span'>{t('Cart.PaymentMethod.Digital.Title')}</Box>
                         {t('Cart.PaymentMethod.Digital.Subtitle')}
                     </>
                 }
-                
             </Typography>
         </>
     );

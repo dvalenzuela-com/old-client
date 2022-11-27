@@ -1,11 +1,14 @@
 import { List, ListItem, RadioGroup } from "@mui/material";
 import PaymentTypeSelectionOption from "./PaymentTypeSelectionOption";
 
-export type PaymentTypes = 'presential' | 'digital';
+export enum PaymentTypes {
+    PRESENTIAL = "PRESENTIAL",
+    DIGITAL = "DIGITAL"
+};
 
 type PaymentTypeSelectionProps = {
     selectedPaymentType: PaymentTypes;
-    canMakeDigitalPayments: boolean;
+    canPayWithStripe: boolean;
     disabled?: boolean;
     onChange: (newPaymentType: PaymentTypes) => void;
 }
@@ -16,14 +19,14 @@ const PaymentTypeSelection = (props: PaymentTypeSelectionProps) => {
             <List>
                 <ListItem disablePadding={true}>
                     <PaymentTypeSelectionOption
-                        paymentType='presential'
+                        paymentType={PaymentTypes.PRESENTIAL}
                         onChange={props.onChange}
                         disabled={props.disabled} />
                 </ListItem>
-                {props.canMakeDigitalPayments &&
+                {props.canPayWithStripe &&
                     <ListItem disablePadding={true}>
                     <PaymentTypeSelectionOption
-                        paymentType='digital'
+                        paymentType={PaymentTypes.DIGITAL}
                         onChange={props.onChange}
                         disabled={props.disabled} />
                     </ListItem>
