@@ -2,14 +2,16 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typog
 import { useContext, useState } from "react";
 import { CartContext, CartLine } from "@Context/CartContext";
 import ProductDialog from "../ProductDialog/ProductDialog";
-import { ABProduct, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionSingleSelectedValue, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
+import { ABProduct, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionSingleSelectedValue, ABProductOptionsType, ABTipOption } from "@dvalenzuela-com/alabarra-types";
 import { useTranslation } from "react-i18next";
 import CurrencyText from "../CurrencyText";
 import { BusinessConfigContext } from "@Context/BusinessConfigContext";
 import { ProductDialogMode } from "../ProductDialog/ProductDialogMode";
 
+type CartContentProps = {
+}
 
-const CartContent = () => {
+const CartContent = (props: CartContentProps) => {
 
     const cart = useContext(CartContext);
 
@@ -88,11 +90,15 @@ const CartContent = () => {
                                 </TableRow>
                             )
                         })}
-
+                        <TableRow>
+                            <TableCell></TableCell>
+                            <TableCell>Discretionary tip: {cart.getCurrentTipPercentage()}%</TableCell>
+                            <TableCell><CurrencyText value={cart.calculateTip()} businessConfig={businessConfig} /></TableCell>
+                        </TableRow>
                         <TableRow>
                             <TableCell></TableCell>
                             <TableCell>{t('CartContent.TableFooter.Total')}</TableCell>
-                            <TableCell><CurrencyText value={cart.getCartTotal()} businessConfig={businessConfig} /></TableCell>
+                            <TableCell><CurrencyText value={cart.getCartTotal() + cart.calculateTip()} businessConfig={businessConfig} /></TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>

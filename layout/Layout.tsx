@@ -7,6 +7,7 @@ import './../i18n';
 import i18n from "./../i18n";
 import { Box, Typography } from "@mui/material";
 import { isStoreOpen } from "@Lib/helper";
+import { CartProvider } from "@Context/CartContext";
 
 type LayoutProps = {
     children: React.ReactNode,
@@ -25,6 +26,8 @@ const Layout = ({ children, businessConfig }: LayoutProps) => {
 
     return (
         <BusinessConfigContext.Provider value={businessConfig}>
+            <CartProvider businessId={businessConfig.id}>
+
             <ThemeProvider theme={theme}>
                 <Box>
                     <Navbar title={businessConfig.business_name} />
@@ -41,6 +44,7 @@ const Layout = ({ children, businessConfig }: LayoutProps) => {
                     <Footer />
                 </Box>
             </ThemeProvider>
+            </CartProvider>
         </BusinessConfigContext.Provider>
     );
 }

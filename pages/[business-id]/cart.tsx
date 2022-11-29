@@ -15,6 +15,8 @@ import CartDetails from '@Components/Cart/CartDetails';
 import { CanMakePaymentResult, StripeError } from '@stripe/stripe-js';
 import { isStoreOpen } from '@Lib/helper';
 import CartPaymentSection from '@Components/Cart/CartPaymentSection';
+import TipSelection from '@Components/Cart/TipSelection';
+import { Stack } from '@mui/system';
 
 // import { dummyAllTables } from '@Lib/offlineTesting/dummyAllTables';
 // import { dummyBusinessConfig } from '@Lib/offlineTesting/dummyBusinessConfig';
@@ -110,7 +112,10 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 					<Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
 						<Grid item xs={12} sm={6}>
 							<h2>{t('Cart.OrderSummary.Title')}</h2>
-							<CartContent />
+							<Stack>
+								<CartContent />
+								<TipSelection />
+							</Stack>
 						</Grid>
 
 						<Grid item xs={12} sm={6}>
