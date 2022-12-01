@@ -81,52 +81,56 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     const TABLE_SESSION_KEY = "persistedTable";
 
     const businessConfig = useBusinessConfig();
-
-    const [cart, setCart] = useState<CartStorage>({tipOptionId:"", tipPercentage: 0, lines: []});
-
     const user = useUser().getUser();
+
+    const [tipOptionId, setTipOptionId] = useState<string>('');
+    const [tipPercentage, setTipPercentage] = useState<number>(0);
+    const [lines, setLines] = useState<CartLine[]>([]);
+
     
+    const [createManualPaymentOrder, executingCreateManualPaymentOrder, errorCreateManualPaymentOrder] = useCreateManualPaymentOrder();
+    const [createDigitalPaymentOrder] = useCreateDigitalPaymentOrder();
+    const [createStripePaymentOrder] = useCreateStripePaymentOrder();
+    const [createStripePaymentIntent] = useCreateStripePaymentIntent();
+
+
     useEffect(() => {
-        console.log("businessConfig", businessConfig);
-        if(businessConfig && cart.tipOptionId === "") {
-            const newCart = cart;
+        if(businessConfig && tipOptionId === "") {
             const defaultTipConfig = businessConfig.tip_options.find(obj => obj.default);
             if (defaultTipConfig) {
-                newCart.tipOptionId = defaultTipConfig.id;
-                newCart.tipPercentage = defaultTipConfig.percentage;
-                setCart(newCart);
+                setTipOptionId(defaultTipConfig.id);
+                setTipPercentage(defaultTipConfig.percentage);
             }
         }
     }, [businessConfig]);
 
     useEffect(() => {
         const savedCartString = localStorage.getItem(CART_STORAGE_KEY);
-
-        if (savedCartString == null) {
-            return;
-        }
+    
+        if (savedCartString == null) return;
 
         const localCart = JSON.parse(savedCartString) as CartStorage;
+        if (!localCart) return;
 
-        if (localCart) {
-            setCart(localCart);
-        }
+        setLines(localCart.lines);
+        setTipOptionId(localCart.tipOptionId);
+        setTipPercentage(localCart.tipPercentage);
     }, [CART_STORAGE_KEY]);
 
-
-    const updateCartLines = (cartLines: CartLine[]) => {
-        const newCart = cart;
-        newCart.lines = cartLines;
+    const persistCart = (tipOptionId: string, tipPercentage: number, lines: CartLine[]) => {
+        const newCart: CartStorage = {
+            tipOptionId: tipOptionId,
+            tipPercentage: tipPercentage,
+            lines: lines
+        };
         let cartString = JSON.stringify(newCart);
         localStorage.setItem(CART_STORAGE_KEY, cartString);
-        setCart(newCart);
     }
 
-    // TODO: Move away from here!
-    const [createManualPaymentOrder, executingCreateManualPaymentOrder, errorCreateManualPaymentOrder] = useCreateManualPaymentOrder();
-    const [createDigitalPaymentOrder] = useCreateDigitalPaymentOrder();
-    const [createStripePaymentOrder] = useCreateStripePaymentOrder();
-    const [createStripePaymentIntent] = useCreateStripePaymentIntent();
+    const updateCartLines = (newLines: CartLine[]) => {
+        setLines(newLines);
+        persistCart(tipOptionId, tipPercentage, newLines);
+    }
 
     const addItem = (product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => {
         const newCartLine: CartLine = {
@@ -136,11 +140,11 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
             options: options,
             quantity: quantity
         }
-        updateCartLines(cart.lines.concat([newCartLine]));
+        updateCartLines(lines.concat([newCartLine]));
     }
 
     const getItems = () => {
-        return cart.lines;
+        return lines;
     }
 
     const editLineWithId = (id: string, product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => {
@@ -148,11 +152,11 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
         // TODO: Where does the coment gets updated for existing lines?
         if (quantity == 0 || product == null || product == undefined) {
             // Remove from cart
-            const newCart = cart.lines.filter(cartLine => { return cartLine.lineId != id } )
+            const newCart = lines.filter(cartLine => { return cartLine.lineId != id } )
             updateCartLines(newCart);
         } else {
             // Replace old line with new line
-            const updatedCart = cart.lines.map(cartLine => {
+            const updatedCart = lines.map(cartLine => {
                 if (cartLine.lineId == id) {
                     // If we found our line, replace it with the updated one
                     return {
@@ -172,7 +176,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     }
 
     const getNumberOfItems = () => {
-        return cart.lines.length
+        return lines.reduce((acc, line) => acc + line.quantity, 0);
     }
 
     const calculateTotalPrice = (product: ABProduct, selectedOptions: ABProductOptionSelections[], quantity: number): number => {
@@ -180,7 +184,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     }
 
     const getCartTotal = () => {
-        return cart.lines.reduce((sum, cartLine) => {
+        return lines.reduce((sum, cartLine) => {
             return sum + calculateTotalPrice(cartLine.product, cartLine.options, cartLine.quantity);
         }, 0);
     }
@@ -237,7 +241,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     const prepareData = (businessId: string, tableName: string, customerName?: string, generalNote?: string): ABCreateOrderData => {
         var api_cart_lines: ABCreateOrderDataCartLine[] = []
 
-        cart.lines.forEach( line => {
+        lines.forEach( line => {
             api_cart_lines.push({
                 product_id: line.product.id,
                 selected_options: line.options,
@@ -265,36 +269,31 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
                 resolve(result.data.result.payment_intent_client_secret);
             } catch (error: any) {
                 console.log(error.message)
-                    reject(error);
+                reject(error);
             }
         });
     }
 
     const handleSetTipOption = (tipOptionId: string) => {
-
-        console.log(`Setting tip from ${cart.tipOptionId} to ${tipOptionId}`)
         const selectedTipOption = businessConfig.tip_options.find(obj => obj.id === tipOptionId);
 
         if (selectedTipOption) {
-            console.log(`Setting tip from ${cart.tipPercentage} to ${selectedTipOption.percentage}`)
-            const newCart = cart;
-            newCart.tipOptionId = selectedTipOption.id;
-            newCart.tipPercentage = selectedTipOption.percentage;
-            setCart(newCart);
-            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(newCart));
+            setTipOptionId(selectedTipOption.id);
+            setTipPercentage(selectedTipOption.percentage);
+            persistCart(selectedTipOption.id, selectedTipOption.percentage, lines);
         }
     }
 
     const handleGetCurrentTipOption = (): ABTipOption => {
-        return {id: cart.tipOptionId, percentage: cart.tipPercentage, default: true};
+        return {id: tipOptionId, percentage: tipPercentage, default: true};
     }
 
     const handleGetCurrentTipPercentage = (): number => {
-        return cart.tipPercentage;
+        return tipPercentage;
     }
 
     const handleCalculateTip = (): number => {
-        return Math.floor(getCartTotal() * (cart.tipPercentage / 100));
+        return Math.floor(getCartTotal() * (tipPercentage / 100));
     }
 
     const handleSetSelectedTableId = (tableId: string | null) => {

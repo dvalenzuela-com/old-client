@@ -19,7 +19,7 @@ const TipSelection = (props: any) => {
                         <Button
                             key={tipOption.id}
                             onClick={() => handleSelectTip(tipOption.id)}
-                            variant={cart.getCurrentTipOption().id === tipOption.id ? 'contained' : 'outlined'}>
+                            variant={ tipOption.id == cart.getCurrentTipOption().id ? 'contained' : 'outlined'}>
                                 {tipOption.percentage}% Tip
                         </Button>
                     );
