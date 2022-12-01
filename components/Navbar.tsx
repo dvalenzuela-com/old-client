@@ -1,7 +1,6 @@
 import { AppBar, Badge, IconButton, Link, Toolbar, Tooltip } from "@mui/material";
-import { useContext } from "react";
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
-import { CartContext } from "@Context/CartContext";
+import { useCart } from "@Context/CartContext";
 import NextLink from 'next/link'
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
@@ -16,7 +15,7 @@ const Navbar = (props: NavbarProps) => {
 
     const router = useRouter();
 	const businessId = router.query['business-id'] as string;
-    const cart = useContext(CartContext);
+    const cart = useCart();
 
     return (
         <AppBar position="sticky">
