@@ -1,9 +1,9 @@
 import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import { Container, Grid } from '@mui/material';
 import CartContent from '@Components/Cart/CartContent';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getAllBusinessIds, getAllTableIds, getBusinessConfig } from '@Lib/firestore';
-import { CartContext } from '@Context/CartContext';
+import { useCart } from '@Context/CartContext';
 import { useStripe } from '@stripe/react-stripe-js';
 import { useSnackbar } from "notistack";
 import { useRouter } from 'next/router';
@@ -34,7 +34,7 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 	const businessId = router.query['business-id'] as string;
 
 	const {enqueueSnackbar} = useSnackbar();
-	const cart = useContext(CartContext);
+	const cart = useCart();
 	const stripe = useStripe();
 
 	const [selectedTable, setSelectedTable] = useState<string | null>(null);

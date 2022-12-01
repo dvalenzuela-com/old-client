@@ -1,7 +1,7 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { ABProduct, ABProductOption, ABProductOptionMultipleSelection, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
-import React, { useContext, useEffect, useState } from "react";
-import { CartContext } from "@Context/CartContext";
+import React, { useEffect, useState } from "react";
+import { useCart } from "@Context/CartContext";
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import ProductDialogActions from "./ProductDialogActions";
@@ -24,7 +24,7 @@ const ProductDialog = (props: ProductDialogProps) => {
     const {enqueueSnackbar} = useSnackbar();
     const { t } = useTranslation();
 
-    const cart = useContext(CartContext);
+    const cart = useCart();
 
     const [selectedOptions, setSelectedOptions] = useState<ABProductOptionSelections[]>([]);
     const [addToCartDisabled, setAddToCartDisabled] = useState<boolean>(false);

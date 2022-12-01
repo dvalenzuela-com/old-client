@@ -1,8 +1,8 @@
 import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 import { ABProduct } from "@dvalenzuela-com/alabarra-types";
-import { useContext, useState } from "react";
-import { CartContext } from "@Context/CartContext";
+import { useState } from "react";
 import Image from "next/image";
+import { useCart } from "@Context/CartContext";
 
 type ProductCardProps = {
     product: ABProduct;
@@ -11,7 +11,7 @@ type ProductCardProps = {
 
 const ProductCard = (props: ProductCardProps) => {
 
-    const { addProduct } = useContext(CartContext);
+    const { addProduct } = useCart();
     
     const [open, setOpen] = useState(false);
 

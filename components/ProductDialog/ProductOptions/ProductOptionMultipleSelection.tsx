@@ -1,7 +1,7 @@
 import { Typography, Stack } from "@mui/material";
 import { ABProductOptionMultipleSelection, ABProductOptionMultipleSelectedValues } from "@dvalenzuela-com/alabarra-types";
-import React, { useContext, useEffect, useState } from "react";
-import { BusinessConfigContext } from "@Context/BusinessConfigContext";
+import React, { useEffect, useState } from "react";
+import { useBusinessConfig } from "@Context/BusinessConfigContext";
 import ProductOptionMultipleSelectionLine from "./ProductOptionMultipleSelectionLine";
 
 type ProductOptionMultipleSelectionProps = {
@@ -13,7 +13,7 @@ type ProductOptionMultipleSelectionProps = {
 
 const ProductOptionMultipleSelection = (props: ProductOptionMultipleSelectionProps) => {
 
-    const businessConfig = useContext(BusinessConfigContext);
+    const businessConfig = useBusinessConfig();
     
     const [checkedOptions, setCheckedOptions] = useState<string[]>(props.selectedValues != undefined ? props.selectedValues.selected_values : props.productOption.default_values);
     const [disabledOptions, setDisabledOptions] = useState<boolean[]>([]);

@@ -1,11 +1,11 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
-import { useContext, useState } from "react";
-import { CartContext, CartLine } from "@Context/CartContext";
+import { useState } from "react";
+import { CartLine, useCart } from "@Context/CartContext";
 import ProductDialog from "../ProductDialog/ProductDialog";
 import { ABProduct, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionSingleSelectedValue, ABProductOptionsType, ABTipOption } from "@dvalenzuela-com/alabarra-types";
 import { useTranslation } from "react-i18next";
 import CurrencyText from "../CurrencyText";
-import { BusinessConfigContext } from "@Context/BusinessConfigContext";
+import { useBusinessConfig } from "@Context/BusinessConfigContext";
 import { ProductDialogMode } from "../ProductDialog/ProductDialogMode";
 
 type CartContentProps = {
@@ -13,9 +13,9 @@ type CartContentProps = {
 
 const CartContent = (props: CartContentProps) => {
 
-    const cart = useContext(CartContext);
+    const cart = useCart();
 
-    const businessConfig = useContext(BusinessConfigContext);
+    const businessConfig = useBusinessConfig();
 
     const { t } = useTranslation();
 

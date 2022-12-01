@@ -5,8 +5,7 @@ import { CartProvider } from '@Context/CartContext'
 import firestore from '../lib/firestore'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
-import { UserContext, UserProvider } from '@Context/UserContext'
-import { useContext } from 'react'
+import { UserProvider, useUser } from '@Context/UserContext'
 import { useRouter } from 'next/router'
 import { SnackbarProvider } from 'notistack'
 import './../i18n';
@@ -20,7 +19,7 @@ const stripePromise = loadStripe('pk_test_51Jsny8HtcjByDkQ7PNk4TmPT4jfWZExCs4pAO
 function MyApp({ Component, pageProps }: AppProps) {
 
 	// Initialize user
-	const user = useContext(UserContext).getUser();
+	const user = useUser().getUser();
 
 	const router = useRouter();
 	const businessId = router.query['business-id'] as string;

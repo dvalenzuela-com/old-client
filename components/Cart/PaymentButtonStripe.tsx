@@ -1,8 +1,8 @@
-import { BusinessConfigContext } from "@Context/BusinessConfigContext";
+import { useBusinessConfig } from "@Context/BusinessConfigContext";
 import { LinearProgress } from "@mui/material";
 import { PaymentRequestButtonElement, useStripe } from "@stripe/react-stripe-js";
 import { CanMakePaymentResult, PaymentRequest, StripeError } from '@stripe/stripe-js';
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 type PaymentButtonStripeProps = {
@@ -16,7 +16,7 @@ const PaymentButtonStripe = (props: PaymentButtonStripeProps) => {
     const stripe = useStripe();
     const { t } = useTranslation();
 
-    const businessConfig = useContext(BusinessConfigContext);
+    const businessConfig = useBusinessConfig();
 
     const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | undefined>(undefined);
 

@@ -1,14 +1,12 @@
-import { BusinessConfigContext } from "@Context/BusinessConfigContext";
-import { CartContext } from "@Context/CartContext";
+import { useBusinessConfig } from "@Context/BusinessConfigContext";
+import { useCart } from "@Context/CartContext";
 import { Button, ButtonGroup } from "@mui/material";
-import { DefaultComponentProps } from "@mui/material/OverridableComponent";
-import { useContext, useState } from "react";
 
 
 const TipSelection = (props: any) => {
 
-    const cart = useContext(CartContext);
-    const businessConfig = useContext(BusinessConfigContext);
+    const cart = useCart();
+    const businessConfig = useBusinessConfig();
 
     const handleSelectTip = (optionId: string) => {
         cart.setTipOption(optionId);

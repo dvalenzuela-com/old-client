@@ -1,5 +1,5 @@
 import { onAuthStateChanged, signInAnonymously, User } from "firebase/auth";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "@Lib/auth";
 import { createUserIfNotFound } from "@Lib/firestore";
 
@@ -13,6 +13,8 @@ export type UserContext = {
 const defaultUserContext: UserContext = {
     getUser: () => null
 }
+
+export const useUser = () => useContext(UserContext);
 
 export const UserContext = createContext<UserContext>(defaultUserContext);
 

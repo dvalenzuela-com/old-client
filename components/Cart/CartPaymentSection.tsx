@@ -1,6 +1,6 @@
 import LoadingButton from "@Components/LoadingButton";
 import { PaymentTypes } from "@Components/PaymentTypeSelection";
-import { CartContext } from "@Context/CartContext";
+import { useCart } from "@Context/CartContext";
 import { StripeError } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -28,7 +28,7 @@ const CartPaymentSection = (props: CartPaymentSectionProps) => {
 
     const { t } = useTranslation();
 
-	const cart = useContext(CartContext);
+	const cart = useCart();
 
     const router = useRouter();
 	const businessId = router.query['business-id'] as string;

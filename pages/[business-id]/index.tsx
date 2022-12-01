@@ -4,8 +4,8 @@ import ProductGrid from '@Components/ProductGrid'
 import { Container } from '@mui/material';
 import { allCategoriesQuery, allProductsQuery, getAllBusinessIds, getBusinessConfig } from '@Lib/firestore';
 import { useRouter } from 'next/router';
-import { useContext, useEffect } from 'react';
-import { CartContext } from '@Context/CartContext';
+import { useEffect } from 'react';
+import { useCart } from '@Context/CartContext';
 import Layout from 'layout/Layout';
 import { getDocs } from 'firebase/firestore';
 import { ABBusinessConfig, ABCategory, ABProduct } from '@dvalenzuela-com/alabarra-types';
@@ -25,7 +25,7 @@ const Index: NextPage<IndexProps> = ({categories, products, businessConfig}) => 
 	const router = useRouter();
 	const businessId = router.query['business-id'] as string;
 
-	const cart = useContext(CartContext);
+	const cart = useCart();
 	const selectedTable = router.query['t'] as string;
 	
 	

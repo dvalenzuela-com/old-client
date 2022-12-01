@@ -5,15 +5,14 @@ import {
     ABCreateOrderDataCartLine,
     ABFunctionCalculatePrice,
     ABProductOptionSelections,
-    ABCreateStripePaymentOrderData,
     ABTipOption} from "@dvalenzuela-com/alabarra-types";
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
 import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent, useCreateStripePaymentOrder } from "@Lib/functions";
-import { UserContext } from "./UserContext";
-import { getBusinessConfig } from "@Lib/firestore";
-import { BusinessConfigContext } from "./BusinessConfigContext";
+import { useUser } from "./UserContext";
+import { useBusinessConfig } from "./BusinessConfigContext";
 
+export const useCart = () => useContext(CartContext);
 
 export type Cart = {
     getNumberOfItems: () => number;
@@ -66,7 +65,7 @@ type CartProviderProps = {
 export type CartStorage = {
     tipOptionId: string;
     tipPercentage: number;
-    cart: CartLine[];
+    lines: CartLine[];
 }
 
 export type CartLine = {
@@ -81,11 +80,11 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     const CART_STORAGE_KEY = `cart-${businessId}`;
     const TABLE_SESSION_KEY = "persistedTable";
 
-    const businessConfig = useContext(BusinessConfigContext);
+    const businessConfig = useBusinessConfig();
 
-    const [cart, setCart] = useState<CartStorage>({tipOptionId:"", tipPercentage: 0, cart: []});
+    const [cart, setCart] = useState<CartStorage>({tipOptionId:"", tipPercentage: 0, lines: []});
 
-    const user = useContext(UserContext).getUser();
+    const user = useUser().getUser();
     
     useEffect(() => {
         console.log("businessConfig", businessConfig);
@@ -117,7 +116,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
 
     const updateCartLines = (cartLines: CartLine[]) => {
         const newCart = cart;
-        newCart.cart = cartLines;
+        newCart.lines = cartLines;
         let cartString = JSON.stringify(newCart);
         localStorage.setItem(CART_STORAGE_KEY, cartString);
         setCart(newCart);
@@ -137,11 +136,11 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
             options: options,
             quantity: quantity
         }
-        updateCartLines(cart.cart.concat([newCartLine]));
+        updateCartLines(cart.lines.concat([newCartLine]));
     }
 
     const getItems = () => {
-        return cart.cart;
+        return cart.lines;
     }
 
     const editLineWithId = (id: string, product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => {
@@ -149,11 +148,11 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
         // TODO: Where does the coment gets updated for existing lines?
         if (quantity == 0 || product == null || product == undefined) {
             // Remove from cart
-            const newCart = cart.cart.filter(cartLine => { return cartLine.lineId != id } )
+            const newCart = cart.lines.filter(cartLine => { return cartLine.lineId != id } )
             updateCartLines(newCart);
         } else {
             // Replace old line with new line
-            const updatedCart = cart.cart.map(cartLine => {
+            const updatedCart = cart.lines.map(cartLine => {
                 if (cartLine.lineId == id) {
                     // If we found our line, replace it with the updated one
                     return {
@@ -173,7 +172,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     }
 
     const getNumberOfItems = () => {
-        return cart.cart.length
+        return cart.lines.length
     }
 
     const calculateTotalPrice = (product: ABProduct, selectedOptions: ABProductOptionSelections[], quantity: number): number => {
@@ -181,7 +180,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     }
 
     const getCartTotal = () => {
-        return cart.cart.reduce((sum, cartLine) => {
+        return cart.lines.reduce((sum, cartLine) => {
             return sum + calculateTotalPrice(cartLine.product, cartLine.options, cartLine.quantity);
         }, 0);
     }
@@ -238,7 +237,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     const prepareData = (businessId: string, tableName: string, customerName?: string, generalNote?: string): ABCreateOrderData => {
         var api_cart_lines: ABCreateOrderDataCartLine[] = []
 
-        cart.cart.forEach( line => {
+        cart.lines.forEach( line => {
             api_cart_lines.push({
                 product_id: line.product.id,
                 selected_options: line.options,

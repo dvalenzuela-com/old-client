@@ -1,8 +1,7 @@
 import { ABProduct, ABProductOptionSelections } from "@dvalenzuela-com/alabarra-types";
-import { useContext } from "react";
-import { CartContext } from "@Context/CartContext";
+import { useCart } from "@Context/CartContext";
 import CurrencyText from "../CurrencyText";
-import { BusinessConfigContext } from "@Context/BusinessConfigContext";
+import { useBusinessConfig } from "@Context/BusinessConfigContext";
 import { ProductDialogMode } from "./ProductDialogMode";
 
 type ProductDialogButtonProps = {
@@ -14,8 +13,8 @@ type ProductDialogButtonProps = {
 
 const ProductDialogButton = (props: ProductDialogButtonProps) => {
 
-    const cart = useContext(CartContext);
-    const businessConfig = useContext(BusinessConfigContext);
+    const cart = useCart();
+    const businessConfig = useBusinessConfig();
 
     if (props.mode == ProductDialogMode.NewLine) {
         return (

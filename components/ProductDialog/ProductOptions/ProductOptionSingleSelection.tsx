@@ -1,7 +1,7 @@
 import { RadioGroup, Stack, Typography } from "@mui/material";
 import { ABProductOptionSingleSelection, ABProductOptionSingleSelectedValue } from "@dvalenzuela-com/alabarra-types";
-import React, { useContext, useEffect, useState } from "react";
-import { BusinessConfigContext } from "@Context/BusinessConfigContext";
+import React, { useEffect, useState } from "react";
+import { useBusinessConfig } from "@Context/BusinessConfigContext";
 import ProductOptionSingleSelectionLine from "./ProductOptionSingleSelectionLine";
 
 type ProductOptionSingleSelectionProps = {
@@ -13,7 +13,7 @@ type ProductOptionSingleSelectionProps = {
 
 const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) => {
 
-    const businessConfig = useContext(BusinessConfigContext);
+    const businessConfig = useBusinessConfig();
     const [selectedValue, setSelectedValue] = useState<string>(props.selectedOption != undefined ? props.selectedOption.selected_value : props.productOption.default_value);
 
     useEffect(() => {

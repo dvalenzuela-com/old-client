@@ -1,7 +1,7 @@
 import PaymentTypeSelection, { PaymentTypes } from "@Components/PaymentTypeSelection"
-import { CartContext } from "@Context/CartContext";
+import { useCart } from "@Context/CartContext";
 import { Alert, Autocomplete, TextField } from "@mui/material"
-import { ChangeEvent, useContext } from "react";
+import { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 type CartDetailsProps = {
@@ -27,7 +27,7 @@ const CartDetails = (props: CartDetailsProps) => {
 
     const { t } = useTranslation();
 
-	const cart = useContext(CartContext);
+	const cart = useCart();
 
     const handleTableSelection = (event: any, newValue: string | null) => {
         props.onTableSelection(newValue);
