@@ -14,7 +14,7 @@ const TipSelection = (props: any) => {
 
     return (
             <ButtonGroup {...props}  sx={{mt: 2}} fullWidth>
-                {businessConfig.tip_options.map(tipOption => {
+                {businessConfig.tip_options.sort((a, b) => a.percentage > b.percentage ?  1 : -1).map(tipOption => {
                     return (
                         <Button
                             key={tipOption.id}
