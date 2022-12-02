@@ -8,6 +8,7 @@ import i18n from "./../i18n";
 import { Box, Typography } from "@mui/material";
 import { isStoreOpen } from "@Lib/helper";
 import { CartProvider } from "@Context/CartContext";
+import { useEffect } from "react";
 
 type LayoutProps = {
     children: React.ReactNode,
@@ -16,9 +17,11 @@ type LayoutProps = {
 
 const Layout = ({ children, businessConfig }: LayoutProps) => {
 
-    if(i18n.language != businessConfig.main_language) {
-        i18n.changeLanguage(businessConfig.main_language);
-    }
+    useEffect(() => {
+        if(i18n.language != businessConfig.main_language) {
+            i18n.changeLanguage(businessConfig.main_language);
+        }
+    }, []);
 
     const theme = createTheme({
         palette: businessConfig.palette

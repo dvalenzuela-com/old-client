@@ -23,12 +23,10 @@ type IndexProps = {
 const Index: NextPage<IndexProps> = ({categories, products, businessConfig}) => {
 
 	const router = useRouter();
-	const businessId = router.query['business-id'] as string;
+	const selectedTable = router.query['t'] as string;
 
 	const cart = useCart();
-	const selectedTable = router.query['t'] as string;
-	
-	
+
 	useEffect(() => {
 		if (selectedTable && selectedTable.trim().length > 0) {
 			cart.setSelectedTableId(selectedTable);
