@@ -13,7 +13,7 @@ import { ABBusinessConfig } from '@dvalenzuela-com/alabarra-types';
 import { PaymentTypes } from '@Components/PaymentTypeSelection';
 import CartDetails from '@Components/Cart/CartDetails';
 import { CanMakePaymentResult, StripeError } from '@stripe/stripe-js';
-import { useStoreOpen } from '@Lib/helper';
+import { useStoreOpen } from '@Lib/useStoreOpen';
 import CartPaymentSection from '@Components/Cart/CartPaymentSection';
 import TipSelection from '@Components/Cart/TipSelection';
 import { Stack } from '@mui/system';

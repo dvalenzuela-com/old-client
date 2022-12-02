@@ -6,7 +6,7 @@ import { BusinessConfigContext } from "@Context/BusinessConfigContext";
 import './../i18n';
 import i18n from "./../i18n";
 import { Box, Typography } from "@mui/material";
-import { useStoreOpen } from "@Lib/helper";
+import { useStoreOpen } from "@Lib/useStoreOpen";
 import { CartProvider } from "@Context/CartContext";
 import { useEffect } from "react";
 

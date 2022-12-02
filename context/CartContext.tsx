@@ -5,7 +5,6 @@ import {
     ABCreateOrderDataCartLine,
     ABFunctionCalculatePrice,
     ABProductOptionSelections,
-    ABTipOption,
     ABFunctionCalculateTip} from "@dvalenzuela-com/alabarra-types";
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
@@ -119,12 +118,19 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     
         if (savedCartString == null) return;
 
-        const localCart = JSON.parse(savedCartString) as CartStorage;
-        if (!localCart) return;
+        try {
+            const localCart = JSON.parse(savedCartString) as CartStorage;
+            if (!localCart) return;
 
-        setLines(localCart.lines);
-        setTipOptionId(localCart.tipOptionId);
-        setTipPercentage(localCart.tipPercentage);
+            setLines(localCart.lines);
+            setTipOptionId(localCart.tipOptionId);
+            setTipPercentage(localCart.tipPercentage);
+        } catch (error) {
+            // If the cart cant be recovered, clear it.
+            setLines([]);
+            setTipOptionId('');
+            setTipPercentage(0);
+        }
     }, [CART_STORAGE_KEY]);
 
     const persistCart = (tipOptionId: string, tipPercentage: number, lines: CartLine[]) => {
@@ -193,6 +199,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
 
     const handleClearCart = () => {
         updateCartLines([]);
+        // The last selected tip stays the same. Think about moving it back to the default.
     }
 
     const handleCreateOrderWithManualPayment = (businessId: string, tableName: string, customerName?: string, generalNote?: string): Promise<string> => {
@@ -241,7 +248,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     }
 
     const prepareData = (businessId: string, tableName: string, customerName?: string, generalNote?: string): ABCreateOrderData => {
-        var api_cart_lines: ABCreateOrderDataCartLine[] = []
+        let api_cart_lines: ABCreateOrderDataCartLine[] = [];
 
         lines.forEach( line => {
             api_cart_lines.push({
@@ -258,6 +265,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
             customer_nickname: customerName,
             general_note: (generalNote && generalNote.trim().length > 0) ? generalNote : null,
             cart: api_cart_lines,
+            tip: getTipTotal(),
             table_name: tableName
         }
     }
@@ -283,6 +291,19 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
             setTipOptionId(selectedTipOption.id);
             setTipPercentage(selectedTipOption.percentage);
             persistCart(selectedTipOption.id, selectedTipOption.percentage, lines);
+        } else {
+            // Use the default value
+            const defaultOption = businessConfig.tip_options.find(obj => obj.default);
+            if (defaultOption) {
+                setTipOptionId(defaultOption.id);
+                setTipPercentage(defaultOption.percentage);
+                persistCart(defaultOption.id, defaultOption.percentage, lines);
+            } else {
+                // No default value either. This situation should not happen
+                setTipOptionId('');
+                setTipPercentage(0);
+                persistCart('', 0, lines);
+            }
         }
     }
 

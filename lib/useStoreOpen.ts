@@ -8,7 +8,6 @@ export const useStoreOpen = (businessConfig: ABBusinessConfig) => {
     const [storeOpen, setStoreOpen] = useState<boolean>(false);
 
     const updateStoreOpenIfNeeded = () => {
-        console.log("updateStoreOpenIfNeeded");
         const nowStoreOpen = ABFunctionDateWithinOpeningHours(new Date(), businessConfig.week_opening_hours);
         if (storeOpen != nowStoreOpen) {
             setStoreOpen(nowStoreOpen);
