@@ -6,7 +6,7 @@ import { BusinessConfigContext } from "@Context/BusinessConfigContext";
 import './../i18n';
 import i18n from "./../i18n";
 import { Box, Typography } from "@mui/material";
-import { isStoreOpen } from "@Lib/helper";
+import { useStoreOpen } from "@Lib/helper";
 import { CartProvider } from "@Context/CartContext";
 import { useEffect } from "react";
 
@@ -17,7 +17,10 @@ type LayoutProps = {
 
 const Layout = ({ children, businessConfig }: LayoutProps) => {
 
+    const storeOpen = useStoreOpen(businessConfig);
+
     useEffect(() => {
+        // Use the store language
         if(i18n.language != businessConfig.main_language) {
             i18n.changeLanguage(businessConfig.main_language);
         }
@@ -34,7 +37,7 @@ const Layout = ({ children, businessConfig }: LayoutProps) => {
             <ThemeProvider theme={theme}>
                 <Box>
                     <Navbar title={businessConfig.business_name} />
-                    {!isStoreOpen(businessConfig) && <Box sx={{
+                    {!storeOpen && <Box sx={{
                         backgroundColor:"black",
                         color: "white",
                         textAlign:'center',

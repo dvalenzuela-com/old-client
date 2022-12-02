@@ -13,7 +13,7 @@ import { ABBusinessConfig } from '@dvalenzuela-com/alabarra-types';
 import { PaymentTypes } from '@Components/PaymentTypeSelection';
 import CartDetails from '@Components/Cart/CartDetails';
 import { CanMakePaymentResult, StripeError } from '@stripe/stripe-js';
-import { isStoreOpen } from '@Lib/helper';
+import { useStoreOpen } from '@Lib/helper';
 import CartPaymentSection from '@Components/Cart/CartPaymentSection';
 import TipSelection from '@Components/Cart/TipSelection';
 import { Stack } from '@mui/system';
@@ -36,6 +36,7 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 	const {enqueueSnackbar} = useSnackbar();
 	const cart = useCart();
 	const stripe = useStripe();
+	const storeOpen = useStoreOpen(businessConfig);
 
 	const [selectedTable, setSelectedTable] = useState<string | null>(null);
 	const [customerName, setCustomerName] = useState<string>('');
@@ -120,7 +121,7 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 
 						<Grid item xs={12} sm={6}>
 							<CartDetails
-								storeOpen={isStoreOpen(businessConfig)}
+								storeOpen={storeOpen}
 								tableIds={tables}
 								selectedTable={selectedTable}
 								customerName={customerName}
@@ -138,7 +139,7 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 								customerName={customerName}
 								generalNote={generalNote}
 								amount={cart.billTotalWithTip}
-								storeOpen={isStoreOpen(businessConfig)}
+								storeOpen={storeOpen}
 								waitingForManualOrder={waitingForManualOrder}
 								onCreateManualOrder={handleManualOrder}
 								onDigitalPaymentSuccess={hanldeDigitalPaymentSuccess}

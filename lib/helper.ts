@@ -1,5 +1,22 @@
 import { ABBusinessConfig, ABFunctionDateWithinOpeningHours } from "@dvalenzuela-com/alabarra-types";
+import { useEffect, useState } from "react";
+import { useInterval } from "react-timers-hooks";
 
-export const isStoreOpen = (businessConfig: ABBusinessConfig) => {
-    return ABFunctionDateWithinOpeningHours(new Date(), businessConfig.week_opening_hours);
+//FIX: Change this so that the interval is called once regarless of how many calls it gets. Maybe a provider?
+export const useStoreOpen = (businessConfig: ABBusinessConfig) => {
+
+    const [storeOpen, setStoreOpen] = useState<boolean>(false);
+
+    const updateStoreOpenIfNeeded = () => {
+        console.log("updateStoreOpenIfNeeded");
+        const nowStoreOpen = ABFunctionDateWithinOpeningHours(new Date(), businessConfig.week_opening_hours);
+        if (storeOpen != nowStoreOpen) {
+            setStoreOpen(nowStoreOpen);
+        }
+    }
+
+    useEffect(updateStoreOpenIfNeeded, [businessConfig]);
+    useInterval(updateStoreOpenIfNeeded, 60 * 1000);
+
+    return storeOpen;
 }

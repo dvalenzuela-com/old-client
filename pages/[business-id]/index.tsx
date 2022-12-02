@@ -10,6 +10,7 @@ import Layout from 'layout/Layout';
 import { getDocs } from 'firebase/firestore';
 import { ABBusinessConfig, ABCategory, ABProduct } from '@dvalenzuela-com/alabarra-types';
 import { NextSeo } from 'next-seo';
+
 //import { dummyAllProducts } from './../../lib/offlineTesting/dummyAllProducts';
 //import { dummyAllCategories } from '../../lib/offlineTesting/dummyAllCategories';
 //import { dummyBusinessConfig } from './../../lib/offlineTestingdummyBusinessConfig';
