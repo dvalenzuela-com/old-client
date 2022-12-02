@@ -3,7 +3,7 @@ import { PaymentTypes } from "@Components/PaymentTypeSelection";
 import { useCart } from "@Context/CartContext";
 import { StripeError } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PaymentButtonStripe from "./PaymentButtonStripe";
 import debounce from 'lodash.debounce';
@@ -42,7 +42,6 @@ const CartPaymentSection = (props: CartPaymentSectionProps) => {
             props.storeOpen &&
             props.amount > 0) {
             // Create new order and payment intent
-            console.log("CartPaymentSection useEffect");
             setClientSecret('');
 
             const selectedTable = props.selectedTable;
@@ -58,14 +57,14 @@ const CartPaymentSection = (props: CartPaymentSectionProps) => {
             const clientSecret = await cart.createOrderWithStripePayment(businessId, selectedTable, customerName, generalNote);
             setClientSecret(clientSecret);
         } catch (error) {
-            console.log("Catch block")
             console.log(error);
         }
     }, 0.9 * 1000), []);
 
     return (
         <>
-            <h2>{t('Cart.Order.Title')}</h2>
+            {props.paymentType != '' &&
+                <h2>{t('Cart.Order.Title')}</h2>}
             {props.paymentType == PaymentTypes.PRESENTIAL &&
                 <LoadingButton
                     onClick={props.onCreateManualOrder}
