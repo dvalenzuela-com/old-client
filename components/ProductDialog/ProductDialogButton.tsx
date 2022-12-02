@@ -19,7 +19,7 @@ const ProductDialogButton = (props: ProductDialogButtonProps) => {
     if (props.mode == ProductDialogMode.NewLine) {
         return (
             <>
-                Add (<CurrencyText value={cart.calculateTotalPrice(props.product, props.selectedOptions, props.selectedQuantity)} businessConfig={businessConfig} />)
+                Add (<CurrencyText value={cart.calculateProductPrice(props.product, props.selectedOptions, props.selectedQuantity)} businessConfig={businessConfig} />)
             </>
         );
     } else if (props.mode == ProductDialogMode.EditLine && props.selectedQuantity == 0) {
@@ -27,7 +27,7 @@ const ProductDialogButton = (props: ProductDialogButtonProps) => {
     } else if (props.mode == ProductDialogMode.EditLine && props.selectedQuantity > 0) {
         return (
             <>
-                Update (<CurrencyText value={cart.calculateTotalPrice(props.product, props.selectedOptions, props.selectedQuantity)} businessConfig={businessConfig} />)
+                Update (<CurrencyText value={cart.calculateProductPrice(props.product, props.selectedOptions, props.selectedQuantity)} businessConfig={businessConfig} />)
             </>
         );
     } else {

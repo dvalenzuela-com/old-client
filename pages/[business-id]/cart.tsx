@@ -57,7 +57,7 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 				currency: businessConfig.currency.toLowerCase(),
 				total: {
 					label: t('StripeButton.Order.Label'),
-					amount: cart.getCartTotal(),
+					amount: cart.billTotalWithTip,
 				},
 				requestPayerName: true,
 				requestPayerEmail: true,
@@ -107,8 +107,8 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 			<Container>
 				<h1>{t('Cart.Title')}</h1>
 
-				{cart.getNumberOfItems() == 0 && <h2>{t('Cart.CartEmpty.Title')}</h2>}
-				{cart.getNumberOfItems() != 0 &&
+				{cart.numberOfItems == 0 && <h2>{t('Cart.CartEmpty.Title')}</h2>}
+				{cart.numberOfItems != 0 &&
 					<Grid container spacing={5} direction='row' justifyContent='flex-start' alignItems='stretch'>
 						<Grid item xs={12} sm={6}>
 							<h2>{t('Cart.OrderSummary.Title')}</h2>
@@ -137,7 +137,7 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 								selectedTable={selectedTable}
 								customerName={customerName}
 								generalNote={generalNote}
-								amount={cart.getCartTotal()}
+								amount={cart.billTotalWithTip}
 								storeOpen={isStoreOpen(businessConfig)}
 								waitingForManualOrder={waitingForManualOrder}
 								onCreateManualOrder={handleManualOrder}

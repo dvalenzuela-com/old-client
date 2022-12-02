@@ -26,7 +26,7 @@ const Navbar = (props: NavbarProps) => {
                 <Tooltip title={t('Navbar.Tooltip.Title')}>
                     <NextLink href={{ pathname: '/[bid]/cart', query: { "bid": businessId } }} passHref>
                         <IconButton>
-                            <Badge badgeContent={cart.getNumberOfItems()} color='secondary'>
+                            <Badge badgeContent={cart.numberOfItems} color='secondary'>
                                 <ShoppingCartRoundedIcon />
                             </Badge>
                         </IconButton>

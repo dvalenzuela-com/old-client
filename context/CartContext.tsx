@@ -15,38 +15,46 @@ import { useBusinessConfig } from "./BusinessConfigContext";
 export const useCart = () => useContext(CartContext);
 
 export type Cart = {
-    getNumberOfItems: () => number;
-    getCartTotal: () => number;
+    lines: CartLine[],
+    numberOfItems: number,
+    billTotal: number,
+    tipTotal: number,
+    billTotalWithTip: number,
+
     addProduct: (product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => void;
-    getLines: () => CartLine[];
     editLineWithId: (id: string, product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => void;
-    
-    setTipOption: (tipOptionId: string) => void;
-    getCurrentTipOption: () => ABTipOption;
-    getCurrentTipPercentage: () => number;
-    calculateTip: () => number;
-    calculateTotalPrice: (product: ABProduct, selectedOptions: ABProductOptionSelections[], quantity: number) => number;
     clearCart: () => void;
+  
+    selectedTipOptionId: string,
+    tipPercentage: number,
+    setTipOption: (tipOptionId: string) => void;
+  
+    setSelectedTableId: (tableId: string | null) => void;
+    getSelectedTableId: () => string | null;
+
+
+    calculateProductPrice: (product: ABProduct, selectedOptions: ABProductOptionSelections[], quantity: number) => number;
     createOrderWithManualPayment: (businessId: string, tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
     createOrderWithDigitalPayment: (businessId: string, tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
     createOrderWithStripePayment: (businessId: string, tableName: string, customerName?: string, generalNote?: string) => Promise<string>;
     createStripePaymentIntent: (businessId: string, orderId: string) => Promise<string>;
-    setSelectedTableId: (tableId: string | null) => void;
-    getSelectedTableId: () => string | null;
 }
 
 const defaultCart: Cart = {
-    getNumberOfItems: () => 0,
+    lines: [],
+    numberOfItems: 0,
+    billTotal: 0,
+    tipTotal: 0,
+    billTotalWithTip: 0,
     addProduct: () => {},
-    getLines: () => [],
     editLineWithId: () => {},
-    getCartTotal: () => 0,
     clearCart: () => {},
+
+    selectedTipOptionId: '',
+    tipPercentage: 0,
     setTipOption: () => {},
-    getCurrentTipPercentage: () => 0,
-    getCurrentTipOption: () => ({id: "INVALID", default: false, percentage: 0}),
-    calculateTip: () => 0,
-    calculateTotalPrice: () => 0,
+
+    calculateProductPrice: () => 0,
     createOrderWithManualPayment: () => Promise.reject("override this promise"),
     createOrderWithDigitalPayment: () => Promise.reject("override this promise"),
     createOrderWithStripePayment: () => Promise.reject("override this promise"),
@@ -75,6 +83,7 @@ export type CartLine = {
     options: ABProductOptionSelections[];
     note: string | null;
 }
+
 export const CartProvider = ({ businessId, children }: CartProviderProps) => {
 
     const CART_STORAGE_KEY = `cart-${businessId}`;
@@ -143,10 +152,6 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
         updateCartLines(lines.concat([newCartLine]));
     }
 
-    const getItems = () => {
-        return lines;
-    }
-
     const editLineWithId = (id: string, product: ABProduct, quantity: number, options: ABProductOptionSelections[], comment: string | null) => {
 
         // TODO: Where does the coment gets updated for existing lines?
@@ -175,15 +180,11 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
         }
     }
 
-    const getNumberOfItems = () => {
-        return lines.reduce((acc, line) => acc + line.quantity, 0);
-    }
-
     const calculateTotalPrice = (product: ABProduct, selectedOptions: ABProductOptionSelections[], quantity: number): number => {
         return quantity * ABFunctionCalculatePrice(product, selectedOptions);
     }
 
-    const getCartTotal = () => {
+    const getBillTotal = () => {
         return lines.reduce((sum, cartLine) => {
             return sum + calculateTotalPrice(cartLine.product, cartLine.options, cartLine.quantity);
         }, 0);
@@ -284,20 +285,11 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
         }
     }
 
-    const handleGetCurrentTipOption = (): ABTipOption => {
-        return {id: tipOptionId, percentage: tipPercentage, default: true};
-    }
-
-    const handleGetCurrentTipPercentage = (): number => {
-        return tipPercentage;
-    }
-
-    const handleCalculateTip = (): number => {
-        return Math.floor(getCartTotal() * (tipPercentage / 100));
+    const getTipTotal = (): number => {
+        return Math.floor(getBillTotal() * (tipPercentage / 100));
     }
 
     const handleSetSelectedTableId = (tableId: string | null) => {
-
         if (tableId != null && tableId.trim().length > 0) {
             sessionStorage.setItem(TABLE_SESSION_KEY, tableId);
         } else {
@@ -311,17 +303,20 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
 
     return (
         <CartContext.Provider value={{
-            getNumberOfItems: getNumberOfItems,
+            lines: lines,
+            numberOfItems: lines.reduce((acc, line) => acc + line.quantity, 0),
+    
+            billTotal: getBillTotal(),
+            tipTotal: getTipTotal(),
+            billTotalWithTip: getBillTotal() + getTipTotal(),
+
+            tipPercentage: tipPercentage,
+            selectedTipOptionId: tipOptionId,
             addProduct: addItem,
-            getLines: getItems,
             editLineWithId: editLineWithId,
-            getCartTotal: getCartTotal,
             clearCart: handleClearCart,
             setTipOption: handleSetTipOption,
-            getCurrentTipOption: handleGetCurrentTipOption,
-            getCurrentTipPercentage: handleGetCurrentTipPercentage,
-            calculateTip: handleCalculateTip,
-            calculateTotalPrice: calculateTotalPrice,
+            calculateProductPrice: calculateTotalPrice,
             createOrderWithManualPayment: handleCreateOrderWithManualPayment,
             createOrderWithDigitalPayment: handleCreateOrderWithDigitalPayment,
             createOrderWithStripePayment: handleCreateOrderWithStripePayment,

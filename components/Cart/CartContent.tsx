@@ -47,7 +47,7 @@ const CartContent = (props: CartContentProps) => {
                     </TableHead>
 
                     <TableBody>
-                        {cart.getLines().map( line => {
+                        {cart.lines.map( line => {
                             return (
                                 <TableRow key={`${line.lineId}`}>
                                     <TableCell onClick={() => {handleRowClick(line)}}>
@@ -85,20 +85,20 @@ const CartContent = (props: CartContentProps) => {
                                         </>
                                     </TableCell>
                                     <TableCell onClick={() => {handleRowClick(line)}}>
-                                        <CurrencyText value={cart.calculateTotalPrice(line.product, line.options, line.quantity)} businessConfig={businessConfig} />
+                                        <CurrencyText value={cart.calculateProductPrice(line.product, line.options, line.quantity)} businessConfig={businessConfig} />
                                     </TableCell>
                                 </TableRow>
                             )
                         })}
                         <TableRow>
                             <TableCell></TableCell>
-                            <TableCell>Discretionary tip: {cart.getCurrentTipPercentage()}%</TableCell>
-                            <TableCell><CurrencyText value={cart.calculateTip()} businessConfig={businessConfig} /></TableCell>
+                            <TableCell>Discretionary tip: {cart.tipPercentage}%</TableCell>
+                            <TableCell><CurrencyText value={cart.tipTotal} businessConfig={businessConfig} /></TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell></TableCell>
                             <TableCell>{t('CartContent.TableFooter.Total')}</TableCell>
-                            <TableCell><CurrencyText value={cart.getCartTotal() + cart.calculateTip()} businessConfig={businessConfig} /></TableCell>
+                            <TableCell><CurrencyText value={cart.billTotalWithTip} businessConfig={businessConfig} /></TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
