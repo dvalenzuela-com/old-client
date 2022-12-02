@@ -14,7 +14,7 @@ import './../i18n';
 // Call firestore to init it;
 firestore;
 
-const stripePromise = loadStripe('pk_test_51Jsny8HtcjByDkQ7PNk4TmPT4jfWZExCs4pAOuUrdqkaMIr3DP0NAOMtk8ku4K08ODJyXN7qP4fMl2nojYr8MrCb00EC83upJt')
+const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY ?? "")
 
 function MyApp({ Component, pageProps }: AppProps) {
 
