@@ -5,7 +5,8 @@ import {
     ABCreateOrderDataCartLine,
     ABFunctionCalculatePrice,
     ABProductOptionSelections,
-    ABTipOption} from "@dvalenzuela-com/alabarra-types";
+    ABTipOption,
+    ABFunctionCalculateTip} from "@dvalenzuela-com/alabarra-types";
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
 import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent, useCreateStripePaymentOrder } from "@Lib/functions";
@@ -286,7 +287,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     }
 
     const getTipTotal = (): number => {
-        return Math.floor(getBillTotal() * (tipPercentage / 100));
+        return ABFunctionCalculateTip(getBillTotal(), tipPercentage);
     }
 
     const handleSetSelectedTableId = (tableId: string | null) => {
