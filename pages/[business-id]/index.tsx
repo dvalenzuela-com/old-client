@@ -10,6 +10,7 @@ import Layout from 'layout/Layout';
 import { getDocs } from 'firebase/firestore';
 import { ABBusinessConfig, ABCategory, ABProduct } from '@dvalenzuela-com/alabarra-types';
 import { NextSeo } from 'next-seo';
+//const fs = require('fs');
 
 //import { dummyAllProducts } from './../../lib/offlineTesting/dummyAllProducts';
 //import { dummyAllCategories } from '../../lib/offlineTesting/dummyAllCategories';
@@ -97,6 +98,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
 	const allProducts = (await getDocs(allProductsQuery(businessId))).docs.map(doc => doc.data());
 	const allCategories = (await getDocs(allCategoriesQuery(businessId))).docs.map(doc => doc.data());
 	const businessConfig = await getBusinessConfig(businessId);
+
+	//fs.writeFileSync("./allProducts.json", JSON.stringify(allProducts, null, 4));
+	//fs.writeFileSync("./allCategories.json", JSON.stringify(allCategories, null, 4));
+	//fs.writeFileSync("./businessConfig.json", JSON.stringify(businessConfig, null, 4));
 
 	// const allProducts = dummyAllProducts;
 	// const allCategories = dummyAllCategories;

@@ -17,6 +17,7 @@ import { useStoreOpen } from '@Lib/useStoreOpen';
 import CartPaymentSection from '@Components/Cart/CartPaymentSection';
 import TipSelection from '@Components/Cart/TipSelection';
 import { Stack } from '@mui/system';
+//const fs = require('fs');
 
 // import { dummyAllTables } from '@Lib/offlineTesting/dummyAllTables';
 // import { dummyBusinessConfig } from '@Lib/offlineTesting/dummyBusinessConfig';
@@ -193,6 +194,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 	const businessConfig = await getBusinessConfig(businessId);
 	const tables = await getAllTableIds(businessId);
+
+	//fs.writeFileSync("./tables.json", JSON.stringify(tables, null, 4));
 
 	// const businessConfig = dummyBusinessConfig;
 	// const tables = dummyAllTables;
