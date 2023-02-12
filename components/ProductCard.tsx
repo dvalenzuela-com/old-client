@@ -2,7 +2,6 @@ import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 import { ABProduct } from "@dvalenzuela-com/alabarra-types";
 import { useState } from "react";
 import Image from "next/image";
-import { useCart } from "@Context/CartContext";
 
 type ProductCardProps = {
     product: ABProduct;
@@ -10,14 +9,10 @@ type ProductCardProps = {
 }
 
 const ProductCard = (props: ProductCardProps) => {
-
-    const { addProduct } = useCart();
     
     const [open, setOpen] = useState(false);
 
     const handleOnClick = () => {
-        //addProduct(props)
-        //setOpen(true)
         props.onClick()
     }
 
