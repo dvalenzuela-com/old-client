@@ -12,7 +12,6 @@ export const fakeProducts = (
     productParams: Partial<ABProduct> = {}
     ) => {
     const products = (new Array(n)).fill(fakeProduct(productParams))
-    console.log(products);
     return products;
 }
 

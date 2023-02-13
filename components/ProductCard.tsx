@@ -1,69 +1,50 @@
-import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
-import { ABProduct } from "@dvalenzuela-com/alabarra-types";
-import { useState } from "react";
+import { Grid, Paper, Stack, Typography } from "@mui/material";
+import { CSSProperties } from "@mui/styled-engine";
 import Image from "next/image";
+import CurrencyText from "./CurrencyText";
 
 type ProductCardProps = {
-    product: ABProduct;
+    title: string;
+    description: string;
+    price: number;
+    image_url: string;
     onClick: () => void
 }
 
+const TwoLineWrap: CSSProperties = {
+    whiteSpace: "initial",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    WebkitLineClamp: '2',
+    WebkitBoxOrient: "vertical",
+}
+
 const ProductCard = (props: ProductCardProps) => {
-    
-    const [open, setOpen] = useState(false);
-
-    const handleOnClick = () => {
-        props.onClick()
-    }
-
-    const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === 'clickaway') {
-          return;
-        }
-
-        //setOpen(false);
-      };
-
-    const cardStyles: React.CSSProperties = {
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column'
-    }
-
-    const cardMediaStyles: React.CSSProperties = {
-        height: 140
-    }
-
-    const cardContentStyles: React.CSSProperties = {
-        //backgroundColor : 'blue'
-    }
-    const divStyles: React.CSSProperties = {
-        flexGrow: 1
-    }
-    const cardActionStyles: React.CSSProperties = {
-        display: 'inline-block',
-        bottom: '0px',
-        textAlign: 'right'
-        //backgroundColor : 'red'
-    }
+    const { title, description, price, image_url, onClick } = props;
 
     return (
-        <>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-                <Card style={cardStyles} onClick={handleOnClick}>
-                    <CardMedia title={props.product.title} style={cardMediaStyles}>
-                        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                            <Image src={props.product.image_url} layout='fill' objectFit="cover" alt={props.product.title} />
-                        </div>
-                    </CardMedia>
-                    <CardContent style={cardContentStyles}>
-                        <Typography variant='h5'>{props.product.title}</Typography>
-                        <Typography variant="body2">{props.product.description}</Typography>
-                    </CardContent>
-                    <div style={divStyles} />
-                </Card>
-            </Grid>
-        </>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
+            <Paper onClick={onClick}>
+                <Stack direction='row' spacing={0} alignItems='stretch' justifyContent='space-between'>
+                    <Grid container>
+                        <Grid item xs={8} sx={{pl: 1, pt: 1, pb: 1}}>
+                            <Stack direction='column' alignContent='stretch' justifyContent='space-around' spacing={0}>
+                                <Typography sx={{ fontWeight: 'bold' }}>{title}</Typography>
+                                <Typography variant="body2" sx={TwoLineWrap}>{description}</Typography>
+                                <Typography variant="body1"><CurrencyText value={price} /></Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid item xs={4}>
+                            {/** //TODO: Vertically-center image  */}
+                            <div style={{ display: 'flex', justifyContent: 'right', alignItems:'center', verticalAlign: 'middle'}}>
+                                <Image src={image_url} height={'100%'} width={'100%'} objectFit="contain" alt={title} />
+                            </div>
+                        </Grid>
+                    </Grid>
+                </Stack>
+            </Paper>
+        </Grid>
     )
 }
 

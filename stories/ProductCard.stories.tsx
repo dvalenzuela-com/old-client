@@ -1,4 +1,3 @@
-import { ABProduct, ABProductStatus } from "@dvalenzuela-com/alabarra-types";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
 import ProductCard from "../components/ProductCard";
@@ -9,7 +8,11 @@ const dummy_product = fakeProduct();
 export default {
     component: ProductCard,
     args: {
-        product: dummy_product
+        title: dummy_product.title,
+        description: dummy_product.description,
+        price: dummy_product.price,
+        image_url: dummy_product.image_url,
+        onClick: () => {console.log('click')}
     }
 } as ComponentMeta<typeof ProductCard>;
 
