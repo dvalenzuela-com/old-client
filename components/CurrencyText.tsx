@@ -1,14 +1,22 @@
 import { NumericFormat } from "react-number-format";
 import { ABBusinessConfig, ABBusinessConfigCurrency } from "@dvalenzuela-com/alabarra-types";
 import { useBusinessConfig } from "@Context/BusinessConfigContext";
+import { useEffect } from "react";
 
 type CurrencyTextProps = {
     value: number;
     businessConfig?: ABBusinessConfig; // TODO: Remove this
 }
-const CurrencyText = ({value, businessConfig}: CurrencyTextProps) => {
+const CurrencyText = (props: CurrencyTextProps) => {
 
-    const business_context = businessConfig ?? useBusinessConfig();
+    const { value, businessConfig } = props
+    let business_context = useBusinessConfig();
+
+    useEffect(() => {
+        if (businessConfig) {
+            business_context = businessConfig;
+        }
+    }, [businessConfig]);
 
     console.log("business_context", business_context);
     let thousandSeparator: string;

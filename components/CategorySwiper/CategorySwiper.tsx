@@ -42,7 +42,7 @@ const CategorySwiper = (props: CategorySwiperProps) => {
                 ref={swiperRef}
             >
                 {categories.map((category) => (
-                    <SwiperSlide style={{width: 'auto'}}>
+                    <SwiperSlide key={category.id} style={{width: 'auto'}}>
                         {({ isActive, isVisible }) => {
                             return <CategorySwiperSlide title={category.title} active={isActive} />
                         }}
