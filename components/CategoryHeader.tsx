@@ -5,12 +5,11 @@ import { RefObject } from "react";
 
 type CategoryHeaderProps = {
     category: ABCategory;
-    ref: RefObject<HTMLDivElement>;
 }
 
 const CategoryHeader = (props: CategoryHeaderProps, ) => {
     return (
-        <Grid item xs={12} textAlign='center' ref={props.ref}>
+        <Grid item xs={12} textAlign='center'>
             <Typography variant="h5">{props.category.title}</Typography>
         </Grid>
     );
