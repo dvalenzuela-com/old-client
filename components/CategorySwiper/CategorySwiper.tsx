@@ -16,6 +16,7 @@ type CategorySwiperProps = {
     onSwipeTo: (categoryId: string) => void;
 }
 
+
 const CategorySwiper = (props: CategorySwiperProps) => {
     const { categories, activeCategoryId, onSwipeTo } = props;
 
