@@ -1,7 +1,7 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
 import { fakeProductOptionMultipleSelection } from "stories/helpers";
-import ProductOptionMultipleSelection from "./ProductOptionMultipleSelection";
+import ProductOptionMultipleSelection from ".";
 
 const option = fakeProductOptionMultipleSelection();
 

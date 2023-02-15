@@ -1,5 +1,5 @@
-import ProductOptionMultipleSelection from "@Components/ProductDialog/ProductOptions/ProductOptionMultipleSelection/ProductOptionMultipleSelection";
-import ProductOptionSingleSelection from "@Components/ProductDialog/ProductOptions/ProductOptionSingleSelection/ProductOptionSingleSelection";
+import ProductOptionMultipleSelection from "@Components/ProductDialog/ProductOptions/ProductOptionMultipleSelection";
+import ProductOptionSingleSelection from "@Components/ProductDialog/ProductOptions/ProductOptionSingleSelection";
 import { ABProduct, ABProductOptionsType, ABProductOptionSingleSelection, ABProductOptionSingleSelectedValue, ABProductOptionMultipleSelectedValues, ABProductOptionMultipleSelection, ABProductOptionSelections} from "@dvalenzuela-com/alabarra-types";
 import { TextField, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
