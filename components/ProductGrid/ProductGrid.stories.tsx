@@ -1,8 +1,8 @@
 import { ABCategory, ABProduct, ABProductStatus } from "@dvalenzuela-com/alabarra-types";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
-import ProductGrid from "../components/ProductGrid";
-import { fakeProducts } from "./helpers";
+import ProductGrid from "./ProductGrid";
+import { fakeProducts } from "../../stories/helpers";
 
 
 const dummy_cat_id = "dummy_cat_id";

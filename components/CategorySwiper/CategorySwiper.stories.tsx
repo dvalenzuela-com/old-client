@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
-import CategorySwiper, { HeaderData } from "../components/CategorySwiper/CategorySwiper";
+import CategorySwiper, { HeaderData } from "./CategorySwiper";
 
 
 const dummyCategories: HeaderData[] = [

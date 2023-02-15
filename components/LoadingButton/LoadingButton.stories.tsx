@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
-import LoadingButton from "../components/LoadingButton";
+import LoadingButton from "./LoadingButton";
 
 export default {
     component: LoadingButton,

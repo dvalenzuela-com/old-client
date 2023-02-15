@@ -2,7 +2,7 @@ import { ABBusinessConfig, ABBusinessConfigCountry, ABBusinessConfigCurrency } f
 import { faker } from "@faker-js/faker";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
-import CurrencyText from "../components/CurrencyText";
+import CurrencyText from "./CurrencyText";
 
 const euroValue = Number(faker.commerce.price(5.5, 150, 2));
 const euroBC: Partial<ABBusinessConfig> = {

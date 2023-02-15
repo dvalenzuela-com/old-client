@@ -1,4 +1,4 @@
-import LoadingButton from "@Components/LoadingButton";
+import LoadingButton from "@Components/LoadingButton/LoadingButton";
 import { PaymentTypes } from "@Components/PaymentTypeSelection";
 import { useCart } from "@Context/CartContext";
 import { StripeError } from "@stripe/stripe-js";

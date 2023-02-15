@@ -1,6 +1,6 @@
 import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from 'next'
 
-import ProductGrid from '@Components/ProductGrid'
+import ProductGrid from '@Components/ProductGrid/ProductGrid'
 import { Container } from '@mui/material';
 import { allCategoriesQuery, allProductsQuery, getAllBusinessIds, getBusinessConfig } from '@Lib/firestore';
 import { useRouter } from 'next/router';

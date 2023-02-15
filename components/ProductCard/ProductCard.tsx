@@ -2,7 +2,7 @@ import { ABProductTag } from "@dvalenzuela-com/alabarra-types";
 import { Grid, Paper, Stack, Typography } from "@mui/material";
 import { CSSProperties } from "@mui/styled-engine";
 import Image from "next/image";
-import CurrencyText from "../CurrencyText";
+import CurrencyText from "../CurrencyText/CurrencyText";
 import ProductCardTag from "./ProductCardTag";
 
 type ProductCardProps = {

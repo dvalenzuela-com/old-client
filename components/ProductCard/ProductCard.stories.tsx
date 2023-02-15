@@ -1,8 +1,8 @@
 import { ABProductTag } from "@dvalenzuela-com/alabarra-types";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
-import ProductCard from "../components/ProductCard/ProductCard";
-import { fakeProduct } from "./helpers";
+import ProductCard from "./ProductCard";
+import { fakeProduct } from "../../stories/helpers";
 
 const dummy_product = fakeProduct();
 

@@ -1,6 +1,6 @@
 import { ABProduct, ABProductOptionSelections } from "@dvalenzuela-com/alabarra-types";
 import { useCart } from "@Context/CartContext";
-import CurrencyText from "../CurrencyText";
+import CurrencyText from "../CurrencyText/CurrencyText";
 import { useBusinessConfig } from "@Context/BusinessConfigContext";
 import { ProductDialogMode } from "./ProductDialogMode";
 

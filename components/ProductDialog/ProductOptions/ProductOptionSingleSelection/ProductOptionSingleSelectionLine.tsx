@@ -1,4 +1,4 @@
-import CurrencyText from "@Components/CurrencyText";
+import CurrencyText from "@Components/CurrencyText/CurrencyText";
 import { ABBusinessConfig } from "@dvalenzuela-com/alabarra-types";
 import { Box, Radio, Stack, Typography } from "@mui/material";
 
@@ -21,9 +21,9 @@ const ProductOptionSingleSelectionLine = (props: ProductOptionSingleSelectionLin
             </Box>
             <Box textAlign='right'>
                 {props.price > 0 && 
-                    <Typography variant='body2' > + <CurrencyText value={props.price} businessConfig={props.businessConfig} /></Typography>}
+                    <Typography variant='body2' >+<CurrencyText value={props.price} businessConfig={props.businessConfig} /></Typography>}
                 {props.price < 0 &&
-                    <Typography variant='body2' > - <CurrencyText value={props.price} businessConfig={props.businessConfig} /></Typography>}
+                    <Typography variant='body2' ><CurrencyText value={props.price} businessConfig={props.businessConfig} /></Typography>}
             </Box>
         </Stack>
     );

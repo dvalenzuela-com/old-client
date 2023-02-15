@@ -4,7 +4,7 @@ import { CartLine, useCart } from "@Context/CartContext";
 import ProductDialog from "../ProductDialog/ProductDialog";
 import { ABProduct, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionSingleSelectedValue, ABProductOptionsType, ABTipOption } from "@dvalenzuela-com/alabarra-types";
 import { useTranslation } from "react-i18next";
-import CurrencyText from "../CurrencyText";
+import CurrencyText from "../CurrencyText/CurrencyText";
 import { useBusinessConfig } from "@Context/BusinessConfigContext";
 import { ProductDialogMode } from "../ProductDialog/ProductDialogMode";
 
