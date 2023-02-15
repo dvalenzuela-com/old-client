@@ -35,6 +35,7 @@ export const fakeProduct = (params: Partial<ABProduct> = {}): Partial<ABProduct>
         //category: null,
         image_url: faker.image.food(),
         //options: [],
+        tags: [],
         ...params
     }
     

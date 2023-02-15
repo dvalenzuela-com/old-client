@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import { ABCategory, ABProduct } from "@dvalenzuela-com/alabarra-types";
 import { useState } from "react";
-import ProductCard from "./ProductCard";
+import ProductCard from "./ProductCard/ProductCard";
 import ProductDialog from "./ProductDialog/ProductDialog";
 import CategoryHeader from "./CategoryHeader";
 import { ProductDialogMode } from "./ProductDialog/ProductDialogMode";
