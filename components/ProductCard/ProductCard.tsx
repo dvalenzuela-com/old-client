@@ -36,7 +36,7 @@ const ProductCard = (props: ProductCardProps) => {
                                 <Typography sx={{ fontWeight: 'bold' }}>{title}</Typography>
                                 <Typography variant="body2" sx={TwoLineWrap}>{description}</Typography>
                                 <Stack direction='row' spacing={2} alignItems='center' justifyContent='flex-start'>
-                                    {tags.map(tag => <ProductCardTag value={tag} />)}
+                                    {tags.map(tag => <ProductCardTag value={tag} key={tag} />)}
                                 </Stack>
                                 <Typography variant="body1"><CurrencyText value={price} /></Typography>
                             </Stack>
