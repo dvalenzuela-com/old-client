@@ -9,6 +9,8 @@ import { UserProvider, useUser } from '@Context/UserContext'
 import { useRouter } from 'next/router'
 import { SnackbarProvider } from 'notistack'
 import './../i18n';
+import { hotjar } from 'react-hotjar'
+import { useEffect } from 'react'
 
 
 // Call firestore to init it;
@@ -23,6 +25,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 	const router = useRouter();
 	const businessId = router.query['business-id'] as string;
+
+	// Initialize Hotjar
+	useEffect(() => {
+		hotjar.initialize(Number(process.env.NEXT_PUBLIC_HJID), Number(process.env.NEXT_PUBLIC_HJSV))
+	}, []);
 
 	// import i18n (needs to be bundled ;))
   return (
