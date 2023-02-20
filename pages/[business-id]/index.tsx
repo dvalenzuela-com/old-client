@@ -46,9 +46,7 @@ const Index: NextPage<IndexProps> = ({categories, products, businessConfig}) => 
 				}}
 			/>
 			<Layout businessConfig={businessConfig}>
-				<Container>
-					<ProductGrid categories={categories} products={products}></ProductGrid>
-				</Container>
+				<ProductGrid categories={categories} products={products}></ProductGrid>
 			</Layout>
 		</>
 

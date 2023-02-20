@@ -18,7 +18,6 @@ const CurrencyText = (props: CurrencyTextProps) => {
         }
     }, [businessConfig]);
 
-    console.log("business_context", business_context);
     let thousandSeparator: string;
     let decimalSeparator: string;
     let prefix: string | undefined;
