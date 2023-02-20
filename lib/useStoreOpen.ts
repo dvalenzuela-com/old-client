@@ -14,7 +14,7 @@ export const useStoreOpen = (businessConfig: ABBusinessConfig) => {
         }
     }
 
-    useEffect(updateStoreOpenIfNeeded, [businessConfig]);
+    useEffect(updateStoreOpenIfNeeded, [businessConfig, storeOpen]);
     useInterval(updateStoreOpenIfNeeded, 60 * 1000);
 
     return storeOpen;

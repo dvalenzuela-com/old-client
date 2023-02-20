@@ -1,4 +1,4 @@
-import { ABBusinessConfig, ABCategory, ABProduct, ABTable, BusinessConfigConverter, CategoryConverter, ProductConverter, TableConverter } from "@dvalenzuela-com/alabarra-types";
+import { ABCategory, ABProduct, ABTable, BusinessConfigConverter, CategoryConverter, ProductConverter, TableConverter } from "@dvalenzuela-com/alabarra-types";
 import { collection, doc, getDoc, getDocs, getFirestore, orderBy, query, setDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import firebaseApp from "./firebaseApp";

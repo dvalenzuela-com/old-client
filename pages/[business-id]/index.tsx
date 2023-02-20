@@ -1,7 +1,6 @@
-import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from 'next'
+import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 
 import ProductGrid from '@Components/ProductGrid/ProductGrid'
-import { Container } from '@mui/material';
 import { allCategoriesQuery, allProductsQuery, getAllBusinessIds, getBusinessConfig } from '@Lib/firestore';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -33,7 +32,7 @@ const Index: NextPage<IndexProps> = ({categories, products, businessConfig}) => 
 		if (selectedTable && selectedTable.trim().length > 0) {
 			cart.setSelectedTableId(selectedTable);
 		}
-	}, [selectedTable]);
+	}, [cart, selectedTable]);
 
   	return (
 		<>

@@ -1,4 +1,4 @@
-import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from 'next'
+import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import { Container, Grid } from '@mui/material';
 import CartContent from '@Components/Cart/CartContent';
 import { useEffect, useState } from 'react';
@@ -49,7 +49,7 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 	// Pre-select table if the user scanned a specific qr
 	useEffect(() => {
 		setSelectedTable(cart.getSelectedTableId());
-	}, []);
+	}, [cart]);
 
 	// use a dummy payment intent to see if a payment can be made
 	useEffect(() => {
@@ -71,7 +71,7 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 				}
 			});
 		}
-	}, [stripe]);
+	}, [businessConfig.country, businessConfig.currency, cart.billTotalWithTip, stripe, t]);
 
 	
 

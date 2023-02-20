@@ -2,6 +2,8 @@ import ProductOptionMultipleSelection from "@Components/ProductDialog/ProductOpt
 import ProductOptionSingleSelection from "@Components/ProductDialog/ProductOptions/ProductOptionSingleSelection";
 import { ABProduct, ABProductOptionsType, ABProductOptionSingleSelection, ABProductOptionSingleSelectedValue, ABProductOptionMultipleSelectedValues, ABProductOptionMultipleSelection, ABProductOptionSelections} from "@dvalenzuela-com/alabarra-types";
 import { TextField, Typography } from "@mui/material";
+import { Box } from "@mui/system";
+import Image from "next/image";
 import { useTranslation } from "react-i18next";
 
 type ProductDialogContentProps = {
@@ -26,7 +28,7 @@ const ProductDialogContent = (props: ProductDialogContentProps) => {
 
     return (
         <>
-            <img src={props.product.image_url} width='100%'/>
+            <Image src={props.product.image_url} alt={props.product.title} width="100%" height="100%" layout="responsive" objectFit="contain" />
             <br />
             <Typography variant='body1'>{props.product.description}</Typography>
             <br />
