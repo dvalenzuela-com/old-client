@@ -18,16 +18,10 @@ export default {
     component: CategorySwiper,
     args: {
         categories: dummyCategories,
-        activeCategoryId: "d"
     }
 } as ComponentMeta<typeof CategorySwiper>;
 
-setTimeout(() => {
-    console.log("timeout")
-    Primary.args = {
-        activeCategoryId: 'a'
-    };
-}, 3*1000);
+
 
 const Template: ComponentStory<typeof CategorySwiper> = (args) => <CategorySwiper {...args} />;
 
