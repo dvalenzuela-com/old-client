@@ -53,7 +53,7 @@ export const getBusinessConfig = async (businessId: string) => {
     return (results.data());
 }
 
-export const createUserIfNotFound = async (uid: string) => {
+export const createUserInDbIfNotFound = async (uid: string) => {
 	// TODO: See if it's possible to use the usersCollection
 	const docRef = doc(firestore, `users/${uid}`);
 	return setDoc(docRef, {

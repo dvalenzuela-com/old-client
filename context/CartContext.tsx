@@ -90,7 +90,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
     const TABLE_SESSION_KEY = "persistedTable";
 
     const businessConfig = useBusinessConfig();
-    const user = useUser().getUser();
+    const user = useUser();
 
     const [tipOptionId, setTipOptionId] = useState<string>('');
     const [tipPercentage, setTipPercentage] = useState<number>(0);

@@ -1,60 +1,43 @@
 import { onAuthStateChanged, signInAnonymously, User } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "@Lib/auth";
-import { createUserIfNotFound } from "@Lib/firestore";
+import { createUserInDbIfNotFound } from "@Lib/firestore";
 
 type UserProviderProps = {
     children: React.ReactNode
 }
-export type UserContext = {
-    getUser: () => User | null;
-};
 
-const defaultUserContext: UserContext = {
-    getUser: () => null
-}
+export type UserContext = User | null;
+
+const UserContext = createContext<UserContext>(null);
 
 export const useUser = () => useContext(UserContext);
-
-export const UserContext = createContext<UserContext>(defaultUserContext);
 
 export const UserProvider = ({ children }: UserProviderProps) => {
 
     const [user, setUser] = useState<User | null>(null);
 
-    const [userFound, setUserFound] = useState(true);
-
     useEffect(() => {
-        if (!userFound) {
-            signInAnonymously(auth)
-                .then(async userCredential => {
-                    return createUserIfNotFound(userCredential.user.uid);
-                })
-                .then(() => {
-                    //console.log("final then");
-                })
-            
-        }
-    }, [userFound])
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
 
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            setUserFound(true);
-            setUser(user);
-        } else {
-            setUser(null);
-            setUserFound(false);
-        }
-    });
+            if (user) {
+                setUser(user);
+            } else {
+                try {
+                    setUser(null);
+                    const userCredentials = await signInAnonymously(auth);
+                    await createUserInDbIfNotFound(userCredentials.user.uid);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        });
 
-    const handleGetUser = () => {
-        return user;
-    }
+        return unsubscribe;
+    }, []);
 
     return (
-        <UserContext.Provider value={{
-            getUser: handleGetUser
-        }}>
+        <UserContext.Provider value={user}>
             {children}
         </UserContext.Provider>
     )
