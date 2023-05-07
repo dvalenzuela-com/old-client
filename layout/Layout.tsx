@@ -1,7 +1,7 @@
 import Navbar from "@Components/Navbar";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Footer from "@Components/Footer";
-import { ABBusinessConfig } from "@dvalenzuela-com/alabarra-types";
+import { ABBusinessConfig } from "@Alabarra/alabarra-types";
 import { BusinessConfigContext } from "@Context/BusinessConfigContext";
 import './../i18n';
 import i18n from "./../i18n";

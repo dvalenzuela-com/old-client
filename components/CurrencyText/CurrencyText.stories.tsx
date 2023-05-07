@@ -1,4 +1,4 @@
-import { ABBusinessConfig, ABBusinessConfigCountry, ABBusinessConfigCurrency } from "@dvalenzuela-com/alabarra-types";
+import { ABBusinessConfig, ABBusinessConfigCountry, ABBusinessConfigCurrency } from "@Alabarra/alabarra-types";
 import { faker } from "@faker-js/faker";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";

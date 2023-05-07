@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { ABCategory, ABProduct } from "@dvalenzuela-com/alabarra-types";
+import { ABCategory, ABProduct } from "@Alabarra/alabarra-types";
 import { RefObject, useEffect, useRef, useState } from "react";
 import ProductCard from "../ProductCard/ProductCard";
 import ProductDialog from "../ProductDialog/ProductDialog";

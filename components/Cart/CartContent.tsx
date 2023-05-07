@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typog
 import { useState } from "react";
 import { CartLine, useCart } from "@Context/CartContext";
 import ProductDialog from "../ProductDialog/ProductDialog";
-import { ABProduct, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionSingleSelectedValue, ABProductOptionsType, ABTipOption } from "@dvalenzuela-com/alabarra-types";
+import { ABProduct, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionSingleSelectedValue, ABProductOptionsType, ABTipOption } from "@Alabarra/alabarra-types";
 import { useTranslation } from "react-i18next";
 import CurrencyText from "../CurrencyText/CurrencyText";
 import { useBusinessConfig } from "@Context/BusinessConfigContext";

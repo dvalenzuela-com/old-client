@@ -1,4 +1,10 @@
-import { ABProduct, ABProductOptionMultipleSelection, ABProductOptionSingleSelection, ABProductOptionsPossibleValue, ABProductOptionsType, ABProductStatus } from "@dvalenzuela-com/alabarra-types"
+import {
+    ABProduct,
+    ABProductOptionMultipleSelection,
+    ABProductOptionSingleSelection,
+    ABProductOptionsPossibleValue,
+    ABProductOptionsType,
+    ABProductStatus } from "@Alabarra/alabarra-types"
 import { faker } from "@faker-js/faker";
 
 /**

@@ -5,7 +5,7 @@ import {
     ABCreateOrderDataCartLine,
     ABFunctionCalculatePrice,
     ABProductOptionSelections,
-    ABFunctionCalculateTip} from "@dvalenzuela-com/alabarra-types";
+    ABFunctionCalculateTip} from "@Alabarra/alabarra-types";
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { v4 } from "uuid";
 import { useCreateDigitalPaymentOrder, useCreateManualPaymentOrder, useCreateStripePaymentIntent, useCreateStripePaymentOrder } from "@Lib/functions";

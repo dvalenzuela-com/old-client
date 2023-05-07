@@ -1,4 +1,4 @@
-import { ABProductTag } from "@dvalenzuela-com/alabarra-types";
+import { ABProductTag } from "@Alabarra/alabarra-types";
 import { Grid, Paper, Stack, Typography } from "@mui/material";
 import { CSSProperties } from "@mui/styled-engine";
 import Image from "next/image";

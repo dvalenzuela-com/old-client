@@ -1,4 +1,4 @@
-import { ABProductTag } from "@dvalenzuela-com/alabarra-types";
+import { ABProductTag } from "@Alabarra/alabarra-types";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
 import ProductCard from "./ProductCard";

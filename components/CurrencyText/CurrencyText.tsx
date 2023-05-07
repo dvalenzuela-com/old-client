@@ -1,5 +1,5 @@
 import { NumericFormat } from "react-number-format";
-import { ABBusinessConfig, ABBusinessConfigCurrency } from "@dvalenzuela-com/alabarra-types";
+import { ABBusinessConfig, ABBusinessConfigCurrency } from "@Alabarra/alabarra-types";
 import { useBusinessConfig } from "@Context/BusinessConfigContext";
 import { useEffect } from "react";
 

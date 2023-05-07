@@ -1,5 +1,5 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import { ABProduct, ABProductOption, ABProductOptionMultipleSelection, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionsType } from "@dvalenzuela-com/alabarra-types";
+import { ABProduct, ABProductOption, ABProductOptionMultipleSelection, ABProductOptionMultipleSelectedValues, ABProductOptionSelections, ABProductOptionsType } from "@Alabarra/alabarra-types";
 import React, { useEffect, useState } from "react";
 import { useCart } from "@Context/CartContext";
 import { useSnackbar } from "notistack";

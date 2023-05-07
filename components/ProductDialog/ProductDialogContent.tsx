@@ -1,6 +1,6 @@
 import ProductOptionMultipleSelection from "@Components/ProductDialog/ProductOptions/ProductOptionMultipleSelection";
 import ProductOptionSingleSelection from "@Components/ProductDialog/ProductOptions/ProductOptionSingleSelection";
-import { ABProduct, ABProductOptionsType, ABProductOptionSingleSelection, ABProductOptionSingleSelectedValue, ABProductOptionMultipleSelectedValues, ABProductOptionMultipleSelection, ABProductOptionSelections} from "@dvalenzuela-com/alabarra-types";
+import { ABProduct, ABProductOptionsType, ABProductOptionSingleSelection, ABProductOptionSingleSelectedValue, ABProductOptionMultipleSelectedValues, ABProductOptionMultipleSelection, ABProductOptionSelections} from "@Alabarra/alabarra-types";
 import { TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import Image from "next/image";

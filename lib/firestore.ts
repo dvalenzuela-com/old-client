@@ -1,4 +1,4 @@
-import { ABCategory, ABProduct, ABTable, BusinessConfigConverter, CategoryConverter, ProductConverter, TableConverter } from "@dvalenzuela-com/alabarra-types";
+import { ABCategory, ABProduct, ABTable, BusinessConfigConverter, CategoryConverter, ProductConverter, TableConverter } from "@Alabarra/alabarra-types";
 import { collection, doc, getDoc, getDocs, getFirestore, orderBy, query, setDoc } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import firebaseApp from "./firebaseApp";
@@ -33,9 +33,9 @@ export const useProducts = (businessId: string) => {
  * Tables
 */
 
-export const getAllTableIds = async (businessId: string) => {
+export const getAllTables = async (businessId: string) => {
     const results = await getDocs(tablesCollection(businessId));
-    return results.docs.map(doc => doc.id)
+    return results.docs.map(doc => doc.data())
 }
 
 export const getAllBusinessIds = async () => {

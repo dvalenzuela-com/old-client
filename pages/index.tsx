@@ -3,7 +3,7 @@ import { Container, Typography } from '@mui/material';
 import Link from 'next/link';
 import Footer from '@Components/Footer';
 import { getAllBusinessConfigs } from '@Lib/firestore';
-import { ABBusinessConfig } from '@dvalenzuela-com/alabarra-types';
+import { ABBusinessConfig } from '@Alabarra/alabarra-types';
 
 const RootIndex: NextPage<{businessConfigs: ABBusinessConfig[]}> = ({businessConfigs}) => {
 

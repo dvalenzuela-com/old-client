@@ -1,5 +1,5 @@
 import { RadioGroup, Stack, Typography } from "@mui/material";
-import { ABProductOptionSingleSelection, ABProductOptionSingleSelectedValue } from "@dvalenzuela-com/alabarra-types";
+import { ABProductOptionSingleSelection, ABProductOptionSingleSelectedValue } from "@Alabarra/alabarra-types";
 import React, { useEffect, useState } from "react";
 import { useBusinessConfig } from "@Context/BusinessConfigContext";
 import ProductOptionSingleSelectionLine from "./ProductOptionSingleSelectionLine";

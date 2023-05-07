@@ -1,4 +1,4 @@
-import { ABBusinessConfig, ABFunctionDateWithinOpeningHours } from "@dvalenzuela-com/alabarra-types";
+import { ABBusinessConfig, ABFunctionDateWithinOpeningHours } from "@Alabarra/alabarra-types";
 import { useEffect, useState } from "react";
 import { useInterval } from "react-timers-hooks";
 

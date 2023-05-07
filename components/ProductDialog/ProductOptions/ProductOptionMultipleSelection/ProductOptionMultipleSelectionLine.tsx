@@ -1,5 +1,5 @@
 import CurrencyText from "@Components/CurrencyText/CurrencyText";
-import { ABBusinessConfig } from "@dvalenzuela-com/alabarra-types";
+import { ABBusinessConfig } from "@Alabarra/alabarra-types";
 import { Box, Checkbox, Stack, Typography } from "@mui/material";
 
 type ProductOptionMultipleSelectionLineProps = {

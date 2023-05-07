@@ -1,5 +1,5 @@
 import { Typography, Stack } from "@mui/material";
-import { ABProductOptionMultipleSelection, ABProductOptionMultipleSelectedValues } from "@dvalenzuela-com/alabarra-types";
+import { ABProductOptionMultipleSelection, ABProductOptionMultipleSelectedValues } from "@Alabarra/alabarra-types";
 import React, { useEffect, useState } from "react";
 import { useBusinessConfig } from "@Context/BusinessConfigContext";
 import ProductOptionMultipleSelectionLine from "./ProductOptionMultipleSelectionLine";

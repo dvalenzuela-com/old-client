@@ -1,4 +1,4 @@
-import { ABCreateOrderData, ABCreateOrderResponse, ABCreateStripePaymentOrderData, ABCreateStripePaymentOrderResponse, ABCreateStripePaymentIntentData, ABCreateStripePaymentIntentResponse } from "@dvalenzuela-com/alabarra-types";
+import { ABCreateOrderData, ABCreateOrderResponse, ABCreateStripePaymentOrderData, ABCreateStripePaymentOrderResponse, ABCreateStripePaymentIntentData, ABCreateStripePaymentIntentResponse } from "@Alabarra/alabarra-types";
 import { getFunctions } from "firebase/functions";
 import { useHttpsCallable } from "react-firebase-hooks/functions";
 import firebaseApp from "./firebaseApp";

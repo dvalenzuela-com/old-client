@@ -1,4 +1,4 @@
-import { ABCategory } from "@dvalenzuela-com/alabarra-types";
+import { ABCategory } from "@Alabarra/alabarra-types";
 import { Grid, Typography } from "@mui/material";
 import React from "react";
 

@@ -2,14 +2,14 @@ import type { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import { Container, Grid } from '@mui/material';
 import CartContent from '@Components/Cart/CartContent';
 import { useEffect, useState } from 'react';
-import { getAllBusinessIds, getAllTableIds, getBusinessConfig } from '@Lib/firestore';
+import { getAllBusinessIds, getAllTables, getBusinessConfig } from '@Lib/firestore';
 import { useCart } from '@Context/CartContext';
 import { useStripe } from '@stripe/react-stripe-js';
 import { useSnackbar } from "notistack";
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import Layout from 'layout/Layout';
-import { ABBusinessConfig } from '@dvalenzuela-com/alabarra-types';
+import { ABBusinessConfig, ABTable } from '@Alabarra/alabarra-types';
 import { PaymentTypes } from '@Components/PaymentTypeSelection';
 import CartDetails from '@Components/Cart/CartDetails';
 import { CanMakePaymentResult, StripeError } from '@stripe/stripe-js';
@@ -24,7 +24,7 @@ import { Stack } from '@mui/system';
 
 type CartProps = {
 	businessConfig: ABBusinessConfig;
-	tables: string[];
+	tables: ABTable[];
 }
 
 const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
@@ -39,7 +39,7 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 	const stripe = useStripe();
 	const storeOpen = useStoreOpen(businessConfig);
 
-	const [selectedTable, setSelectedTable] = useState<string | null>(null);
+	const [selectedTable, setSelectedTable] = useState<ABTable | null>(null);
 	const [customerName, setCustomerName] = useState<string>('');
 	const [generalNote, setGeneralNote] = useState<string>('');
 	const [paymentType, setPaymentType] = useState<PaymentTypes | ''>('');
@@ -48,8 +48,14 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 
 	// Pre-select table if the user scanned a specific qr
 	useEffect(() => {
-		setSelectedTable(cart.getSelectedTableId());
-	}, [cart]);
+		if (!cart) return;
+		if (!tables) return;
+	
+		const selectedTable = tables.find((obj) => obj.id === cart.getSelectedTableId());
+		if (selectedTable) {
+			setSelectedTable(selectedTable);
+		}
+	}, [cart, tables]);
 
 	// use a dummy payment intent to see if a payment can be made
 	useEffect(() => {
@@ -79,7 +85,7 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 		if (selectedTable) {
 			setWaitingForManualOrder(true);
 			try {
-				const data = await cart.createOrderWithManualPayment(businessId, selectedTable, customerName.trim(), generalNote);
+				const data = await cart.createOrderWithManualPayment(businessId, selectedTable.table_name, customerName.trim(), generalNote);
 				setWaitingForManualOrder(false);
 				// Clear cart, send the user to the index page and show a success message
 				cart.clearCart();
@@ -123,7 +129,7 @@ const Cart: NextPage<CartProps> = ({businessConfig, tables}) => {
 						<Grid item xs={12} sm={6}>
 							<CartDetails
 								storeOpen={storeOpen}
-								tableIds={tables}
+								tables={tables}
 								selectedTable={selectedTable}
 								customerName={customerName}
 								generalNote={generalNote}
@@ -193,7 +199,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
 
 	const businessConfig = await getBusinessConfig(businessId);
-	const tables = await getAllTableIds(businessId);
+	const tables = await getAllTables(businessId);
 
 	//fs.writeFileSync("./tables.json", JSON.stringify(tables, null, 4));
 
@@ -203,7 +209,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 	return {
         props: {
 			businessConfig: businessConfig,
-			tables: tables
+			tables: JSON.parse(JSON.stringify(tables))
 		}
     }
 }

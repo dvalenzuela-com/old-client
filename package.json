@@ -17,6 +17,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@Alabarra/alabarra-types": "^1.1.65",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.8.0",
@@ -44,7 +45,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
-    "@dvalenzuela-com/alabarra-types": "^1.0.38",
     "@faker-js/faker": "^7.6.0",
     "@next/bundle-analyzer": "^12.3.2",
     "@storybook/addon-actions": "^6.5.16",

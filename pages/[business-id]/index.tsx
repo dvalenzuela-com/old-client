@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { useCart } from '@Context/CartContext';
 import Layout from 'layout/Layout';
 import { getDocs } from 'firebase/firestore';
-import { ABBusinessConfig, ABCategory, ABProduct } from '@dvalenzuela-com/alabarra-types';
+import { ABBusinessConfig, ABCategory, ABProduct } from '@Alabarra/alabarra-types';
 import { NextSeo } from 'next-seo';
 //const fs = require('fs');
 

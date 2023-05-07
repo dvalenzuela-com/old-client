@@ -1,4 +1,4 @@
-import { ABProductTag } from "@dvalenzuela-com/alabarra-types";
+import { ABProductTag } from "@Alabarra/alabarra-types";
 import Image from "next/image";
 import GlutenFree from "./../../public/icons/gluten-free.png";
 import NoAddedSugar from "./../../public/icons/no-added-sugar.png";

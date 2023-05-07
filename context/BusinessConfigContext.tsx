@@ -1,4 +1,4 @@
-import { ABBusinessConfig, ABBusinessConfigCountry, ABBusinessConfigCurrency } from "@dvalenzuela-com/alabarra-types";
+import { ABBusinessConfig, ABBusinessConfigCountry, ABBusinessConfigCurrency } from "@Alabarra/alabarra-types";
 import { createContext, useContext } from "react";
 
 export const useBusinessConfig = () => useContext(BusinessConfigContext);

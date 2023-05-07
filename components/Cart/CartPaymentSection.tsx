@@ -7,10 +7,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PaymentButtonStripe from "./PaymentButtonStripe";
 import debounce from 'lodash.debounce';
+import { ABTable } from "@Alabarra/alabarra-types";
 
 type CartPaymentSectionProps = {
     paymentType: PaymentTypes | '';
-    selectedTable: string | null;
+    selectedTable: ABTable | null;
     customerName: string;
     storeOpen: boolean;
 
@@ -44,10 +45,7 @@ const CartPaymentSection = (props: CartPaymentSectionProps) => {
             // Create new order and payment intent
             setClientSecret('');
 
-            const selectedTable = props.selectedTable;
-            const customerName = props.customerName;
-            const generalNote = props.generalNote;
-            createPaymentIntent(businessId, selectedTable, customerName, generalNote);
+            createPaymentIntent(businessId, props.selectedTable.table_name, props.customerName, props.generalNote);
         }
     }, [props.paymentType, props.selectedTable, props.customerName, props.storeOpen, props.amount])
 

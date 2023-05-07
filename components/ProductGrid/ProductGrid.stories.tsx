@@ -1,4 +1,4 @@
-import { ABCategory, ABProduct, ABProductStatus } from "@dvalenzuela-com/alabarra-types";
+import { ABCategory, ABProduct, ABProductStatus } from "@Alabarra/alabarra-types";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
 import ProductGrid from "./ProductGrid";

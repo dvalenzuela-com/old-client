@@ -1,5 +1,5 @@
 import ProductDialogButton from "@Components/ProductDialog/ProductDialogButton";
-import { ABProduct, ABProductOptionSelections } from "@dvalenzuela-com/alabarra-types";
+import { ABProduct, ABProductOptionSelections } from "@Alabarra/alabarra-types";
 import { Button } from "@mui/material";
 import { ProductDialogMode } from "./ProductDialogMode";
 

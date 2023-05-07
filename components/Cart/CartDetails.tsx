@@ -1,3 +1,4 @@
+import { ABTable } from "@Alabarra/alabarra-types";
 import PaymentTypeSelection, { PaymentTypes } from "@Components/PaymentTypeSelection"
 import { useCart } from "@Context/CartContext";
 import { Alert, Autocomplete, TextField } from "@mui/material"
@@ -8,8 +9,8 @@ type CartDetailsProps = {
 
     storeOpen: boolean;
 
-    tableIds: string[];
-    selectedTable: string | null;
+    tables: ABTable[];
+    selectedTable: ABTable | null;
     customerName: string;
     generalNote: string;
 
@@ -17,7 +18,7 @@ type CartDetailsProps = {
 
     canPayWithStripe: boolean;
 
-    onTableSelection: (selectedTableId: string | null) => void;
+    onTableSelection: (selectedTable: ABTable | null) => void;
     onCustomerNameChange: (newCustomerName: string) => void;
     onGeneralNoteChange: (newGeneralNote: string) => void;
     onChangePaymentType: (newPaymentType: PaymentTypes) => void;
@@ -29,7 +30,7 @@ const CartDetails = (props: CartDetailsProps) => {
 
 	const cart = useCart();
 
-    const handleTableSelection = (event: any, newValue: string | null) => {
+    const handleTableSelection = (event: any, newValue: ABTable | null) => {
         props.onTableSelection(newValue);
     }
 
@@ -48,9 +49,10 @@ const CartDetails = (props: CartDetailsProps) => {
             <Autocomplete
                 disablePortal
                 id="select-table"
-                options={props.tableIds}
+                options={props.tables}
                 value={props.selectedTable}
                 onChange={handleTableSelection}
+                getOptionLabel={(option) => option.table_name}
                 renderInput={(params) => <TextField {...params} label={t('Cart.SelectTable.Placeholder')} variant="standard" />}
             />
             <h2>{t('Cart.Username.Title')}</h2>

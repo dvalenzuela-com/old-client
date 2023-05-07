@@ -1,4 +1,4 @@
-import { ABProduct, ABProductOptionSelections } from "@dvalenzuela-com/alabarra-types";
+import { ABProduct, ABProductOptionSelections } from "@Alabarra/alabarra-types";
 import { useCart } from "@Context/CartContext";
 import CurrencyText from "../CurrencyText/CurrencyText";
 import { useBusinessConfig } from "@Context/BusinessConfigContext";
