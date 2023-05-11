@@ -1,5 +1,5 @@
 import { BusinessConfigContext } from "./../context/BusinessConfigContext"
-import { ABBusinessConfig, ABBusinessConfigCountry, ABBusinessConfigCurrency } from "@dvalenzuela-com/alabarra-types";
+import { ABBusinessConfig, ABBusinessConfigCountry, ABBusinessConfigCurrency } from "@Alabarra/alabarra-types";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
