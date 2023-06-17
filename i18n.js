@@ -153,7 +153,7 @@ i18n
               ManualOrderPlaced:
                 'Tu orden ha sido enviada. Un mesero irá a tu mesa a cobrar el pedido en breve.',
               DigitalOrderPlaced:
-                'Tu orden ha sido pagada y enviada. Te la llevaremos lo antes posible!',
+                'Tu orden ha sido pagada y enviada. ¡Te la llevaremos lo antes posible!',
               OrderError: 'Error con la orden. Por favor intenta nuevamente.',
             },
             CartEmpty: {
