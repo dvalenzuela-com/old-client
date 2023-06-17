@@ -12,7 +12,7 @@ const dummy_products = fakeProducts(5, { category: dummy_cat_id });
 const defaultCategory: Partial<ABCategory> = {
   id: dummy_cat_id,
   title: 'Category title',
-  products: dummy_products.map((p) => p.path!),
+  products: dummy_products.map((p) => p.id!),
 };
 
 export default {

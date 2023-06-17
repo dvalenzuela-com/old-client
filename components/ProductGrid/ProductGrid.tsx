@@ -169,5 +169,5 @@ const ProductGrid = (props: ProductGridProps) => {
 export default ProductGrid;
 
 function productsInCategory(category: ABCategory, products: ABProduct[]): ABProduct[] {
-  return products.filter((prod) => category.products.includes(prod.path));
+  return products.filter((prod) => category.products.includes(prod.id));
 }
