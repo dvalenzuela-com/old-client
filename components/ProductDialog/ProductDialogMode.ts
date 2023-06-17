@@ -1,4 +1,4 @@
 export enum ProductDialogMode {
-    NewLine,
-    EditLine
+  NewLine,
+  EditLine,
 }

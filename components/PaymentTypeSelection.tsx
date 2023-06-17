@@ -1,39 +1,41 @@
-import { List, ListItem, RadioGroup } from "@mui/material";
-import PaymentTypeSelectionOption from "./PaymentTypeSelectionOption";
+import { List, ListItem, RadioGroup } from '@mui/material';
+import PaymentTypeSelectionOption from './PaymentTypeSelectionOption';
 
 export enum PaymentTypes {
-    PRESENTIAL = "PRESENTIAL",
-    DIGITAL = "DIGITAL"
-};
+  PRESENTIAL = 'PRESENTIAL',
+  DIGITAL = 'DIGITAL',
+}
 
 type PaymentTypeSelectionProps = {
-    selectedPaymentType: PaymentTypes;
-    canPayWithStripe: boolean;
-    disabled?: boolean;
-    onChange: (newPaymentType: PaymentTypes) => void;
-}
+  selectedPaymentType: PaymentTypes;
+  canPayWithStripe: boolean;
+  disabled?: boolean;
+  onChange: (newPaymentType: PaymentTypes) => void;
+};
 
 const PaymentTypeSelection = (props: PaymentTypeSelectionProps) => {
-    return (
-        <RadioGroup value={props.selectedPaymentType}>
-            <List>
-                <ListItem disablePadding={true}>
-                    <PaymentTypeSelectionOption
-                        paymentType={PaymentTypes.PRESENTIAL}
-                        onChange={props.onChange}
-                        disabled={props.disabled} />
-                </ListItem>
-                {props.canPayWithStripe &&
-                    <ListItem disablePadding={true}>
-                    <PaymentTypeSelectionOption
-                        paymentType={PaymentTypes.DIGITAL}
-                        onChange={props.onChange}
-                        disabled={props.disabled} />
-                    </ListItem>
-                }
-            </List>
-        </RadioGroup>
-    );
-}
+  return (
+    <RadioGroup value={props.selectedPaymentType}>
+      <List>
+        <ListItem disablePadding={true}>
+          <PaymentTypeSelectionOption
+            paymentType={PaymentTypes.PRESENTIAL}
+            onChange={props.onChange}
+            disabled={props.disabled}
+          />
+        </ListItem>
+        {props.canPayWithStripe && (
+          <ListItem disablePadding={true}>
+            <PaymentTypeSelectionOption
+              paymentType={PaymentTypes.DIGITAL}
+              onChange={props.onChange}
+              disabled={props.disabled}
+            />
+          </ListItem>
+        )}
+      </List>
+    </RadioGroup>
+  );
+};
 
 export default PaymentTypeSelection;

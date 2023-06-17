@@ -1,22 +1,21 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-	reactStrictMode: true,
+  reactStrictMode: true,
 
-	images: {
-		domains: ['cdn.prod.alabarra.com'],
-	}
-}
-
+  images: {
+    domains: ['cdn.prod.alabarra.com'],
+  },
+};
 
 if (process.env.ANALYZE === 'true') {
-	console.warn("----> EXCECUTING BUNDLE ANALYSER <----");
-	const withBundleAnalyzer = require('@next/bundle-analyzer')({
-		enabled: process.env.ANALYZE === 'true'
-	});
-	module.exports = withBundleAnalyzer(nextConfig)
+  console.warn('----> EXCECUTING BUNDLE ANALYSER <----');
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+  });
+  module.exports = withBundleAnalyzer(nextConfig);
 } else {
-	module.exports = nextConfig;
+  module.exports = nextConfig;
 }
 
 /*

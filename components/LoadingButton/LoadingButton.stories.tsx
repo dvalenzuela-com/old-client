@@ -1,12 +1,12 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-import React from "react";
-import LoadingButton from "./LoadingButton";
+import { ComponentMeta, ComponentStory } from '@storybook/react';
+import React from 'react';
+import LoadingButton from './LoadingButton';
 
 export default {
-    component: LoadingButton,
-    args: {
-        title: "Button title"
-    }
+  component: LoadingButton,
+  args: {
+    title: 'Button title',
+  },
 } as ComponentMeta<typeof LoadingButton>;
 
 const Template: ComponentStory<typeof LoadingButton> = (args) => <LoadingButton {...args} />;
@@ -16,15 +16,15 @@ export const Primary = Template.bind({});
 
 export const FullWidth = Template.bind({});
 FullWidth.args = {
-    fullWidth: true
-}
+  fullWidth: true,
+};
 
 export const Loading = Template.bind({});
 Loading.args = {
-    loading: true
-}
+  loading: true,
+};
 
 export const Disabled = Template.bind({});
 Disabled.args = {
-    disabled: true
-}
+  disabled: true,
+};

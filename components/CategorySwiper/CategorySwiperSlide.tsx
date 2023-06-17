@@ -1,31 +1,34 @@
-import { Typography } from "@mui/material";
-import { CSSProperties } from "react";
+import { Typography } from '@mui/material';
+import { CSSProperties } from 'react';
 
 type CategorySwiperSlideProps = {
-    title: string;
-    active: boolean;
-    onClick: () => void;
-}
+  title: string;
+  active: boolean;
+  onClick: () => void;
+};
 
 const style: CSSProperties = {
-    padding: 10
-}
+  padding: 10,
+};
 
 const activeStyle: CSSProperties = {
-    ...style,
-    fontWeight: 'bold',
-    textDecoration: 'underline',
-}
+  ...style,
+  fontWeight: 'bold',
+  textDecoration: 'underline',
+};
 
 const inactiveStyle = {
-    ...style,
-}
+  ...style,
+};
 
 const CategorySwiperSlide = (props: CategorySwiperSlideProps) => {
-    const { title, active, onClick } = props;
+  const { title, active, onClick } = props;
 
-    return <Typography style={active ? activeStyle : inactiveStyle}  onClick={onClick}>{title}</Typography>
-
-}
+  return (
+    <Typography style={active ? activeStyle : inactiveStyle} onClick={onClick}>
+      {title}
+    </Typography>
+  );
+};
 
 export default CategorySwiperSlide;
