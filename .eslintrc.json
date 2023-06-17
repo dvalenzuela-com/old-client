@@ -1,3 +1,33 @@
 {
-  "extends": "next/core-web-vitals"
+  "plugins": ["@typescript-eslint"],
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-explicit-any": "error",
+    "array-callback-return": "error",
+    "no-async-promise-executor": "error",
+    "no-await-in-loop": "warn",
+    "no-compare-neg-zero": "warn",
+    "no-fallthrough": "error",
+    "arrow-body-style": "error",
+    "arrow-spacing": "error",
+    "consistent-return": "error",
+    "max-depth": "error",
+    "no-loop-func": "error",
+    "no-new-object": "error",
+    "no-new-wrappers": "error",
+    "no-return-assign": "error",
+    "no-return-await": "error",
+    "no-useless-escape": "error",
+    "no-useless-return": "error",
+    "no-void": "error",
+    "no-var": "error",
+    "no-undef-init": "warn",
+    "require-await": "warn",
+    "prefer-const": "error",
+    "prefer-regex-literals": "error",
+    "prefer-spread": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  }
 }
