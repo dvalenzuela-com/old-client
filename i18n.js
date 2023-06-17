@@ -182,7 +182,7 @@ i18n
               },
               Digital: {
                 Title: 'Pago digital: ',
-                Subtitle: 'Paga desde la comodidad de tu celular y recibe tu orden antes!',
+                Subtitle: '¡Paga desde la comodidad de tu celular y recibe tu orden antes!',
               },
             },
             Order: {
