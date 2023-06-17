@@ -30,7 +30,6 @@ const Index: NextPage<IndexProps> = ({ categories, products, businessConfig }) =
   const router = useRouter();
   const selectedTable = router.query['t'] as string;
 
-  console.log('categories, products, businessConfig', categories, products, businessConfig);
   const cart = useCart();
 
   useEffect(() => {
