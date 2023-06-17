@@ -1,6 +1,5 @@
 import { ABTable } from '@Alabarra/alabarra-types';
 import PaymentTypeSelection, { PaymentTypes } from '@Components/PaymentTypeSelection';
-import { useCart } from '@Context/CartContext';
 import { Alert, Autocomplete, TextField } from '@mui/material';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -26,9 +25,7 @@ type CartDetailsProps = {
 const CartDetails = (props: CartDetailsProps) => {
   const { t } = useTranslation();
 
-  const cart = useCart();
-
-  const handleTableSelection = (event: any, newValue: ABTable | null) => {
+  const handleTableSelection = (_: unknown, newValue: ABTable | null) => {
     props.onTableSelection(newValue);
   };
 

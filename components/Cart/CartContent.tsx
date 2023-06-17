@@ -16,16 +16,13 @@ import {
   ABProductOptionSelections,
   ABProductOptionSingleSelectedValue,
   ABProductOptionsType,
-  ABTipOption,
 } from '@Alabarra/alabarra-types';
 import { useTranslation } from 'react-i18next';
 import CurrencyText from '../CurrencyText/CurrencyText';
 import { useBusinessConfig } from '@Context/BusinessConfigContext';
 import { ProductDialogMode } from '../ProductDialog/ProductDialogMode';
 
-type CartContentProps = {};
-
-const CartContent = (props: CartContentProps) => {
+const CartContent = () => {
   const cart = useCart();
 
   const businessConfig = useBusinessConfig();
@@ -59,88 +56,85 @@ const CartContent = (props: CartContentProps) => {
           </TableHead>
 
           <TableBody>
-            {cart.lines.map((line) => {
-              return (
-                <TableRow key={`${line.lineId}`}>
-                  <TableCell
-                    onClick={() => {
-                      handleRowClick(line);
-                    }}
-                  >
-                    <Typography variant='body2' display='inline'>
-                      {line.quantity} x{' '}
+            {cart.lines.map((line) => (
+              <TableRow key={`${line.lineId}`}>
+                <TableCell
+                  onClick={() => {
+                    handleRowClick(line);
+                  }}
+                >
+                  <Typography variant='body2' display='inline'>
+                    {line.quantity} x{' '}
+                  </Typography>
+                </TableCell>
+                <TableCell
+                  onClick={() => {
+                    handleRowClick(line);
+                  }}
+                >
+                  <>
+                    <Typography variant='body1' display='inline'>
+                      {line.product.title}
                     </Typography>
-                  </TableCell>
-                  <TableCell
-                    onClick={() => {
-                      handleRowClick(line);
-                    }}
-                  >
-                    <>
-                      <Typography variant='body1' display='inline'>
-                        {line.product.title}
-                      </Typography>
 
-                      {/** Print line options */}
-                      {line.options.map((selectedOption, index) => {
-                        // Original product option
-                        const productOption = line.product.options.find(
-                          (obj) => obj.id === selectedOption.option_id
-                        );
-                        if (productOption) {
-                          if (productOption.type == ABProductOptionsType.SINGLE_SELECTION) {
-                            const singleOption =
-                              selectedOption as ABProductOptionSingleSelectedValue;
+                    {/** Print line options */}
+                    {line.options.map((selectedOption, _) => {
+                      // Original product option
+                      const productOption = line.product.options.find(
+                        (obj) => obj.id === selectedOption.option_id
+                      );
+                      if (productOption) {
+                        if (productOption.type == ABProductOptionsType.SINGLE_SELECTION) {
+                          const singleOption = selectedOption as ABProductOptionSingleSelectedValue;
+                          const selectedValue = productOption.possible_values.find(
+                            (obj) => obj.id === singleOption.selected_value
+                          );
+                          return (
+                            <Typography variant='subtitle2' key={selectedValue?.id}>
+                              {selectedValue?.title}
+                            </Typography>
+                          );
+                        } else if (productOption.type == ABProductOptionsType.MULTIPLE_SELECTION) {
+                          //Get selected option
+                          const selectedValues =
+                            selectedOption as ABProductOptionMultipleSelectedValues;
+                          return selectedValues.selected_values.map((value) => {
                             const selectedValue = productOption.possible_values.find(
-                              (obj) => obj.id === singleOption.selected_value
+                              (obj) => obj.id === value
                             );
                             return (
                               <Typography variant='subtitle2' key={selectedValue?.id}>
                                 {selectedValue?.title}
                               </Typography>
                             );
-                          } else if (
-                            productOption.type == ABProductOptionsType.MULTIPLE_SELECTION
-                          ) {
-                            //Get selected option
-                            const selectedValues =
-                              selectedOption as ABProductOptionMultipleSelectedValues;
-                            return selectedValues.selected_values.map((value) => {
-                              const selectedValue = productOption.possible_values.find(
-                                (obj) => obj.id === value
-                              );
-                              return (
-                                <Typography variant='subtitle2' key={selectedValue?.id}>
-                                  {selectedValue?.title}
-                                </Typography>
-                              );
-                            });
-                          }
+                          });
                         }
-                      })}
-                      {/** Print comments */}
-                      {line.note != null && (
-                        <Typography variant='subtitle2' style={{ fontStyle: 'italic' }}>
-                          {t('CartContent.TableRow.Comment')} &quot;{line.note}&quot;
-                        </Typography>
-                      )}
+                      }
 
-                      <Typography variant='subtitle2'>{t('CartContent.TableRow.Edit')}</Typography>
-                    </>
-                  </TableCell>
-                  <TableCell
-                    onClick={() => {
-                      handleRowClick(line);
-                    }}
-                  >
-                    <CurrencyText
-                      value={cart.calculateProductPrice(line.product, line.options, line.quantity)}
-                      businessConfig={businessConfig}
-                    />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                      return <></>;
+                    })}
+                    {/** Print comments */}
+                    {line.note != null && (
+                      <Typography variant='subtitle2' style={{ fontStyle: 'italic' }}>
+                        {t('CartContent.TableRow.Comment')} &quot;{line.note}&quot;
+                      </Typography>
+                    )}
+
+                    <Typography variant='subtitle2'>{t('CartContent.TableRow.Edit')}</Typography>
+                  </>
+                </TableCell>
+                <TableCell
+                  onClick={() => {
+                    handleRowClick(line);
+                  }}
+                >
+                  <CurrencyText
+                    value={cart.calculateProductPrice(line.product, line.options, line.quantity)}
+                    businessConfig={businessConfig}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
             <TableRow>
               <TableCell></TableCell>
               <TableCell>Discretionary tip: {cart.tipPercentage}%</TableCell>

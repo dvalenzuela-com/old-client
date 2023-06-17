@@ -33,7 +33,7 @@ const tablesCollection = (businessId: string) =>
 const businessesCollection = collection(firestore, `businesses`).withConverter(
   BusinessConfigConverter
 );
-const usersCollection = collection(firestore, `users`);
+//const usersCollection = collection(firestore, `users`);
 
 export const allProductsQuery = (businessId: string) =>
   query<ABProduct>(productsCollection(businessId), orderBy('created_at', 'asc'));
@@ -42,17 +42,15 @@ export const allCategoriesQuery = (businessId: string) =>
 export const allTablesQuery = (businessId: string) =>
   query<ABTable>(tablesCollection(businessId), orderBy('created_at', 'desc'));
 
-export const useCategories = (businessId: string) => {
-  return useCollectionData<ABCategory>(allCategoriesQuery(businessId), {
+export const useCategories = (businessId: string) =>
+  useCollectionData<ABCategory>(allCategoriesQuery(businessId), {
     snapshotListenOptions: { includeMetadataChanges: true },
   });
-};
 
-export const useProducts = (businessId: string) => {
-  return useCollectionData<ABProduct>(allProductsQuery(businessId), {
+export const useProducts = (businessId: string) =>
+  useCollectionData<ABProduct>(allProductsQuery(businessId), {
     snapshotListenOptions: { includeMetadataChanges: true },
   });
-};
 
 /**
  * Tables
@@ -78,7 +76,7 @@ export const getBusinessConfig = async (businessId: string) => {
   return results.data();
 };
 
-export const createUserInDbIfNotFound = async (uid: string) => {
+export const createUserInDbIfNotFound = (uid: string) => {
   // TODO: See if it's possible to use the usersCollection
   const docRef = doc(firestore, `users/${uid}`);
   return setDoc(

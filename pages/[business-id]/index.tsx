@@ -65,11 +65,9 @@ export default Index;
 export const getStaticPaths: GetStaticPaths = async () => {
   const businessesIds = await getAllBusinessIds();
 
-  const paths = businessesIds.map((businessId) => {
-    return {
-      params: { 'business-id': businessId },
-    };
-  });
+  const paths = businessesIds.map((businessId) => ({
+    params: { 'business-id': businessId },
+  }));
 
   return {
     paths,
@@ -79,7 +77,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 // statically generate pages
 export const getStaticProps: GetStaticProps = async (context) => {
-  const businessId = (context.params as any)['business-id'] as string;
+  const businessId = (context.params as { 'business-id': string })['business-id'] as string;
   const businessesIds = await getAllBusinessIds();
 
   if (businessId && !businessesIds.includes(businessId)) {

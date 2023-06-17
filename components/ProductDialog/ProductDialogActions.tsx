@@ -15,23 +15,21 @@ type ProductDialogActionsProps = {
   onMainButtonPress: () => void;
 };
 
-const ProductDialogActions = (props: ProductDialogActionsProps) => {
-  return (
-    <>
-      <Button onClick={props.onQuantityDecrease}>-</Button>
-      {props.quantity}
-      <Button onClick={props.onQuantityIncrease}>+</Button>
+const ProductDialogActions = (props: ProductDialogActionsProps) => (
+  <>
+    <Button onClick={props.onQuantityDecrease}>-</Button>
+    {props.quantity}
+    <Button onClick={props.onQuantityIncrease}>+</Button>
 
-      <Button onClick={props.onMainButtonPress} disabled={props.mainButtonDisabled}>
-        <ProductDialogButton
-          mode={props.mode}
-          product={props.product}
-          selectedOptions={props.selectedOptions}
-          selectedQuantity={props.quantity}
-        />
-      </Button>
-    </>
-  );
-};
+    <Button onClick={props.onMainButtonPress} disabled={props.mainButtonDisabled}>
+      <ProductDialogButton
+        mode={props.mode}
+        product={props.product}
+        selectedOptions={props.selectedOptions}
+        selectedQuantity={props.quantity}
+      />
+    </Button>
+  </>
+);
 
 export default ProductDialogActions;

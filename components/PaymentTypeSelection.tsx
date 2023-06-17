@@ -13,29 +13,27 @@ type PaymentTypeSelectionProps = {
   onChange: (newPaymentType: PaymentTypes) => void;
 };
 
-const PaymentTypeSelection = (props: PaymentTypeSelectionProps) => {
-  return (
-    <RadioGroup value={props.selectedPaymentType}>
-      <List>
+const PaymentTypeSelection = (props: PaymentTypeSelectionProps) => (
+  <RadioGroup value={props.selectedPaymentType}>
+    <List>
+      <ListItem disablePadding={true}>
+        <PaymentTypeSelectionOption
+          paymentType={PaymentTypes.PRESENTIAL}
+          onChange={props.onChange}
+          disabled={props.disabled}
+        />
+      </ListItem>
+      {props.canPayWithStripe && (
         <ListItem disablePadding={true}>
           <PaymentTypeSelectionOption
-            paymentType={PaymentTypes.PRESENTIAL}
+            paymentType={PaymentTypes.DIGITAL}
             onChange={props.onChange}
             disabled={props.disabled}
           />
         </ListItem>
-        {props.canPayWithStripe && (
-          <ListItem disablePadding={true}>
-            <PaymentTypeSelectionOption
-              paymentType={PaymentTypes.DIGITAL}
-              onChange={props.onChange}
-              disabled={props.disabled}
-            />
-          </ListItem>
-        )}
-      </List>
-    </RadioGroup>
-  );
-};
+      )}
+    </List>
+  </RadioGroup>
+);
 
 export default PaymentTypeSelection;

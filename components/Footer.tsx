@@ -11,7 +11,7 @@ const Footer = () => {
   const [legalsOpen, setLegalsOpen] = useState(false);
 
   const style = {
-    position: 'absolute' as 'absolute',
+    position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',

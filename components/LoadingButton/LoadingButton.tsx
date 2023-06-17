@@ -27,7 +27,7 @@ const LoadingButton = (props: LoadingButtonProps) => {
     setButtonColor(props.buttonColor ?? 'primary');
 
     // Use the given value for the spinner. If not available, use the one for the button. If not available, default to primary.
-    let valueForSpinner = props.spinnerColor ?? props.buttonColor ?? 'primary';
+    const valueForSpinner = props.spinnerColor ?? props.buttonColor ?? 'primary';
     switch (valueForSpinner) {
       case 'error':
         setSpinnerColor(red[500]);

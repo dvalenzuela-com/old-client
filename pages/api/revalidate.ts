@@ -20,13 +20,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await res.revalidate(`/${req.query.business_id}/cart`);
 
     return res.json({ revalidated: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     // If there was an error, Next.js will continue
     // to show the last successfully generated page
 
     // TODO: Email Devs to see whats going on.
     return res
       .status(500)
-      .send(`Error during revalidation if ${req.query.business_id}: ${error.message}`);
+      .send(`Error during revalidation if ${req.query.business_id}: ${(error as Error).message}`);
   }
 }

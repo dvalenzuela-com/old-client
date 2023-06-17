@@ -10,7 +10,6 @@ import {
   ABProductOptionSelections,
 } from '@Alabarra/alabarra-types';
 import { TextField, Typography } from '@mui/material';
-import { Box } from '@mui/system';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 
@@ -72,6 +71,8 @@ const ProductDialogContent = (props: ProductDialogContentProps) => {
               onOptionChange={props.onOptionChange}
             />
           );
+        } else {
+          return <></>;
         }
       })}
 

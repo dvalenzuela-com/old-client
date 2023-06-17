@@ -48,16 +48,12 @@ const ProductOptionMultipleSelection = (props: ProductOptionMultipleSelectionPro
       setDisabledOptions(newDisabledOptions);
     } else {
       // Enable all
-      setDisabledOptions(
-        props.productOption.possible_values.map(() => {
-          return false;
-        })
-      );
+      setDisabledOptions(props.productOption.possible_values.map(() => false));
     }
   };
 
   const handleChange = (checked: boolean, id: string) => {
-    let newCheckedOptions = [...checkedOptions];
+    const newCheckedOptions = [...checkedOptions];
 
     if (checked && !newCheckedOptions.includes(id)) {
       newCheckedOptions.push(id);
@@ -91,20 +87,18 @@ const ProductOptionMultipleSelection = (props: ProductOptionMultipleSelectionPro
         </Typography>
       )}
       <Stack>
-        {props.productOption.possible_values.map((possible_value, index) => {
-          return (
-            <ProductOptionMultipleSelectionLine
-              key={possible_value.id}
-              id={possible_value.id}
-              title={possible_value.title}
-              price={possible_value.price_adjustment}
-              businessConfig={businessConfig}
-              disabled={disabledOptions[index]}
-              checked={checkedOptions.includes(possible_value.id)}
-              onChange={handleChange}
-            />
-          );
-        })}
+        {props.productOption.possible_values.map((possible_value, index) => (
+          <ProductOptionMultipleSelectionLine
+            key={possible_value.id}
+            id={possible_value.id}
+            title={possible_value.title}
+            price={possible_value.price_adjustment}
+            businessConfig={businessConfig}
+            disabled={disabledOptions[index]}
+            checked={checkedOptions.includes(possible_value.id)}
+            onChange={handleChange}
+          />
+        ))}
       </Stack>
     </>
   );

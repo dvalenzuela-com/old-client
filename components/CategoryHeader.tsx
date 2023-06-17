@@ -6,13 +6,11 @@ type CategoryHeaderProps = {
   category: ABCategory;
 };
 
-const CategoryHeader = React.forwardRef<HTMLDivElement, CategoryHeaderProps>((props, ref) => {
-  return (
-    <Grid item xs={12} textAlign='center' ref={ref}>
-      <Typography variant='h5'>{props.category.title}</Typography>
-    </Grid>
-  );
-});
+const CategoryHeader = React.forwardRef<HTMLDivElement, CategoryHeaderProps>((props, ref) => (
+  <Grid item xs={12} textAlign='center' ref={ref}>
+    <Typography variant='h5'>{props.category.title}</Typography>
+  </Grid>
+));
 
 CategoryHeader.displayName = 'CategoryHeader';
 

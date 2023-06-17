@@ -82,12 +82,13 @@ const Cart: NextPage<CartProps> = ({ businessConfig, tables }) => {
     if (selectedTable) {
       setWaitingForManualOrder(true);
       try {
-        const data = await cart.createOrderWithManualPayment(
+        await cart.createOrderWithManualPayment(
           businessId,
           selectedTable.table_name,
           customerName.trim(),
           generalNote
         );
+
         setWaitingForManualOrder(false);
         // Clear cart, send the user to the index page and show a success message
         cart.clearCart();
@@ -179,11 +180,9 @@ export default Cart;
 export const getStaticPaths: GetStaticPaths = async () => {
   const businessesIds = await getAllBusinessIds();
 
-  const paths = businessesIds.map((businessId) => {
-    return {
-      params: { 'business-id': businessId },
-    };
-  });
+  const paths = businessesIds.map((businessId) => ({
+    params: { 'business-id': businessId },
+  }));
 
   return {
     paths,
@@ -192,8 +191,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 // statically generate pages
+
 export const getStaticProps: GetStaticProps = async (context) => {
-  const businessId = (context.params as any)['business-id'] as string;
+  const businessId = (context.params as { 'business-id': string })['business-id'] as string;
   const businessesIds = await getAllBusinessIds();
 
   if (businessId && !businessesIds.includes(businessId)) {

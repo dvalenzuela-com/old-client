@@ -3,7 +3,7 @@ import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import CategorySwiperSlide from './CategorySwiperSlide';
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
 export type HeaderData = {
   id: string;
@@ -30,7 +30,7 @@ const CategorySwiper = forwardRef<CategorySwiperRef, CategorySwiperProps>((props
   useImperativeHandle(ref, () => ({
     swipeTo: (categoryId: string) => {
       const index = categories.findIndex((cat) => cat.id === categoryId) ?? 0;
-      const catTitle = categories[index].title;
+      //const catTitle = categories[index].title;
       //console.log(`CategorySwiper: swipeTo(${catTitle})`);
 
       //console.log("CategorySwiper: swipeTo: ignoreOnSlide: TRUE");
@@ -72,10 +72,10 @@ const CategorySwiper = forwardRef<CategorySwiperRef, CategorySwiperProps>((props
         onSlideChange={(swiper) => {
           handleSlideChange(swiper.activeIndex);
         }}
-        onTouchStart={(swiper, event) => {
+        onTouchStart={() => {
           setTouching(true);
         }}
-        onTouchEnd={(swiper, event) => {
+        onTouchEnd={() => {
           setTouching(false);
         }}
         ref={swiperRef}
@@ -89,17 +89,15 @@ const CategorySwiper = forwardRef<CategorySwiperRef, CategorySwiperProps>((props
       >
         {categories.map((category, index) => (
           <SwiperSlide key={category.id} style={{ width: 'auto' }}>
-            {({ isActive, isVisible }) => {
-              return (
-                <CategorySwiperSlide
-                  title={category.title}
-                  active={isActive}
-                  onClick={() => {
-                    handleOnSlideClick(index);
-                  }}
-                />
-              );
-            }}
+            {({ isActive }) => (
+              <CategorySwiperSlide
+                title={category.title}
+                active={isActive}
+                onClick={() => {
+                  handleOnSlideClick(index);
+                }}
+              />
+            )}
           </SwiperSlide>
         ))}
       </Swiper>

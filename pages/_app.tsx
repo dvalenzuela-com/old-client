@@ -19,7 +19,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 
 function MyApp({ Component, pageProps }: AppProps) {
   // Initialize user
-  const user = useUser();
+  useUser();
 
   const router = useRouter();
   const businessId = router.query['business-id'] as string;

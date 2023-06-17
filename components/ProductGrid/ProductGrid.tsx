@@ -35,10 +35,8 @@ const ProductGrid = (props: ProductGridProps) => {
   //const [ignoreCallback, setIgnoreCallback] = useState(false);
 
   useEffect(() => {
-    const findCatHeaderByElement = (element: Element) => {
-      return Object.entries(categoryHeaderRefs).find(([id, ref]) => element == ref.current);
-    };
-
+    const findCatHeaderByElement = (element: Element) =>
+      Object.entries(categoryHeaderRefs).find(([_, ref]) => element == ref.current);
     const observer = new IntersectionObserver(
       (entries) => {
         const allFullyVisible = entries.filter((entry) => entry.isIntersecting);
@@ -50,7 +48,7 @@ const ProductGrid = (props: ProductGridProps) => {
         if (catHeader) {
           const foundCat = categories.find((cat) => cat.id === catHeader[0]);
           if (foundCat) {
-            const index = categories.indexOf(foundCat);
+            //const index = categories.indexOf(foundCat);
             //console.log("ProductGrid: IntersectionObserver: foundCat:", foundCat.title);
             // if (ignoreCallback) {
             //     console.log("ProductGrid: IntersectionObserver: IGNORING CALLBACK");
@@ -68,7 +66,7 @@ const ProductGrid = (props: ProductGridProps) => {
     );
 
     if (categoryHeaderRefs) {
-      Object.entries(categoryHeaderRefs).forEach(([id, ref]) => {
+      Object.entries(categoryHeaderRefs).forEach(([_, ref]) => {
         if (ref.current) {
           observer.observe(ref.current);
         }
@@ -96,12 +94,16 @@ const ProductGrid = (props: ProductGridProps) => {
     }
 
     // FIXME: This is very dirty. We scroll the view into place (to the top of the view port) and then move it down the appropiate height
-    categoryHeaderRefs[categoryId].current!.scrollIntoView({
-      behavior: 'auto',
-    });
-    window.scrollBy({
-      top: -104,
-    });
+
+    const current: HTMLDivElement | null = categoryHeaderRefs[categoryId].current;
+    if (current !== null) {
+      current.scrollIntoView({
+        behavior: 'auto',
+      });
+      window.scrollBy({
+        top: -104,
+      });
+    }
 
     // setTimeout(() => {
     //     setIgnoreCallback(false);

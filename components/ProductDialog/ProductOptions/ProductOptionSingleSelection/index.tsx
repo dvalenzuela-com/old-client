@@ -15,7 +15,7 @@ type ProductOptionSingleSelectionProps = {
 };
 
 const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) => {
-  const { index, productOption, selectedOption, onOptionChange } = props;
+  const { productOption, selectedOption, onOptionChange } = props;
   const businessConfig = useBusinessConfig();
   const [selectedValue, setSelectedValue] = useState<string>(
     selectedOption != undefined ? selectedOption.selected_value : props.productOption.default_value
@@ -30,10 +30,12 @@ const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) 
   const handleChange = (selectedId: string) => {
     setSelectedValue(selectedId);
 
-    const selectedPossibleValue = productOption.possible_values.find((possibleValue) => {
-      return possibleValue.id === selectedId;
-    })!;
-    onOptionChange({ option_id: productOption.id, selected_value: selectedPossibleValue.id });
+    const selectedPossibleValue = productOption.possible_values.find(
+      (possibleValue) => possibleValue.id === selectedId
+    );
+    if (selectedPossibleValue) {
+      onOptionChange({ option_id: productOption.id, selected_value: selectedPossibleValue.id });
+    }
   };
 
   return (

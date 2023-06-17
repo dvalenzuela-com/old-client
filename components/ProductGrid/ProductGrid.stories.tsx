@@ -1,4 +1,5 @@
-import { ABCategory, ABProduct, ABProductStatus } from '@Alabarra/alabarra-types';
+/* eslint-disable @typescript-eslint/no-non-null-assertion  */
+import { ABCategory } from '@Alabarra/alabarra-types';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import React from 'react';
 import ProductGrid from './ProductGrid';

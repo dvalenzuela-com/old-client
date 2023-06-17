@@ -57,7 +57,7 @@ const ProductDialog = (props: ProductDialogProps) => {
   ) => {
     let addToCartButtonStartsDisabled = false;
 
-    productOptions.forEach((option, index) => {
+    productOptions.forEach((option, _) => {
       if (option.type == ABProductOptionsType.SINGLE_SELECTION) {
         // Single options always contain a default value, therefore do not need a mandatory check
       } else if (option.type == ABProductOptionsType.MULTIPLE_SELECTION) {
