@@ -37,14 +37,17 @@ const Layout = ({ children, businessConfig }: LayoutProps) => {
             <Navbar title={businessConfig.business_name} />
             {!storeOpen && (
               <Box
-                sx={{
+                sx={style}
+                
+                // aparte en algún dir de estilos
+                const style = {
                   backgroundColor: 'black',
                   color: 'white',
                   textAlign: 'center',
                   top: { xs: '56px', md: '64px' }, //TODO: Correct case for landscape
                   position: 'sticky',
                   zIndex: 1,
-                }}
+                };
               >
                 <Typography sx={{ pt: 1, pb: 1 }}>Store is Closed. Cart is disabled.</Typography>
               </Box>
