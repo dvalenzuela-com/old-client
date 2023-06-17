@@ -127,7 +127,7 @@ i18n
             },
           },
           ProductCard: {
-            CommentPlaceholder: 'Algún comentario para esta orden?',
+            CommentPlaceholder: '¿Algún comentario para esta orden?',
             AddToCart: 'Agregar',
           },
           ProductDialog: {
