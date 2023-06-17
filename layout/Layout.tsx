@@ -29,6 +29,16 @@ const Layout = ({ children, businessConfig }: LayoutProps) => {
     palette: businessConfig.palette,
   });
 
+  // TODO: move to a dir de estilos
+  const style = {
+    backgroundColor: 'black',
+    color: 'white',
+    textAlign: 'center',
+    top: { xs: '56px', md: '64px' }, //TODO: Correct case for landscape
+    position: 'sticky',
+    zIndex: 1,
+  };
+
   return (
     <BusinessConfigContext.Provider value={businessConfig}>
       <CartProvider businessId={businessConfig.id}>
@@ -36,19 +46,7 @@ const Layout = ({ children, businessConfig }: LayoutProps) => {
           <Box>
             <Navbar title={businessConfig.business_name} />
             {!storeOpen && (
-              <Box
-                sx={style}
-                
-                // aparte en algún dir de estilos
-                const style = {
-                  backgroundColor: 'black',
-                  color: 'white',
-                  textAlign: 'center',
-                  top: { xs: '56px', md: '64px' }, //TODO: Correct case for landscape
-                  position: 'sticky',
-                  zIndex: 1,
-                };
-              >
+              <Box sx={style}>
                 <Typography sx={{ pt: 1, pb: 1 }}>Store is Closed. Cart is disabled.</Typography>
               </Box>
             )}
