@@ -2,6 +2,7 @@ import {
   ABCategory,
   ABProduct,
   ABTable,
+  ABUserData,
   BusinessConfigConverter,
   CategoryConverter,
   ProductConverter,
@@ -33,7 +34,7 @@ const tablesCollection = (businessId: string) =>
 const businessesCollection = collection(firestore, `businesses`).withConverter(
   BusinessConfigConverter
 );
-//const usersCollection = collection(firestore, `users`);
+//const usersCollection = collection(firestore, `users`).withConverter(UserConverter);
 
 export const allProductsQuery = (businessId: string) =>
   query<ABProduct>(productsCollection(businessId), orderBy('created_at', 'asc'));
@@ -52,8 +53,8 @@ export const useProducts = (businessId: string) =>
     snapshotListenOptions: { includeMetadataChanges: true },
   });
 
-/**
- * Tables
+/*
+ * TABLES
  */
 
 export const getAllTables = async (businessId: string) => {
@@ -61,6 +62,9 @@ export const getAllTables = async (businessId: string) => {
   return results.docs.map((doc) => doc.data());
 };
 
+/*
+ * BUSINESSES
+ */
 export const getAllBusinessIds = async () => {
   const results = await getDocs(businessesCollection);
   return results.docs.map((doc) => doc.id);
@@ -76,14 +80,18 @@ export const getBusinessConfig = async (businessId: string) => {
   return results.data();
 };
 
+/*
+ * USERS
+ */
 export const createUserInDbIfNotFound = (uid: string) => {
-  // TODO: See if it's possible to use the usersCollection
   const docRef = doc(firestore, `users/${uid}`);
-  return setDoc(
-    docRef,
-    {
-      orders: [],
-    },
-    { merge: true }
-  );
+
+  const newUserData: ABUserData = {
+    orders: [],
+    first_name: null,
+    last_name: null,
+    email: null,
+  };
+
+  return setDoc(docRef, newUserData, { merge: true });
 };
