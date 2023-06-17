@@ -168,7 +168,7 @@ i18n
             },
             Username: {
               Title: 'Tu nombre',
-              Placeholder: 'Como te identificamos en la mesa?',
+              Placeholder: '¿Como te identificamos en la mesa?',
             },
             GeneralNote: {
               Title: 'Nota general',
