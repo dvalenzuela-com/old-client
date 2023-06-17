@@ -187,7 +187,7 @@ i18n
             },
             Order: {
               Title: 'Orden',
-              PresentialPaymentButton: 'Pedir ahora!',
+              PresentialPaymentButton: '¡Pedir ahora!',
             },
           },
         },
