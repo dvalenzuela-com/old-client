@@ -172,7 +172,7 @@ i18n
             },
             GeneralNote: {
               Title: 'Nota general',
-              Placeholder: 'Algún comentario para esta orden?',
+              Placeholder: '¿Algún comentario para esta orden?',
             },
             PaymentMethod: {
               Title: 'Selecciona tu modo de pago',
