@@ -31,7 +31,6 @@ export const fakeProduct = (params: Partial<ABProduct> = {}): Partial<ABProduct>
   const fakeId = faker.datatype.uuid();
   const product: Partial<ABProduct> = {
     id: fakeId,
-    path: fakeId,
     //created_at: undefined,
     //last_updated_at: null,
     status: ABProductStatus.ACTIVE,
