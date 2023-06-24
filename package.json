@@ -16,7 +16,8 @@
     "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "pruneBranches": "git branch | grep -v 'develop' | grep -v 'main' | xargs git branch -D"
   },
   "dependencies": {
     "@Alabarra/alabarra-types": "^1.1.65",
