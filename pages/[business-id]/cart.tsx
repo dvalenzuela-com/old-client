@@ -50,7 +50,9 @@ const Cart: NextPage<CartProps> = ({ businessConfig, tables }) => {
     if (!cart) return;
     if (!tables) return;
 
-    const selectedTable = tables.find((obj) => obj.id === cart.getSelectedTableId());
+    const selectedTable = tables
+      .filter((table) => table.active)
+      .find((table) => table.id === cart.getSelectedTableId());
     if (selectedTable) {
       setSelectedTable(selectedTable);
     }
@@ -60,7 +62,7 @@ const Cart: NextPage<CartProps> = ({ businessConfig, tables }) => {
   useEffect(() => {
     if (stripe) {
       const pr = stripe.paymentRequest({
-        country: businessConfig.country,
+        country: 'DE', //businessConfig.country, // FIXME
         currency: businessConfig.currency.toLowerCase(),
         total: {
           label: t('StripeButton.Order.Label'),
