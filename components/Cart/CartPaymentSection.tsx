@@ -46,27 +46,17 @@ const CartPaymentSection = (props: CartPaymentSectionProps) => {
       // Create new order and payment intent
       setClientSecret('');
 
-      createPaymentIntent(
-        businessId,
-        props.selectedTable.table_name,
-        props.customerName,
-        props.generalNote
-      );
+      createPaymentIntent(businessId, props.selectedTable, props.customerName, props.generalNote);
     }
   }, [props.paymentType, props.selectedTable, props.customerName, props.storeOpen, props.amount]);
 
   const createPaymentIntent = useCallback(
     debounce(
-      async (
-        businessId: string,
-        selectedTable: string,
-        customerName: string,
-        generalNote: string
-      ) => {
+      async (businessId: string, table: ABTable, customerName: string, generalNote: string) => {
         try {
           const clientSecret = await cart.createOrderWithStripePayment(
             businessId,
-            selectedTable,
+            table,
             customerName,
             generalNote
           );

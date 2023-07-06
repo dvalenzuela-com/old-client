@@ -44,7 +44,9 @@ const CartDetails = (props: CartDetailsProps) => {
       <Autocomplete
         disablePortal
         id='select-table'
-        options={props.tables.filter((table) => table.active)}
+        options={props.tables
+          .filter((table) => table.active)
+          .sort((a, b) => a.table_name.localeCompare(b.table_name))}
         value={props.selectedTable}
         onChange={handleTableSelection}
         getOptionLabel={(option) => option.table_name}

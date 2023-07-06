@@ -6,6 +6,7 @@ import {
   ABFunctionCalculatePrice,
   ABProductOptionSelections,
   ABFunctionCalculateTip,
+  ABTable,
 } from '@Alabarra/alabarra-types';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
@@ -56,19 +57,19 @@ export type Cart = {
   ) => number;
   createOrderWithManualPayment: (
     businessId: string,
-    tableName: string,
+    table: ABTable,
     customerName?: string,
     generalNote?: string
   ) => Promise<string>;
   createOrderWithDigitalPayment: (
     businessId: string,
-    tableName: string,
+    table: ABTable,
     customerName?: string,
     generalNote?: string
   ) => Promise<string>;
   createOrderWithStripePayment: (
     businessId: string,
-    tableName: string,
+    table: ABTable,
     customerName?: string,
     generalNote?: string
   ) => Promise<string>;
@@ -256,7 +257,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
 
   const handleCreateOrderWithManualPayment = (
     businessId: string,
-    tableName: string,
+    table: ABTable,
     customerName?: string,
     generalNote?: string
   ): Promise<string> => {
@@ -264,7 +265,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
       try {
         const newOrder: ABCreateOrderData = prepareData(
           businessId,
-          tableName,
+          table.id,
           customerName,
           generalNote
         );
@@ -281,7 +282,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
 
   const handleCreateOrderWithDigitalPayment = (
     businessId: string,
-    tableName: string,
+    table: ABTable,
     customerName?: string,
     generalNote?: string
   ): Promise<string> => {
@@ -289,7 +290,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
       try {
         const newOrder: ABCreateOrderData = prepareData(
           businessId,
-          tableName,
+          table.id,
           customerName,
           generalNote
         );
@@ -306,7 +307,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
 
   const handleCreateOrderWithStripePayment = (
     businessId: string,
-    tableName: string,
+    table: ABTable,
     customerName?: string,
     generalNote?: string
   ): Promise<string> => {
@@ -314,7 +315,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
       try {
         const newOrder: ABCreateOrderData = prepareData(
           businessId,
-          tableName,
+          table.id,
           customerName,
           generalNote
         );
@@ -331,7 +332,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
 
   const prepareData = (
     businessId: string,
-    tableName: string,
+    tableId: string,
     customerName?: string,
     generalNote?: string
   ): ABCreateOrderData => {
@@ -353,7 +354,7 @@ export const CartProvider = ({ businessId, children }: CartProviderProps) => {
       general_note: generalNote && generalNote.trim().length > 0 ? generalNote : null,
       cart: api_cart_lines,
       tip: getTipTotal(),
-      table_name: tableName,
+      table_id: tableId,
     };
   };
 

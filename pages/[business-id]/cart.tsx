@@ -86,7 +86,7 @@ const Cart: NextPage<CartProps> = ({ businessConfig, tables }) => {
       try {
         await cart.createOrderWithManualPayment(
           businessId,
-          selectedTable.table_name,
+          selectedTable,
           customerName.trim(),
           generalNote
         );
