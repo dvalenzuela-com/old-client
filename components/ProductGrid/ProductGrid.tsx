@@ -1,5 +1,5 @@
-import { Grid } from '@mui/material';
-import { ABCategory, ABProduct } from '@Alabarra/alabarra-types';
+import { Button, Grid } from '@mui/material';
+import { ABCategory, ABProduct, ABProductTag } from '@Alabarra/alabarra-types';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import ProductCard from '../ProductCard/ProductCard';
 import ProductDialog from '../ProductDialog/ProductDialog';
@@ -7,6 +7,7 @@ import CategoryHeader from '../CategoryHeader';
 import { ProductDialogMode } from '../ProductDialog/ProductDialogMode';
 import CategorySwiper, { CategorySwiperRef } from '@Components/CategorySwiper/CategorySwiper';
 import React from 'react';
+import FilterModal from '@Components/FilterModal/FilterModal';
 
 type ProductGridProps = {
   categories: ABCategory[];
@@ -20,6 +21,8 @@ const ProductGrid = (props: ProductGridProps) => {
   const { categories, products } = props;
 
   const [activeProduct, setActiveProduct] = useState<ABProduct | undefined>(undefined);
+  const [filterTags, setFilterTags] = useState<ABProductTag[]>([ABProductTag.NO_GMO]);
+  const [filterOpen, setFilterOpen] = useState<boolean>(false);
 
   const gridRef = useRef<HTMLDivElement>(null);
   const categorySwiperRef = useRef<CategorySwiperRef>(null);
@@ -112,6 +115,24 @@ const ProductGrid = (props: ProductGridProps) => {
 
   return (
     <>
+      <Button
+        variant='outlined'
+        onClick={() => {
+          setFilterOpen(true);
+        }}
+      >
+        Show filters
+      </Button>
+      <FilterModal
+        open={filterOpen}
+        onClose={() => {
+          setFilterOpen(false);
+        }}
+        selectedTags={filterTags}
+        onSelectionChange={(nTags) => {
+          setFilterTags(nTags);
+        }}
+      />
       <CategorySwiper categories={categories} onSwipeTo={handleSwipeTo} ref={categorySwiperRef} />
       <Grid
         container
@@ -135,7 +156,7 @@ const ProductGrid = (props: ProductGridProps) => {
             />,
           ];
 
-          productsInCategory(category, products).forEach((product) => {
+          productsToShow(category, filterTags, products).forEach((product) => {
             if (product) {
               toReturn.push(
                 <ProductCard
@@ -168,6 +189,25 @@ const ProductGrid = (props: ProductGridProps) => {
 
 export default ProductGrid;
 
+function productsToShow(
+  category: ABCategory,
+  tags: ABProductTag[],
+  products: ABProduct[]
+): ABProduct[] {
+  const inCategory = productsInCategory(category, products);
+
+  if (tags.length > 0) {
+    return productsWithTags(tags, inCategory);
+  } else {
+    return inCategory;
+  }
+}
+
 function productsInCategory(category: ABCategory, products: ABProduct[]): ABProduct[] {
   return products.filter((prod) => category.products.includes(prod.id));
+}
+
+function productsWithTags(tags: ABProductTag[], products: ABProduct[]): ABProduct[] {
+  if (tags.length == 0) return products;
+  return products.filter((prod) => tags.every((tag) => prod.tags.includes(tag)));
 }
