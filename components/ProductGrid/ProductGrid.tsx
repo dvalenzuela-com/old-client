@@ -1,5 +1,5 @@
 import { Button, Grid } from '@mui/material';
-import { ABCategory, ABProduct, ABProductTag } from '@Alabarra/alabarra-types';
+import { ABCategory, ABProduct, ABProductStatus, ABProductTag } from '@Alabarra/alabarra-types';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import ProductCard from '../ProductCard/ProductCard';
 import ProductDialog from '../ProductDialog/ProductDialog';
@@ -194,20 +194,15 @@ function productsToShow(
   tags: ABProductTag[],
   products: ABProduct[]
 ): ABProduct[] {
-  const inCategory = productsInCategory(category, products);
+  const activeProducts = products.filter((prod) => prod.status === ABProductStatus.ACTIVE);
+  const productsInCategory = activeProducts.filter((prod) => category.products.includes(prod.id));
 
   if (tags.length > 0) {
-    return productsWithTags(tags, inCategory);
+    const productWithAllTags = productsInCategory.filter((prod) =>
+      tags.every((tag) => prod.tags.includes(tag))
+    );
+    return productWithAllTags;
   } else {
-    return inCategory;
+    return productsInCategory;
   }
-}
-
-function productsInCategory(category: ABCategory, products: ABProduct[]): ABProduct[] {
-  return products.filter((prod) => category.products.includes(prod.id));
-}
-
-function productsWithTags(tags: ABProductTag[], products: ABProduct[]): ABProduct[] {
-  if (tags.length == 0) return products;
-  return products.filter((prod) => tags.every((tag) => prod.tags.includes(tag)));
 }
