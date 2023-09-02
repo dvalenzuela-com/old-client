@@ -21,7 +21,7 @@ const ProductGrid = (props: ProductGridProps) => {
   const { categories, products } = props;
 
   const [activeProduct, setActiveProduct] = useState<ABProduct | undefined>(undefined);
-  const [filterTags, setFilterTags] = useState<ABProductTag[]>([ABProductTag.NO_GMO]);
+  const [filterTags, setFilterTags] = useState<ABProductTag[]>([]);
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
 
   const gridRef = useRef<HTMLDivElement>(null);

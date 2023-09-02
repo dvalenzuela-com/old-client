@@ -4,7 +4,7 @@ const nextConfig = {
   reactStrictMode: true,
 
   images: {
-    domains: ['cdn.prod.alabarra.com', 'loremflickr.com'],
+    domains: ['cdn.prod.alabarra.com', 'loremflickr.com', 'images.rappi.cl'],
   },
 };
 
