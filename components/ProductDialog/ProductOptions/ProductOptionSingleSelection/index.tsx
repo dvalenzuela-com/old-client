@@ -18,12 +18,16 @@ const ProductOptionSingleSelection = (props: ProductOptionSingleSelectionProps) 
   const { productOption, selectedOption, onOptionChange } = props;
   const businessConfig = useBusinessConfig();
   const [selectedValue, setSelectedValue] = useState<string>(
-    selectedOption != undefined ? selectedOption.selected_value : props.productOption.default_value
+    selectedOption != undefined
+      ? selectedOption.selected_value ?? ''
+      : props.productOption.default_value
   );
 
   useEffect(() => {
     setSelectedValue(
-      selectedOption != undefined ? selectedOption.selected_value : productOption.default_value
+      selectedOption != undefined
+        ? selectedOption.selected_value ?? ''
+        : productOption.default_value
     );
   }, [selectedOption]);
 

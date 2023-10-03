@@ -75,6 +75,7 @@ export const fakeProductOptionSingleSelection = (): ABProductOptionSingleSelecti
     title: 'Tamano de las papas',
     type: ABProductOptionsType.SINGLE_SELECTION,
     possible_values: possibleValues,
+    active: true,
   };
 };
 
@@ -121,5 +122,6 @@ export const fakeProductOptionMultipleSelection = (): ABProductOptionMultipleSel
     title: 'Salsas',
     default_values: [],
     possible_values: possibleValues,
+    active: true,
   };
 };

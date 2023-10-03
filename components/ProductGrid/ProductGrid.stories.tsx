@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion  */
-import { ABCategory } from '@Alabarra/alabarra-types';
+import { ABCategory, ABProduct } from '@Alabarra/alabarra-types';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import React from 'react';
 import ProductGrid from './ProductGrid';
-import { fakeProducts } from '../../stories/helpers';
 
 const dummy_cat_id = 'dummy_cat_id';
 
-const dummy_products = fakeProducts(5, { category: dummy_cat_id });
+const dummy_products: ABProduct[] = [];
+// const dummy_products = fakeProducts(5, { category: dummy_cat_id });
 
 const defaultCategory: Partial<ABCategory> = {
   id: dummy_cat_id,
